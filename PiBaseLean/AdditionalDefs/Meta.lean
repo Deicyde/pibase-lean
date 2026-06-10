@@ -63,7 +63,7 @@ However it is strong enough to prove some "meta"-theorems, i.e. Hereditary => Pr
 A proof that some property `Ex` (defined on all universes, which is almost always the case)
 is well-defined should first have that `Ex` is preserved by
 homeomorphisms over arbitrary universes (which we can not properly quantify),
-i.e. a theorem `Homeomorph.Ex`. Then proving that `Ex` is well-defined can always
+i.e. a theorem `Homeomorph.ex`. Then proving that `Ex` is well-defined can always
 be done in the following way:
 
 ```lean
