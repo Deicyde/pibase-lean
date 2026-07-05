@@ -330,9 +330,18 @@ label.chk{{font-size:.85rem;color:var(--muted);display:inline-flex;gap:.3rem;ali
 .fp-item{{padding:.4rem .9rem;border-bottom:1px solid #efe9dc;font-size:.88rem;cursor:pointer}}
 .fp-item:hover{{background:#fbf6ec}} .fp-id{{font-family:"JuliaMono","SF Mono",Menlo,monospace;color:var(--accent);font-size:.8rem}}
 #fp-list .empty{{padding:1rem;color:var(--muted);font-style:italic}}
-kbd.hint{{position:fixed;bottom:.6rem;left:50%;transform:translateX(-50%);background:#2f2a24;color:#e8e0d0;
- font-size:.74rem;padding:.25rem .7rem;border-radius:20px;font-family:inherit;opacity:.5;z-index:10}}
-kbd.hint:hover{{opacity:.9}}
+#hint{{position:fixed;bottom:.7rem;left:50%;transform:translateX(-50%);display:flex;gap:.85rem;
+ align-items:center;background:#2f2a24;color:#efe7d6;font-size:.78rem;padding:.4rem .95rem;
+ border-radius:22px;z-index:15;box-shadow:0 3px 12px rgba(0,0,0,.22)}}
+#hint .hl{{font-weight:600;color:#f3d9b0}}
+#hint span{{white-space:nowrap}}
+#hint kbd{{background:#efe7d6;color:#2f2a24;font-family:"JuliaMono","SF Mono",Menlo,monospace;font-size:.72rem;
+ padding:.05rem .35rem;border-radius:4px;margin-right:.12rem;box-shadow:0 1px 0 #b0a68f}}
+#hint-x{{background:none;border:none;color:#bcb29a;cursor:pointer;font-size:.8rem;padding:0 0 0 .2rem}}
+#hint-x:hover{{color:#efe7d6}}
+#hint-show{{position:fixed;bottom:.7rem;left:.7rem;background:#2f2a24;color:#efe7d6;border:none;
+ border-radius:50%;width:2.1rem;height:2.1rem;cursor:pointer;z-index:15;font-size:1rem;box-shadow:0 2px 8px rgba(0,0,0,.2)}}
+@media (max-width:820px){{#hint{{flex-wrap:wrap;max-width:94vw;justify-content:center;gap:.5rem .85rem}}}}
 @media (max-width:820px){{.panes{{grid-template-columns:1fr}}.informal{{border-right:none;border-bottom:1px solid var(--rule)}}}}
 .hidden{{display:none}}
 </style></head><body>
@@ -369,7 +378,13 @@ definition/proof. Review marks are saved in your browser.</p>
     <button id="fp-copy">copy list</button><button id="fp-close">✕</button></div>
   <div id="fp-list"></div>
 </div></div>
-<kbd class="hint">j/k move · o ok · f flag · n next unreviewed · / filter</kbd>
+<div class="hint" id="hint">
+  <span class="hl">⌨ shortcuts</span>
+  <span><kbd>j</kbd><kbd>k</kbd> move</span><span><kbd>o</kbd> ok</span><span><kbd>f</kbd> flag</span>
+  <span><kbd>n</kbd> next unreviewed</span><span><kbd>/</kbd> filter</span><span><kbd>?</kbd> toggle</span>
+  <button id="hint-x" title="hide (?)">✕</button>
+</div>
+<button id="hint-show" class="hidden" title="keyboard shortcuts (?)">⌨</button>
 <div id="sec-spaces"><div class="sec-title">Spaces — {n_spaces} formalized (carrier + topology; trait tables from the deduction closure)</div>{space_cards}</div>
 <div id="sec-props" class="hidden"><div class="sec-title">Properties — {n_props} formalized</div>{prop_cards}</div>
 <div id="sec-thms" class="hidden"><div class="sec-title">Theorems — {n_thms} formalized (implications, all proven)</div>{thm_cards}</div>
@@ -460,9 +475,17 @@ document.addEventListener('keydown',ev=>{if(/input|textarea/i.test(ev.target.tag
  else if(ev.key==='o'&&v[cur])setMark(v[cur],'ok');
  else if(ev.key==='f'&&v[cur])setMark(v[cur],'flag');
  else if(ev.key==='/'){ev.preventDefault();q.focus();return;}
+ else if(ev.key==='?'){toggleHint();}
  else return;ev.preventDefault();});
 
+// keyboard-shortcut legend
+function toggleHint(){const hidden=$('#hint').classList.toggle('hidden');$('#hint-show').classList.toggle('hidden',!hidden);}
+$('#hint-x').onclick=()=>{$('#hint').classList.add('hidden');$('#hint-show').classList.remove('hidden');};
+$('#hint-show').onclick=()=>{$('#hint').classList.remove('hidden');$('#hint-show').classList.add('hidden');};
+
 renderSection('spaces');refreshFlag();update();
+// KaTeX loads deferred, so re-typeset already-rendered sections once it's ready
+window.addEventListener('load',()=>{rendered.forEach(k=>typesetEl($('#'+SEC[k])));});
 </script>'''
 
 
