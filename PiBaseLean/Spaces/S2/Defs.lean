@@ -3,6 +3,8 @@ module
 public import Mathlib.Topology.Order
 public import Mathlib.Data.Countable.Defs
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -26,3 +28,10 @@ instance : DiscreteTopology S2 := discreteTopology_bot ℕ
 
 end S2
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S2 as a bundled `Space` (carrier + topology). -/
+noncomputable def S2 : Space := ⟨PiBase.Spaces.S2.S2, inferInstance⟩
+
+end PiBase.Formal

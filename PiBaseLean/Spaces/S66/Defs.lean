@@ -3,6 +3,8 @@ module
 public import Mathlib.Topology.Constructions.SumProd
 public import Mathlib.Topology.Instances.Real.Lemmas
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -40,3 +42,10 @@ instance : TopologicalSpace S66 := TopologicalSpace.generateFrom S66.Generators
 
 end S66
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S66 as a bundled `Space` (carrier + topology). -/
+noncomputable def S66 : Space := ⟨PiBase.Spaces.S66.S66, inferInstance⟩
+
+end PiBase.Formal

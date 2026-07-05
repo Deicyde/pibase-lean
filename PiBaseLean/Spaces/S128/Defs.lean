@@ -3,6 +3,8 @@ module
 public import Mathlib.Topology.Instances.CantorSet
 public import Mathlib.Topology.Instances.Real.Lemmas
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Set
@@ -66,3 +68,10 @@ instance : TopologicalSpace S128 := instTopologicalSpaceSubtype
 
 end S128
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S128 as a bundled `Space` (carrier + topology). -/
+noncomputable def S128 : Space := ⟨PiBase.Spaces.S128.S128, inferInstance⟩
+
+end PiBase.Formal

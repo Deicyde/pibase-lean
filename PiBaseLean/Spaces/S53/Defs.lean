@@ -5,6 +5,8 @@ public import Mathlib.Data.Nat.Prime.Defs
 public import Mathlib.Data.PNat.Defs
 public import Mathlib.Topology.Order
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -28,3 +30,10 @@ instance : TopologicalSpace S53 := TopologicalSpace.generateFrom subbasis
 
 end S53
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S53 as a bundled `Space` (carrier + topology). -/
+noncomputable def S53 : Space := ⟨PiBase.Spaces.S53.S53, inferInstance⟩
+
+end PiBase.Formal

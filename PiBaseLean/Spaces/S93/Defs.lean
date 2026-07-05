@@ -4,6 +4,8 @@ public import Mathlib.Topology.Order.Basic
 public import Mathlib.Data.Prod.Lex
 public import Mathlib.Data.Real.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -30,3 +32,10 @@ noncomputable instance : TopologicalSpace S93 := Preorder.topology S93
 
 end S93
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S93 as a bundled `Space` (carrier + topology). -/
+noncomputable def S93 : Space := ⟨PiBase.Spaces.S93.S93, inferInstance⟩
+
+end PiBase.Formal

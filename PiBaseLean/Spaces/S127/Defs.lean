@@ -3,6 +3,8 @@ module
 public import Mathlib.Topology.Instances.Real.Lemmas
 public import Mathlib.Topology.Compactness.Compact
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Set
@@ -61,3 +63,10 @@ instance : TopologicalSpace S127 := instTopologicalSpaceSubtype
 
 end S127
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S127 as a bundled `Space` (carrier + topology). -/
+noncomputable def S127 : Space := ⟨PiBase.Spaces.S127.S127, inferInstance⟩
+
+end PiBase.Formal

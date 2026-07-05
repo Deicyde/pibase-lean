@@ -3,6 +3,8 @@ module
 public import Mathlib.Order.Filter.Ultrafilter.Defs
 public import Mathlib.Topology.Order
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -34,3 +36,10 @@ instance : TopologicalSpace S110 := TopologicalSpace.generateFrom S110.subbasis
 
 end S110
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S110 as a bundled `Space` (carrier + topology). -/
+noncomputable def S110 : Space := ⟨PiBase.Spaces.S110.S110, inferInstance⟩
+
+end PiBase.Formal

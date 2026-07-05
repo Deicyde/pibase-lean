@@ -2,6 +2,8 @@ module
 
 public import Mathlib.Analysis.InnerProductSpace.PiL2
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -21,3 +23,10 @@ instance : TopologicalSpace S170 := instTopologicalSpaceSubtype
 
 end S170
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S170 as a bundled `Space` (carrier + topology). -/
+noncomputable def S170 : Space := ⟨PiBase.Spaces.S170.S170, inferInstance⟩
+
+end PiBase.Formal

@@ -4,6 +4,8 @@ public import Mathlib.Topology.Constructions
 public import Mathlib.Topology.Order
 public import Mathlib.Data.Real.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -42,3 +44,10 @@ instance : TopologicalSpace S136 :=
 
 end S136
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S136 as a bundled `Space` (carrier + topology). -/
+noncomputable def S136 : Space := ⟨PiBase.Spaces.S136.S136, inferInstance⟩
+
+end PiBase.Formal

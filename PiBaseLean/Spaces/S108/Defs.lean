@@ -2,6 +2,8 @@ module
 
 public import Mathlib.Topology.Compactification.StoneCech
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -23,3 +25,10 @@ instance : TopologicalSpace S108 :=
 
 end S108
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S108 as a bundled `Space` (carrier + topology). -/
+noncomputable def S108 : Space := ⟨PiBase.Spaces.S108.S108, inferInstance⟩
+
+end PiBase.Formal

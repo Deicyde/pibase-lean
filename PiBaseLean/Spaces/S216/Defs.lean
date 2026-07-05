@@ -5,6 +5,8 @@ public import Mathlib.NumberTheory.Real.Irrational
 public import Mathlib.Topology.Instances.Real.Lemmas
 public import Mathlib.Data.Rat.Denumerable
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Filter
@@ -55,3 +57,10 @@ instance : TopologicalSpace S216 := inferInstanceAs (TopologicalSpace katetovCar
 
 end S216
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S216 as a bundled `Space` (carrier + topology). -/
+noncomputable def S216 : Space := ⟨PiBase.Spaces.S216.S216, inferInstance⟩
+
+end PiBase.Formal

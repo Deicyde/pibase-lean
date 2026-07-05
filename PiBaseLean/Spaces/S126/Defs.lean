@@ -5,6 +5,8 @@ public import Mathlib.Analysis.Convex.Segment
 public import Mathlib.NumberTheory.Real.Irrational
 public import Mathlib.Topology.Instances.Real.Lemmas
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -64,3 +66,10 @@ instance : TopologicalSpace S126 := inferInstanceAs (TopologicalSpace S126Set)
 
 end S126
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S126 as a bundled `Space` (carrier + topology). -/
+noncomputable def S126 : Space := ⟨PiBase.Spaces.S126.S126, inferInstance⟩
+
+end PiBase.Formal

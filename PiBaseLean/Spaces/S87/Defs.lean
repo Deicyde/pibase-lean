@@ -4,6 +4,8 @@ public import Mathlib.SetTheory.Cardinal.Aleph
 public import Mathlib.Topology.Compactification.OnePoint.Basic
 public import Mathlib.Topology.Order
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Ordinal OnePoint
@@ -57,3 +59,10 @@ noncomputable instance : TopologicalSpace S87 :=
 
 end S87
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S87 as a bundled `Space` (carrier + topology). -/
+noncomputable def S87 : Space := ⟨PiBase.Spaces.S87.S87, inferInstance⟩
+
+end PiBase.Formal

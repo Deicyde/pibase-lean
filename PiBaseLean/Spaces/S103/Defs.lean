@@ -3,6 +3,8 @@ module
 public import Mathlib.Topology.Constructions
 public import Mathlib.Topology.UnitInterval
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -25,3 +27,10 @@ instance : CompactSpace S103 := inferInstanceAs (CompactSpace (unitInterval → 
 
 end S103
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S103 as a bundled `Space` (carrier + topology). -/
+noncomputable def S103 : Space := ⟨PiBase.Spaces.S103.S103, inferInstance⟩
+
+end PiBase.Formal

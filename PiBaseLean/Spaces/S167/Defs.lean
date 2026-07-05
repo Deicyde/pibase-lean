@@ -4,6 +4,8 @@ public import Mathlib.Topology.Order
 public import Mathlib.Data.Sum.Order
 public import Mathlib.Data.ENat.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -30,3 +32,10 @@ instance : TopologicalSpace S167 :=
 
 end S167
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S167 as a bundled `Space` (carrier + topology). -/
+noncomputable def S167 : Space := ⟨PiBase.Spaces.S167.S167, inferInstance⟩
+
+end PiBase.Formal

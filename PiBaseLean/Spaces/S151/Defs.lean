@@ -3,6 +3,8 @@ module
 public import Mathlib.Topology.Order
 public import Mathlib.Algebra.Order.Ring.Rat
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -30,3 +32,10 @@ instance : TopologicalSpace S151 :=
 
 end S151
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S151 as a bundled `Space` (carrier + topology). -/
+noncomputable def S151 : Space := ⟨PiBase.Spaces.S151.S151, inferInstance⟩
+
+end PiBase.Formal

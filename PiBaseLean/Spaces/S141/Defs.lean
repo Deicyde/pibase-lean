@@ -4,6 +4,8 @@ public import Mathlib.SetTheory.Cardinal.Aleph
 public import Mathlib.Topology.Order.Basic
 public import Mathlib.Data.Sum.Order
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Ordinal
@@ -37,3 +39,10 @@ instance : OrderTopology S141 := ⟨rfl⟩
 
 end S141
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S141 as a bundled `Space` (carrier + topology). -/
+noncomputable def S141 : Space := ⟨PiBase.Spaces.S141.S141, inferInstance⟩
+
+end PiBase.Formal

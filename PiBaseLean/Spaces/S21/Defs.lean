@@ -3,6 +3,8 @@ module
 public import Mathlib.Analysis.InnerProductSpace.l2Space
 public import Mathlib.Topology.Algebra.Module.WeakBilin
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -30,3 +32,10 @@ noncomputable instance : TopologicalSpace S21 :=
 
 end S21
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S21 as a bundled `Space` (carrier + topology). -/
+noncomputable def S21 : Space := ⟨PiBase.Spaces.S21.S21, inferInstance⟩
+
+end PiBase.Formal

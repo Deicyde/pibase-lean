@@ -4,6 +4,8 @@ public import Mathlib.SetTheory.Cardinal.Aleph
 public import Mathlib.Topology.Order.Basic
 public import Mathlib.Topology.Compactification.OnePoint.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Ordinal
@@ -42,3 +44,10 @@ noncomputable instance : TopologicalSpace S78 :=
   inferInstanceAs (TopologicalSpace (S78.Fst × S78.Snd))
 
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S78 as a bundled `Space` (carrier + topology). -/
+noncomputable def S78 : Space := ⟨PiBase.Spaces.S78, inferInstance⟩
+
+end PiBase.Formal

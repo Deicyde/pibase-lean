@@ -3,6 +3,8 @@ module
 public import Mathlib.Topology.Order
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -43,3 +45,10 @@ instance : TopologicalSpace S135 :=
 
 end S135
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S135 as a bundled `Space` (carrier + topology). -/
+noncomputable def S135 : Space := ⟨PiBase.Spaces.S135.S135, inferInstance⟩
+
+end PiBase.Formal

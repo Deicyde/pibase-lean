@@ -5,6 +5,8 @@ public import Mathlib.Topology.Instances.Real.Lemmas
 public import Mathlib.Topology.Constructions.SumProd
 public import Mathlib.SetTheory.Cardinal.Continuum
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Set Cardinal Ordinal
@@ -159,3 +161,10 @@ instance : TopologicalSpace S121 := instTopologicalSpaceSubtype
 
 end S121
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S121 as a bundled `Space` (carrier + topology). -/
+noncomputable def S121 : Space := ⟨PiBase.Spaces.S121.S121, inferInstance⟩
+
+end PiBase.Formal

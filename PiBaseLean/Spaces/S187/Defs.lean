@@ -2,6 +2,8 @@ module
 
 public import Mathlib.Topology.Order
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -26,3 +28,10 @@ instance : DecidableEq S187 := inferInstanceAs (DecidableEq (Fin 3))
 
 end S187
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S187 as a bundled `Space` (carrier + topology). -/
+noncomputable def S187 : Space := ⟨PiBase.Spaces.S187.S187, inferInstance⟩
+
+end PiBase.Formal

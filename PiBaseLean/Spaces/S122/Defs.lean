@@ -5,6 +5,8 @@ public import Mathlib.Data.PNat.Basic
 public import Mathlib.Data.Nat.Pairing
 public import Mathlib.Logic.Equiv.List
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -94,3 +96,10 @@ end S122
 
 end S122
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S122 as a bundled `Space` (carrier + topology). -/
+noncomputable def S122 : Space := ⟨PiBase.Spaces.S122.S122, inferInstance⟩
+
+end PiBase.Formal

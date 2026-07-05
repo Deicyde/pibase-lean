@@ -3,6 +3,8 @@ module
 public import Mathlib.Topology.Compactification.OnePoint.Basic
 public import PiBaseLean.Spaces.S23.Defs
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -23,3 +25,10 @@ instance : TopologicalSpace S165 := inferInstanceAs (TopologicalSpace (OnePoint 
 
 end S165
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S165 as a bundled `Space` (carrier + topology). -/
+noncomputable def S165 : Space := ⟨PiBase.Spaces.S165.S165, inferInstance⟩
+
+end PiBase.Formal

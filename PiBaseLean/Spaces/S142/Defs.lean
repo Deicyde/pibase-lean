@@ -3,6 +3,8 @@ module
 public import Mathlib.Analysis.Normed.Lp.lpSpace
 public import Mathlib.Topology.Defs.Induced
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -27,3 +29,10 @@ noncomputable instance : TopologicalSpace S142 := instTopologicalSpaceSubtype
 
 end S142
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S142 as a bundled `Space` (carrier + topology). -/
+noncomputable def S142 : Space := ⟨PiBase.Spaces.S142.S142, inferInstance⟩
+
+end PiBase.Formal

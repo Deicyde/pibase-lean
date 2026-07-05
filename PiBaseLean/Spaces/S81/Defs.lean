@@ -5,6 +5,8 @@ public import Mathlib.Topology.Order.Basic
 public import Mathlib.Topology.Constructions.SumProd
 public import Mathlib.Data.Real.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Ordinal
@@ -65,3 +67,10 @@ instance : TopologicalSpace S81 := TopologicalSpace.generateFrom S81Generators
 
 end S81
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S81 as a bundled `Space` (carrier + topology). -/
+noncomputable def S81 : Space := ⟨PiBase.Spaces.S81.S81, inferInstance⟩
+
+end PiBase.Formal

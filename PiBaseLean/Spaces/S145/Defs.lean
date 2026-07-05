@@ -3,6 +3,8 @@ module
 public import Mathlib.Order.Filter.Ultrafilter.Basic
 public import Mathlib.Topology.Order
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -24,3 +26,10 @@ noncomputable instance : TopologicalSpace S145 :=
 
 end S145
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S145 as a bundled `Space` (carrier + topology). -/
+noncomputable def S145 : Space := ⟨PiBase.Spaces.S145.S145, inferInstance⟩
+
+end PiBase.Formal

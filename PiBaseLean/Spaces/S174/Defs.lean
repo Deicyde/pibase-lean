@@ -3,6 +3,8 @@ module
 public import Mathlib.Topology.Constructions
 public import Mathlib.SetTheory.Cardinal.Aleph
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -43,3 +45,10 @@ instance : TopologicalSpace S174 :=
 
 end S174
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S174 as a bundled `Space` (carrier + topology). -/
+noncomputable def S174 : Space := ⟨PiBase.Spaces.S174.S174, inferInstance⟩
+
+end PiBase.Formal

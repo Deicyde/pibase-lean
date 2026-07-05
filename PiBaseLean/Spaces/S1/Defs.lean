@@ -3,6 +3,8 @@ module
 public import Mathlib.Topology.Order
 public import Mathlib.Topology.Compactness.Compact
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -26,3 +28,10 @@ instance : CompactSpace S1 := Finite.compactSpace
 
 end S1
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S1 as a bundled `Space` (carrier + topology). -/
+noncomputable def S1 : Space := ⟨PiBase.Spaces.S1.S1, inferInstance⟩
+
+end PiBase.Formal

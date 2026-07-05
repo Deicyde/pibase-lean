@@ -3,6 +3,8 @@ module
 public import Mathlib.Topology.Instances.Rat
 public import Mathlib.Data.Real.Sqrt
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -40,3 +42,10 @@ instance : TopologicalSpace S67 :=
 
 end S67
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S67 as a bundled `Space` (carrier + topology). -/
+noncomputable def S67 : Space := ⟨PiBase.Spaces.S67.S67, inferInstance⟩
+
+end PiBase.Formal

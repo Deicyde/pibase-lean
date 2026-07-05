@@ -4,6 +4,8 @@ public import Mathlib.Analysis.InnerProductSpace.PiL2
 public import Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
 public import Mathlib.Topology.MetricSpace.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -38,3 +40,10 @@ instance : TopologicalSpace S134 :=
 
 end S134
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S134 as a bundled `Space` (carrier + topology). -/
+noncomputable def S134 : Space := ⟨PiBase.Spaces.S134.S134, inferInstance⟩
+
+end PiBase.Formal

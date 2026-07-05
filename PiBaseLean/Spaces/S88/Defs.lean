@@ -2,6 +2,8 @@ module
 
 public import PiBaseLean.Spaces.S79.Defs
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology OnePoint Ordinal
@@ -160,3 +162,10 @@ instance : TopologicalSpace S88 := instTopologicalSpaceQuotient
 
 end S88
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S88 as a bundled `Space` (carrier + topology). -/
+noncomputable def S88 : Space := ⟨PiBase.Spaces.S88.S88, inferInstance⟩
+
+end PiBase.Formal

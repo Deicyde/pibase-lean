@@ -2,6 +2,8 @@ module
 
 public import PiBaseLean.Spaces.S78.Defs
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology OnePoint Ordinal
@@ -24,3 +26,10 @@ noncomputable instance : TopologicalSpace S79 :=
   inferInstanceAs (TopologicalSpace {p : S78 // p ≠ S79.corner})
 
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S79 as a bundled `Space` (carrier + topology). -/
+noncomputable def S79 : Space := ⟨PiBase.Spaces.S79, inferInstance⟩
+
+end PiBase.Formal

@@ -7,6 +7,8 @@ public import Mathlib.Topology.Constructions
 public import Mathlib.Topology.UnitInterval
 public import Mathlib.Data.Real.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Ordinal
@@ -46,3 +48,10 @@ noncomputable instance : TopologicalSpace S173 :=
 
 end S173
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S173 as a bundled `Space` (carrier + topology). -/
+noncomputable def S173 : Space := ⟨PiBase.Spaces.S173.S173, inferInstance⟩
+
+end PiBase.Formal

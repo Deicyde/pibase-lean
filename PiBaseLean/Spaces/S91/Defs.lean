@@ -5,6 +5,8 @@ public import Mathlib.Order.Interval.Set.Defs
 public import Mathlib.Data.Real.Basic
 public import Mathlib.Data.Set.Finite.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -40,3 +42,10 @@ def S91.generators : Set (Set S91) :=
 instance : TopologicalSpace S91 := TopologicalSpace.generateFrom S91.generators
 
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S91 as a bundled `Space` (carrier + topology). -/
+noncomputable def S91 : Space := ⟨PiBase.Spaces.S91, inferInstance⟩
+
+end PiBase.Formal

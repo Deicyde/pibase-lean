@@ -3,6 +3,8 @@ module
 public import Mathlib.SetTheory.Cardinal.Aleph
 public import Mathlib.Topology.Order.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Ordinal
@@ -27,3 +29,10 @@ instance : OrderTopology S35 := ⟨rfl⟩
 
 end S35
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S35 as a bundled `Space` (carrier + topology). -/
+noncomputable def S35 : Space := ⟨PiBase.Spaces.S35.S35, inferInstance⟩
+
+end PiBase.Formal

@@ -3,6 +3,8 @@ module
 public import PiBaseLean.Spaces.S91.Defs
 public import Mathlib.Topology.Constructions
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -155,3 +157,10 @@ instance : TopologicalSpace S92 := instTopologicalSpaceQuotient
 
 end S92
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S92 as a bundled `Space` (carrier + topology). -/
+noncomputable def S92 : Space := ⟨PiBase.Spaces.S92.S92, inferInstance⟩
+
+end PiBase.Formal

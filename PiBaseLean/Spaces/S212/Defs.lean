@@ -4,6 +4,8 @@ public import Mathlib.Order.PiLex
 public import Mathlib.Topology.Order.Basic
 public import Mathlib.Topology.Instances.Real.Lemmas
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -28,3 +30,10 @@ noncomputable instance : TopologicalSpace S212 := Preorder.topology S212
 
 end S212
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S212 as a bundled `Space` (carrier + topology). -/
+noncomputable def S212 : Space := ⟨PiBase.Spaces.S212.S212, inferInstance⟩
+
+end PiBase.Formal

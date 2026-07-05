@@ -3,6 +3,8 @@ module
 public import Mathlib.SetTheory.Cardinal.Aleph
 public import Mathlib.Topology.Order
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -27,3 +29,10 @@ instance : TopologicalSpace S221 :=
 
 end S221
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S221 as a bundled `Space` (carrier + topology). -/
+noncomputable def S221 : Space := ⟨PiBase.Spaces.S221.S221, inferInstance⟩
+
+end PiBase.Formal

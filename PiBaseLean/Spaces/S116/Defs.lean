@@ -3,6 +3,8 @@ module
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 public import Mathlib.Analysis.Convex.Segment
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -32,3 +34,10 @@ instance : TopologicalSpace S116 := inferInstanceAs (TopologicalSpace S116Set)
 
 end S116
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S116 as a bundled `Space` (carrier + topology). -/
+noncomputable def S116 : Space := ⟨PiBase.Spaces.S116.S116, inferInstance⟩
+
+end PiBase.Formal

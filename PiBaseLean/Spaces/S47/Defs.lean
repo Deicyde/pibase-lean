@@ -3,6 +3,8 @@ module
 public import Mathlib.Topology.Order
 public import Mathlib.Algebra.Ring.Parity
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -27,3 +29,10 @@ instance : TopologicalSpace S47 :=
 
 end S47
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S47 as a bundled `Space` (carrier + topology). -/
+noncomputable def S47 : Space := ⟨PiBase.Spaces.S47.S47, inferInstance⟩
+
+end PiBase.Formal

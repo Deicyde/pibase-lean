@@ -418,6 +418,7 @@ import PiBaseLean.Properties.P98.Defs
 import PiBaseLean.Properties.P98.Lemmas
 import PiBaseLean.Properties.P99.Defs
 import PiBaseLean.Properties.P99.Lemmas
+import PiBaseLean.Spaces.Bundled.Defs
 import PiBaseLean.Spaces.S1.Defs
 import PiBaseLean.Spaces.S2.Defs
 import PiBaseLean.Spaces.S3.Defs

@@ -5,6 +5,8 @@ public import Mathlib.Data.Prod.Lex
 public import Mathlib.Topology.Order.Basic
 public import Mathlib.Data.Real.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Ordinal
@@ -44,3 +46,10 @@ instance : TopologicalSpace S40 := TopologicalSpace.generateFrom S40.subbasis
 
 end S40
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S40 as a bundled `Space` (carrier + topology). -/
+noncomputable def S40 : Space := ⟨PiBase.Spaces.S40.S40, inferInstance⟩
+
+end PiBase.Formal

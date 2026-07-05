@@ -4,6 +4,8 @@ public import Mathlib.SetTheory.Cardinal.Aleph
 public import Mathlib.Topology.Compactification.OnePoint.Basic
 public import Mathlib.Data.Set.Countable
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Cardinal
@@ -55,3 +57,10 @@ instance : TopologicalSpace S191 :=
 
 end S191
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S191 as a bundled `Space` (carrier + topology). -/
+noncomputable def S191 : Space := ⟨PiBase.Spaces.S191.S191, inferInstance⟩
+
+end PiBase.Formal

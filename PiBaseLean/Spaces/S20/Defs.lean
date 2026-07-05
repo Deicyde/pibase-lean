@@ -2,6 +2,8 @@ module
 
 public import Mathlib.Topology.Compactification.OnePoint.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -23,3 +25,10 @@ instance : TopologicalSpace S20 := inferInstanceAs (TopologicalSpace (OnePoint �
 
 end S20
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S20 as a bundled `Space` (carrier + topology). -/
+noncomputable def S20 : Space := ⟨PiBase.Spaces.S20.S20, inferInstance⟩
+
+end PiBase.Formal

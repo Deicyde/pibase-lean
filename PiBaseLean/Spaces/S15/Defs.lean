@@ -2,6 +2,8 @@ module
 
 public import Mathlib.Topology.Constructions
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -21,3 +23,10 @@ instance : TopologicalSpace S15 := inferInstanceAs (TopologicalSpace (CofiniteTo
 
 end S15
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S15 as a bundled `Space` (carrier + topology). -/
+noncomputable def S15 : Space := ⟨PiBase.Spaces.S15.S15, inferInstance⟩
+
+end PiBase.Formal

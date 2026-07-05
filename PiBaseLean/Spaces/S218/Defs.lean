@@ -4,6 +4,8 @@ public import Mathlib.SetTheory.Cardinal.Aleph
 public import Mathlib.Topology.Order.Basic
 public import Mathlib.Topology.Constructions
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Ordinal
@@ -47,3 +49,10 @@ noncomputable instance : TopologicalSpace S218 :=
 
 end S218
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S218 as a bundled `Space` (carrier + topology). -/
+noncomputable def S218 : Space := ⟨PiBase.Spaces.S218.S218, inferInstance⟩
+
+end PiBase.Formal

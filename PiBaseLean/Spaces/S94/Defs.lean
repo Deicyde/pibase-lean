@@ -4,6 +4,8 @@ public import Mathlib.Topology.Order
 public import Mathlib.Order.Interval.Set.Defs
 public import Mathlib.Data.Real.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -33,3 +35,10 @@ instance : TopologicalSpace S94 := TopologicalSpace.generateFrom S94.generators
 
 end S94
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S94 as a bundled `Space` (carrier + topology). -/
+noncomputable def S94 : Space := ⟨PiBase.Spaces.S94.S94, inferInstance⟩
+
+end PiBase.Formal

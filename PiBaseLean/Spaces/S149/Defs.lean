@@ -7,6 +7,8 @@ public import Mathlib.Topology.Order.Basic
 public import Mathlib.Data.Real.Basic
 public import Mathlib.SetTheory.Ordinal.Arithmetic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Ordinal Sum
@@ -52,3 +54,10 @@ instance : OrderTopology S149 := ⟨rfl⟩
 
 end S149
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S149 as a bundled `Space` (carrier + topology). -/
+noncomputable def S149 : Space := ⟨PiBase.Spaces.S149.S149, inferInstance⟩
+
+end PiBase.Formal

@@ -5,6 +5,8 @@ public import Mathlib.Topology.Instances.Real.Lemmas
 public import Mathlib.Data.PNat.Basic
 public import Mathlib.Data.Set.Card
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Filter
@@ -36,3 +38,10 @@ instance : TopologicalSpace S96 := TopologicalSpace.generateFrom {U : Set ℕ+ |
 
 end S96
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S96 as a bundled `Space` (carrier + topology). -/
+noncomputable def S96 : Space := ⟨PiBase.Spaces.S96.S96, inferInstance⟩
+
+end PiBase.Formal

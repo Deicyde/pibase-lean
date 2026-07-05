@@ -5,6 +5,8 @@ public import Mathlib.Data.Rat.Cast.Defs
 public import Mathlib.Data.Nat.Nth
 public import Mathlib.Data.Nat.Prime.Defs
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -60,3 +62,10 @@ instance : TopologicalSpace S123 := TopologicalSpace.generateFrom S123.generator
 
 end S123
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S123 as a bundled `Space` (carrier + topology). -/
+noncomputable def S123 : Space := ⟨PiBase.Spaces.S123.S123, inferInstance⟩
+
+end PiBase.Formal

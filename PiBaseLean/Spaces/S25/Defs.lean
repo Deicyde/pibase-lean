@@ -6,6 +6,8 @@ public import PiBaseLean.Properties.P3.Defs
 public import PiBaseLean.Properties.P16.Defs
 public import PiBaseLean.Properties.P36.Defs
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -34,5 +36,12 @@ theorem not_P3_le_P16 : ¬ ((P3 : Property.{0}) ≤ P16) := fun h =>
 /-- Connected does not imply compact — witnessed by ℝ (π-Base S25). -/
 theorem not_P36_le_P16 : ¬ ((P36 : Property.{0}) ≤ P16) := fun h =>
   Spaces.reals_not_compact (h ℝ inferInstance Spaces.reals_preconnected)
+
+end PiBase.Formal
+
+namespace PiBase.Formal
+
+/-- π-Base S25 as a bundled `Space` (carrier + topology). -/
+noncomputable def S25 : Space := ⟨ℝ, inferInstance⟩
 
 end PiBase.Formal

@@ -3,6 +3,8 @@ module
 public import Mathlib.NumberTheory.Real.Irrational
 public import Mathlib.Topology.Order.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -21,3 +23,10 @@ instance : TopologicalSpace S28 := instTopologicalSpaceSubtype
 
 end S28
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S28 as a bundled `Space` (carrier + topology). -/
+noncomputable def S28 : Space := ⟨PiBase.Spaces.S28.S28, inferInstance⟩
+
+end PiBase.Formal

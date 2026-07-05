@@ -2,6 +2,8 @@ module
 
 public import Mathlib.Analysis.InnerProductSpace.PiL2
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -31,3 +33,10 @@ instance : TopologicalSpace S68 := TopologicalSpace.generateFrom (S68Basis : Set
 
 end S68
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S68 as a bundled `Space` (carrier + topology). -/
+noncomputable def S68 : Space := ⟨PiBase.Spaces.S68.S68, inferInstance⟩
+
+end PiBase.Formal

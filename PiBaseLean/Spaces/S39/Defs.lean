@@ -6,6 +6,8 @@ public import Mathlib.Data.Prod.Lex
 public import Mathlib.Data.Real.Basic
 public import Mathlib.Topology.Order
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -41,3 +43,10 @@ noncomputable instance : TopologicalSpace S39 :=
   TopologicalSpace.generateFrom {s | ∃ a, s = Set.Ioi a ∨ s = Set.Iio a}
 
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S39 as a bundled `Space` (carrier + topology). -/
+noncomputable def S39 : Space := ⟨PiBase.Spaces.S39, inferInstance⟩
+
+end PiBase.Formal

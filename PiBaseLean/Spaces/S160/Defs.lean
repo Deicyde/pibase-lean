@@ -4,6 +4,8 @@ public import Mathlib.Topology.Order
 public import Mathlib.Order.Interval.Set.Defs
 public import Mathlib.Order.WithBot
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -28,3 +30,10 @@ instance : TopologicalSpace S160 :=
 
 end S160
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S160 as a bundled `Space` (carrier + topology). -/
+noncomputable def S160 : Space := ⟨PiBase.Spaces.S160.S160, inferInstance⟩
+
+end PiBase.Formal

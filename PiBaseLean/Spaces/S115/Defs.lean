@@ -2,6 +2,8 @@ module
 
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -27,3 +29,10 @@ instance : TopologicalSpace S115 := inferInstanceAs (TopologicalSpace S115Set)
 
 end S115
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S115 as a bundled `Space` (carrier + topology). -/
+noncomputable def S115 : Space := ⟨PiBase.Spaces.S115.S115, inferInstance⟩
+
+end PiBase.Formal

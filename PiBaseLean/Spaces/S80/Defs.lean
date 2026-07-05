@@ -5,6 +5,8 @@ public import Mathlib.Order.Interval.Set.Infinite
 public import Mathlib.Topology.MetricSpace.Basic
 public import Mathlib.Data.Rat.Denumerable
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -105,3 +107,10 @@ noncomputable instance : TopologicalSpace S80 :=
 
 end S80
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S80 as a bundled `Space` (carrier + topology). -/
+noncomputable def S80 : Space := ⟨PiBase.Spaces.S80.S80, inferInstance⟩
+
+end PiBase.Formal

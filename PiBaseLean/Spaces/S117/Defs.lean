@@ -3,6 +3,8 @@ module
 public import Mathlib.Analysis.Convex.Segment
 public import Mathlib.Topology.Instances.Real.Lemmas
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -31,3 +33,10 @@ instance : TopologicalSpace S117 := instTopologicalSpaceSubtype
 
 end S117
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S117 as a bundled `Space` (carrier + topology). -/
+noncomputable def S117 : Space := ⟨PiBase.Spaces.S117.S117, inferInstance⟩
+
+end PiBase.Formal

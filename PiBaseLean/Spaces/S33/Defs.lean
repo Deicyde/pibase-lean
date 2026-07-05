@@ -3,6 +3,8 @@ module
 public import Mathlib.SetTheory.Ordinal.Arithmetic
 public import Mathlib.Topology.Order.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Ordinal
@@ -27,3 +29,10 @@ instance : OrderTopology S33 := ⟨rfl⟩
 
 end S33
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S33 as a bundled `Space` (carrier + topology). -/
+noncomputable def S33 : Space := ⟨PiBase.Spaces.S33.S33, inferInstance⟩
+
+end PiBase.Formal

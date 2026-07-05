@@ -2,6 +2,8 @@ module
 
 public import Mathlib.Topology.Order
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -22,3 +24,10 @@ instance : TopologicalSpace S199 :=
 
 end S199
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S199 as a bundled `Space` (carrier + topology). -/
+noncomputable def S199 : Space := ⟨PiBase.Spaces.S199.S199, inferInstance⟩
+
+end PiBase.Formal

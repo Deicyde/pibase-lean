@@ -5,6 +5,8 @@ public import Mathlib.NumberTheory.Real.Irrational
 public import Mathlib.Topology.Instances.CantorSet
 public import Mathlib.Topology.Instances.Real.Lemmas
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -51,3 +53,10 @@ instance : TopologicalSpace S125 := instTopologicalSpaceSubtype
 
 end S125
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S125 as a bundled `Space` (carrier + topology). -/
+noncomputable def S125 : Space := ⟨PiBase.Spaces.S125.S125, inferInstance⟩
+
+end PiBase.Formal

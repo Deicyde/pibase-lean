@@ -5,6 +5,8 @@ public import PiBaseLean.Properties.Bundled.Basic
 public import PiBaseLean.Properties.P1.Defs
 public import PiBaseLean.Properties.P16.Defs
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -49,5 +51,12 @@ namespace PiBase.Formal
 Stated for `Type` (universe 0), where the witness lives. -/
 theorem not_P16_le_P1 : ¬ ((P16 : Property.{0}) ≤ P1) := fun h =>
   Spaces.Indiscrete2.not_t0 (h Spaces.Indiscrete2 inferInstance Spaces.indiscrete2_compact)
+
+end PiBase.Formal
+
+namespace PiBase.Formal
+
+/-- π-Base S4 as a bundled `Space` (carrier + topology). -/
+noncomputable def S4 : Space := ⟨PiBase.Spaces.Indiscrete2, inferInstance⟩
 
 end PiBase.Formal

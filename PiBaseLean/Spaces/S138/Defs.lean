@@ -5,6 +5,8 @@ public import Mathlib.SetTheory.Cardinal.Aleph
 public import Mathlib.SetTheory.Cardinal.Cofinality
 public import Mathlib.Topology.Constructions
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Cardinal Ordinal
@@ -41,3 +43,10 @@ instance : TopologicalSpace S138 := instTopologicalSpaceSubtype
 
 end S138
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S138 as a bundled `Space` (carrier + topology). -/
+noncomputable def S138 : Space := ⟨PiBase.Spaces.S138.S138, inferInstance⟩
+
+end PiBase.Formal

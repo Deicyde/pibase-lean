@@ -4,6 +4,8 @@ public import Mathlib.NumberTheory.Real.Irrational
 public import Mathlib.Topology.Instances.Real.Lemmas
 public import Mathlib.Topology.Constructions.SumProd
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -37,3 +39,10 @@ instance : TopologicalSpace S77 := instTopologicalSpaceProd
 
 end S77
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S77 as a bundled `Space` (carrier + topology). -/
+noncomputable def S77 : Space := ⟨PiBase.Spaces.S77.S77, inferInstance⟩
+
+end PiBase.Formal

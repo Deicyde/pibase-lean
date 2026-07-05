@@ -3,6 +3,8 @@ module
 public import Mathlib.Topology.Instances.Rat
 public import Mathlib.Analysis.Real.Cardinality
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -26,3 +28,10 @@ instance : TopologicalSpace S182 := instTopologicalSpaceSigma
 
 end S182
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S182 as a bundled `Space` (carrier + topology). -/
+noncomputable def S182 : Space := ⟨PiBase.Spaces.S182.S182, inferInstance⟩
+
+end PiBase.Formal

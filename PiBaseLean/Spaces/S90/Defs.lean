@@ -3,6 +3,8 @@ module
 public import PiBaseLean.Spaces.S79.Defs
 public import Mathlib.SetTheory.Cardinal.Arithmetic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Ordinal OnePoint Cardinal Set
@@ -216,3 +218,10 @@ noncomputable def S90.Gamma : S90.X × S90.X ≃ S90.Lam :=
 
 end S90
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S90 as a bundled `Space` (carrier + topology). -/
+noncomputable def S90 : Space := ⟨PiBase.Spaces.S90.S90.T, inferInstance⟩
+
+end PiBase.Formal

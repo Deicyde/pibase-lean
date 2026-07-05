@@ -3,6 +3,8 @@ module
 public import PiBaseLean.Spaces.S79.Defs
 public import Mathlib.Logic.Relation
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology Ordinal
@@ -95,3 +97,10 @@ instance : TopologicalSpace S89 := inferInstanceAs (TopologicalSpace {x : S89.Pr
 
 end S89
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S89 as a bundled `Space` (carrier + topology). -/
+noncomputable def S89 : Space := ⟨PiBase.Spaces.S89.S89, inferInstance⟩
+
+end PiBase.Formal

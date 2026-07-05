@@ -2,6 +2,8 @@ module
 
 public import Mathlib.Analysis.Complex.Circle
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -38,3 +40,10 @@ instance : TopologicalSpace S209 := TopologicalSpace.generateFrom S209Generators
 
 end S209
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S209 as a bundled `Space` (carrier + topology). -/
+noncomputable def S209 : Space := ⟨PiBase.Spaces.S209.S209, inferInstance⟩
+
+end PiBase.Formal

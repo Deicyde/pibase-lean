@@ -4,6 +4,8 @@ public import Mathlib.Data.Nat.Prime.Nth
 public import Mathlib.Topology.Instances.Rat
 public import Mathlib.Topology.Defs.Induced
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -55,3 +57,10 @@ end S124
 
 end S124
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S124 as a bundled `Space` (carrier + topology). -/
+noncomputable def S124 : Space := ⟨PiBase.Spaces.S124.S124, inferInstance⟩
+
+end PiBase.Formal

@@ -3,6 +3,8 @@ module
 public import Mathlib.Topology.Order
 public import Mathlib.SetTheory.Cardinal.Aleph
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -57,3 +59,10 @@ instance : TopologicalSpace S178 := TopologicalSpace.generateFrom S178.generator
 
 end S178
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S178 as a bundled `Space` (carrier + topology). -/
+noncomputable def S178 : Space := ⟨PiBase.Spaces.S178.S178, inferInstance⟩
+
+end PiBase.Formal

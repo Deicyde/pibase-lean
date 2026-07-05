@@ -4,6 +4,8 @@ public import Mathlib.Topology.Compactification.OnePoint.Basic
 public import Mathlib.Data.Set.Countable
 public import Mathlib.Data.Real.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -33,3 +35,10 @@ instance : TopologicalSpace S183 :=
 
 end S183
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S183 as a bundled `Space` (carrier + topology). -/
+noncomputable def S183 : Space := ⟨PiBase.Spaces.S183.S183, inferInstance⟩
+
+end PiBase.Formal

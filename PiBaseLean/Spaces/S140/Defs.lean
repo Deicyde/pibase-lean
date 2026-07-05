@@ -3,6 +3,8 @@ module
 public import Mathlib.Topology.Instances.Real.Lemmas
 public import Mathlib.Data.Set.Countable
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -26,3 +28,10 @@ instance : TopologicalSpace S140 :=
 
 end S140
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S140 as a bundled `Space` (carrier + topology). -/
+noncomputable def S140 : Space := ⟨PiBase.Spaces.S140.S140, inferInstance⟩
+
+end PiBase.Formal

@@ -4,6 +4,8 @@ public import Mathlib.Order.Monotone.Defs
 public import Mathlib.Topology.Constructions
 public import Mathlib.Topology.UnitInterval
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -24,3 +26,10 @@ instance : TopologicalSpace S105 := instTopologicalSpaceSubtype
 
 end S105
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S105 as a bundled `Space` (carrier + topology). -/
+noncomputable def S105 : Space := ⟨PiBase.Spaces.S105.S105, inferInstance⟩
+
+end PiBase.Formal

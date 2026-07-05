@@ -3,6 +3,8 @@ module
 public import Mathlib.Topology.Order
 public import Mathlib.Data.Set.Finite.Basic
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -42,3 +44,10 @@ instance : TopologicalSpace S185 := TopologicalSpace.generateFrom S185.generator
 
 end S185
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S185 as a bundled `Space` (carrier + topology). -/
+noncomputable def S185 : Space := ⟨PiBase.Spaces.S185.S185, inferInstance⟩
+
+end PiBase.Formal

@@ -2,6 +2,8 @@ module
 
 public import Mathlib.Analysis.InnerProductSpace.EuclideanDist
 
+public import PiBaseLean.Spaces.Bundled.Defs
+
 @[expose] public section
 
 open Topology
@@ -40,3 +42,10 @@ instance : TopologicalSpace S168 := inferInstanceAs (TopologicalSpace (Quotient 
 
 end S168
 end PiBase.Spaces
+
+namespace PiBase.Formal
+
+/-- π-Base S168 as a bundled `Space` (carrier + topology). -/
+noncomputable def S168 : Space := ⟨PiBase.Spaces.S168.S168, inferInstance⟩
+
+end PiBase.Formal
