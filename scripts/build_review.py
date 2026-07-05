@@ -92,7 +92,7 @@ def render_statement(formula, pname):
     if k == "atom":
         uid = formula["property"]
         nm = pname.get(uid, uid)
-        lit = f"[{nm}]({PIBASE}/properties/{uid})"
+        lit = f'<a class="plink" data-p="P{int(uid[1:])}">{nm}</a>'
         return lit if formula["value"] else f"¬ {lit}"
     sep = " ∧ " if k == "and" else " ∨ "
     return sep.join(render_statement(s, pname) for s in formula["subs"])
@@ -140,7 +140,7 @@ def main():
         lean = defs or "-- (no Defs.lean)"
         extra = (f'<details class="more"><summary>+ Lemmas.lean</summary>'
                  f'<pre class="lean">{lean_html(lemmas)}</pre></details>' if lemmas else "")
-        pcards.append(f'''<div class="entry" data-kind="prop"
+        pcards.append(f'''<div class="entry" data-kind="prop" id="c-prop-P{n}"
   data-search="{html.escape((uid + ' P' + str(n) + ' ' + nm).lower())}">
   <header>
     <span class="uid"><a href="{PIBASE}/properties/{uid}" target="_blank" rel="noopener">P{n}</a></span>
@@ -174,11 +174,11 @@ def main():
                  f'<pre class="lean">{lean_html(lemmas)}</pre></details>' if lemmas else "")
         just_banner = (f'<div class="thm-just" data-md>{html.escape(just)}</div>'
                        if just else "")
-        tcards.append(f'''<div class="entry thm" data-kind="thm"
-  data-search="{html.escape(('t'+str(n)+' '+re.sub(r'[^a-z0-9 ]','',(stmt).lower())))}">
+        tcards.append(f'''<div class="entry thm" data-kind="thm" id="c-thm-T{n}"
+  data-search="{html.escape(('t'+str(n)+' '+re.sub(r'<[^>]+>','',stmt).lower()))}">
   <header>
     <span class="uid"><a href="{PIBASE}/theorems/{uid}" target="_blank" rel="noopener">T{n}</a></span>
-    <span class="name" data-md-inline>{stmt}</span>
+    <span class="name" data-math>{stmt}</span>
     <a class="gh" href="{PIBASE}/theorems/{uid}" target="_blank" rel="noopener">π-Base ↗</a>
     <a class="gh" href="{GH}/PiBaseLean/Theorems/T{n}/Theorem.lean" target="_blank" rel="noopener">source ↗</a>
     <span class="rev-controls"></span>
@@ -195,9 +195,8 @@ def main():
     sids = sorted(int(d[1:]) for d in os.listdir(spdir)
                   if re.fullmatch(r"S\d+", d)
                   and os.path.exists(os.path.join(spdir, d, "Defs.lean")))
-    STAT = {"proven": ("proven", "st-g"), "asserted": ("asserted", "st-a"),
-            "derivable": ("derivable", "st-b")}
     scards = []
+    TRAITS = {}          # S<n> -> [[value, propNum, name, status], ...]  (built lazily in JS)
     for n in sids:
         uid = f"S{n:06d}"
         s = S.get(uid, {})
@@ -206,23 +205,15 @@ def main():
         lean = read_lean(os.path.join(spdir, f"S{n}", "Defs.lean")) or "-- (no Defs.lean)"
         rows = traits.get(uid, {}).get("traits", [])
         cnt = {"proven": 0, "asserted": 0, "derivable": 0}
-        trlines = []
         for r in rows:
             cnt[r["status"]] = cnt.get(r["status"], 0) + 1
-            icon = '<span class="yes">✓</span>' if r["value"] else '<span class="no">✗</span>'
-            lbl, cls = STAT.get(r["status"], (r["status"], ""))
-            pn = int(r["property"][1:])
-            trlines.append(
-                f'<tr><td>{icon}</td><td><a href="{PIBASE}/properties/{r["property"]}" '
-                f'target="_blank" rel="noopener" data-math>{html.escape(r["name"])}</a></td>'
-                f'<td><span class="stbadge {cls}">{lbl}</span></td></tr>')
+        TRAITS[f"S{n}"] = [[1 if r["value"] else 0, int(r["property"][1:]),
+                            r["name"], r["status"][0]] for r in rows]   # status→first letter
         tsummary = (f'{len(rows)} traits · <b>{cnt["proven"]}</b> proven · '
                     f'{cnt["asserted"]} asserted · {cnt["derivable"]} derivable') if rows else "no trait data"
-        traits_block = (
-            f'<details class="traits"><summary>{tsummary}</summary>'
-            f'<table class="trtab"><tbody>{"".join(trlines)}</tbody></table></details>'
-            if rows else "")
-        scards.append(f'''<div class="entry" data-kind="space"
+        traits_block = (f'<details class="traits" data-space="S{n}"><summary>{tsummary}</summary>'
+                        f'<div class="trwrap"></div></details>') if rows else ""
+        scards.append(f'''<div class="entry" data-kind="space" id="c-space-S{n}"
   data-search="{html.escape((uid + ' S' + str(n) + ' ' + nm).lower())}">
   <header>
     <span class="uid"><a href="{PIBASE}/spaces/{uid}" target="_blank" rel="noopener">S{n}</a></span>
@@ -244,7 +235,9 @@ def main():
     page = TEMPLATE.format(
         n_props=len(pcards), n_thms=len(tcards), n_spaces=len(scards),
         prop_cards="\n".join(pcards), thm_cards="\n".join(tcards),
-        space_cards="\n".join(scards))
+        space_cards="\n".join(scards),
+        traits_json=json.dumps(TRAITS, ensure_ascii=False, separators=(",", ":")))
+    page = page.replace("<!--MAINJS-->", MAINJS)
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     open(OUT, "w").write(page)
     print(f"wrote {OUT}: {len(pcards)} properties, {len(scards)} spaces, {len(tcards)} theorems")
@@ -316,6 +309,30 @@ table.trtab a{{color:var(--ink);text-decoration:none}} table.trtab a:hover{{colo
 .st-a{{color:var(--y);background:#fbf3e0;border-color:#e8d5a8}}
 .st-b{{color:#2b6cb0;background:#e8f0fb;border-color:#b8d0ec}}
 :root{{--y:#b77a14}}
+#controls .row{{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}}
+#controls .row.trfilt{{margin-top:.5rem}}
+#controls .lbl{{color:var(--muted);font-size:.82rem}}
+#btn-next,#btn-flagged{{font:inherit;font-size:.84rem;padding:.35rem .7rem;border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:6px;cursor:pointer}}
+#btn-next:hover,#btn-flagged:hover{{background:#fbf6ec}}
+label.chk{{font-size:.85rem;color:var(--muted);display:inline-flex;gap:.3rem;align-items:center;cursor:pointer}}
+.chip{{font:inherit;font-size:.78rem;padding:.2rem .55rem;border:1px solid var(--rule);background:#fff;color:var(--muted);border-radius:20px;cursor:pointer}}
+.chip.on{{background:var(--accent);color:#fff;border-color:var(--accent)}}
+.plink{{color:var(--accent);cursor:pointer;text-decoration:none;border-bottom:1px dotted #d0b8a8}}
+.plink:hover{{background:#fbf6ec}}
+.entry.focused{{box-shadow:0 0 0 2px var(--accent)}}
+.entry.flash{{animation:flash 1.2s ease}}
+@keyframes flash{{0%{{background:#fbefd6}}100%{{background:var(--card)}}}}
+#flagpanel{{position:fixed;top:0;right:0;bottom:0;width:340px;max-width:90vw;background:var(--card);
+ border-left:1px solid var(--rule);box-shadow:-4px 0 16px rgba(0,0,0,.08);z-index:20;overflow:auto}}
+.fp-head{{display:flex;gap:.5rem;align-items:center;padding:.7rem .9rem;border-bottom:1px solid var(--rule);position:sticky;top:0;background:var(--card)}}
+.fp-head b{{margin-right:auto}}
+.fp-head button{{font:inherit;font-size:.8rem;padding:.2rem .5rem;border:1px solid var(--rule);background:#fff;border-radius:5px;cursor:pointer;color:var(--accent)}}
+.fp-item{{padding:.4rem .9rem;border-bottom:1px solid #efe9dc;font-size:.88rem;cursor:pointer}}
+.fp-item:hover{{background:#fbf6ec}} .fp-id{{font-family:"JuliaMono","SF Mono",Menlo,monospace;color:var(--accent);font-size:.8rem}}
+#fp-list .empty{{padding:1rem;color:var(--muted);font-style:italic}}
+kbd.hint{{position:fixed;bottom:.6rem;left:50%;transform:translateX(-50%);background:#2f2a24;color:#e8e0d0;
+ font-size:.74rem;padding:.25rem .7rem;border-radius:20px;font-family:inherit;opacity:.5;z-index:10}}
+kbd.hint:hover{{opacity:.9}}
 @media (max-width:820px){{.panes{{grid-template-columns:1fr}}.informal{{border-right:none;border-bottom:1px solid var(--rule)}}}}
 .hidden{{display:none}}
 </style></head><body>
@@ -325,48 +342,128 @@ formalization, for human review. Each card shows the informal
 <a href="https://topology.pi-base.org" target="_blank" rel="noopener">π-Base</a> statement beside the Lean
 definition/proof. Review marks are saved in your browser.</p>
 <div id="controls">
-  <input id="q" type="search" placeholder="filter by id / name / statement…" autocomplete="off">
+ <div class="row">
+  <input id="q" type="search" placeholder="filter  ( / )" autocomplete="off">
   <span class="seg" id="seg">
     <button data-f="spaces" class="on">Spaces ({n_spaces})</button>
     <button data-f="props">Properties ({n_props})</button>
     <button data-f="thms">Theorems ({n_thms})</button>
   </span>
+  <button id="btn-next" title="jump to next unreviewed (n)">⏭ next unreviewed</button>
+  <label class="chk"><input type="checkbox" id="hideRev"> hide reviewed</label>
+  <button id="btn-flagged">⚑ Flagged <span id="flagN">0</span></button>
   <span class="count" id="count"></span>
+ </div>
+ <div class="row trfilt" id="trfilt">
+  <span class="lbl">Traits:</span>
+  <button class="chip on" data-tf="y">✓ holds</button>
+  <button class="chip on" data-tf="n">✗ fails</button>
+  <span class="lbl">·</span>
+  <button class="chip on" data-tf="p">proven</button>
+  <button class="chip on" data-tf="a">asserted</button>
+  <button class="chip on" data-tf="d">derivable</button>
+ </div>
 </div>
+<div id="flagpanel" class="hidden"><div class="fp-inner">
+  <div class="fp-head"><b>Flagged for review</b>
+    <button id="fp-copy">copy list</button><button id="fp-close">✕</button></div>
+  <div id="fp-list"></div>
+</div></div>
+<kbd class="hint">j/k move · o ok · f flag · n next unreviewed · / filter</kbd>
 <div id="sec-spaces"><div class="sec-title">Spaces — {n_spaces} formalized (carrier + topology; trait tables from the deduction closure)</div>{space_cards}</div>
 <div id="sec-props" class="hidden"><div class="sec-title">Properties — {n_props} formalized</div>{prop_cards}</div>
 <div id="sec-thms" class="hidden"><div class="sec-title">Theorems — {n_thms} formalized (implications, all proven)</div>{thm_cards}</div>
-<script>
-const KEY='pbl-felix-review';const marks=JSON.parse(localStorage.getItem(KEY)||'{{}}');
-function idOf(e){{return e.dataset.kind+e.querySelector('.uid a').textContent;}}
-function applyMark(e){{const v=marks[idOf(e)];if(v)e.dataset.rev=v;else delete e.dataset.rev;
- e.querySelectorAll('.rev-controls button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));}}
-document.querySelectorAll('.entry').forEach(e=>{{
- const rc=e.querySelector('.rev-controls');
+<script id="traitdata" type="application/json">{traits_json}</script>
+<!--MAINJS-->
+</body></html>'''
+
+
+MAINJS = r'''<script>
+const TRAITS=JSON.parse(document.getElementById('traitdata').textContent);
+const STATN={p:['proven','st-g'],a:['asserted','st-a'],d:['derivable','st-b']};
+const KEY='pbl-felix-review';
+let marks=JSON.parse(localStorage.getItem(KEY)||'{}');
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const secOf={space:'spaces',prop:'props',thm:'thms'},SEC={spaces:'sec-spaces',props:'sec-props',thms:'sec-thms'};
+const q=$('#q');
+function idOf(e){return e.dataset.kind+e.querySelector('.uid a').textContent;}
+function applyMark(e){const v=marks[idOf(e)];if(v)e.dataset.rev=v;else delete e.dataset.rev;
+ e.querySelectorAll('.rev-controls button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));}
+function setMark(e,v){const id=idOf(e);marks[id]=(marks[id]===v)?undefined:v;if(!marks[id])delete marks[id];
+ localStorage.setItem(KEY,JSON.stringify(marks));applyMark(e);refreshFlag();update();}
+$$('.entry').forEach(e=>{const rc=e.querySelector('.rev-controls');
  rc.innerHTML='<button data-v="ok">✓ ok</button><button data-v="flag">⚑ flag</button>';
- rc.querySelectorAll('button').forEach(b=>b.onclick=()=>{{const id=idOf(e);
-  marks[id]=(marks[id]===b.dataset.v)?undefined:b.dataset.v;if(!marks[id])delete marks[id];
-  localStorage.setItem(KEY,JSON.stringify(marks));applyMark(e);update();}});applyMark(e);}});
-document.querySelectorAll('[data-md]').forEach(el=>{{try{{el.innerHTML=marked.parse(el.textContent);}}catch(e){{}}}});
-document.querySelectorAll('[data-md-inline]').forEach(el=>{{try{{el.innerHTML=marked.parseInline(el.textContent);}}catch(e){{}}}});
-function typeset(){{if(window.renderMathInElement)renderMathInElement(document.body,{{
- delimiters:[{{left:'$$',right:'$$',display:true}},{{left:'$',right:'$',display:false}}],throwOnError:false}});}}
-window.addEventListener('load',typeset);
-let filter='spaces';const q=document.getElementById('q');
-const SEC={{spaces:'sec-spaces',props:'sec-props',thms:'sec-thms'}};
-function update(){{
- for(const k in SEC) document.getElementById(SEC[k]).classList.toggle('hidden',filter!==k);
- const term=q.value.trim().toLowerCase();let shown=0,rev=0;
- const sec=document.getElementById(SEC[filter]);
- sec.querySelectorAll('.entry').forEach(e=>{{const ok=!term||e.dataset.search.includes(term);
-  e.classList.toggle('hidden',!ok);if(ok){{shown++;if(marks[idOf(e)])rev++;}}}});
- const tot=sec.querySelectorAll('.entry').length;
- document.getElementById('count').textContent=shown+' shown · '+rev+'/'+tot+' reviewed';}}
-document.querySelectorAll('#seg button').forEach(b=>b.onclick=()=>{{
- document.querySelectorAll('#seg button').forEach(x=>x.classList.remove('on'));
- b.classList.add('on');filter=b.dataset.f;update();}});
-q.oninput=update;update();
-</script></body></html>'''
+ rc.querySelectorAll('button').forEach(b=>b.onclick=ev=>{ev.stopPropagation();setMark(e,b.dataset.v);});applyMark(e);});
+
+// lazy per-section render (markdown + KaTeX)
+const rendered=new Set();
+function typesetEl(el){if(window.renderMathInElement)try{renderMathInElement(el,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false});}catch(e){}}
+function renderSection(kind){if(rendered.has(kind))return;rendered.add(kind);const sec=$('#'+SEC[kind]);
+ sec.querySelectorAll('[data-md]').forEach(el=>{try{el.innerHTML=marked.parse(el.textContent);}catch(e){}});typesetEl(sec);}
+
+// lazy trait tables + filters
+const TF={y:1,n:1,p:1,a:1,d:1};
+function buildTraits(det){const rows=TRAITS[det.dataset.space]||[],wrap=det.querySelector('.trwrap');
+ if(wrap.dataset.built)return;wrap.dataset.built='1';
+ const tb=rows.map(r=>{const v=r[0],pn=r[1],nm=r[2],st=r[3],S=STATN[st];
+  return '<tr data-v="'+(v?'y':'n')+'" data-s="'+st+'"><td>'+(v?'<span class=yes>✓</span>':'<span class=no>✗</span>')
+   +'</td><td><a class="plink" data-p="P'+pn+'">'+nm+'</a></td><td><span class="stbadge '+S[1]+'">'+S[0]+'</span></td></tr>';}).join('');
+ wrap.innerHTML='<table class="trtab"><tbody>'+tb+'</tbody></table>';typesetEl(wrap);filterTraits(wrap);}
+function filterTraits(scope){(scope||document).querySelectorAll('table.trtab tr').forEach(tr=>{
+  tr.style.display=(TF[tr.dataset.v]&&TF[tr.dataset.s[0]])?'':'none';});}
+$$('details.traits').forEach(d=>d.addEventListener('toggle',()=>{if(d.open)buildTraits(d);}));
+$$('#trfilt .chip').forEach(c=>c.onclick=()=>{c.classList.toggle('on');TF[c.dataset.tf]=c.classList.contains('on')?1:0;filterTraits();});
+
+// cross-linking (property references jump to the property card)
+function jumpTo(kind,uid){setFilter(secOf[kind]);q.value='';$('#hideRev').checked=false;update();
+ const el=$('#c-'+kind+'-'+uid);if(!el)return;el.classList.remove('hidden');el.scrollIntoView({block:'center'});
+ el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),1200);}
+document.addEventListener('click',ev=>{const a=ev.target.closest('.plink');if(a){ev.preventDefault();jumpTo('prop',a.dataset.p);}});
+
+// flagged panel
+function flaggedList(){return Object.keys(marks).filter(id=>marks[id]==='flag');}
+function refreshFlag(){$('#flagN').textContent=flaggedList().length;}
+function nameFor(id){const el=$$('.entry').find(e=>idOf(e)===id);return el?el.querySelector('.name').textContent.trim():id;}
+$('#btn-flagged').onclick=()=>{const list=flaggedList();
+ $('#fp-list').innerHTML=list.length?list.map(id=>{const m=id.match(/^(space|prop|thm)(.+)$/);
+  return '<div class="fp-item" data-k="'+m[1]+'" data-u="'+m[2]+'"><span class="fp-id">'+m[2]+'</span> '+nameFor(id)+'</div>';}).join('')
+  :'<div class="empty">nothing flagged yet</div>';$('#flagpanel').classList.toggle('hidden');};
+$('#fp-close').onclick=()=>$('#flagpanel').classList.add('hidden');
+$('#fp-copy').onclick=()=>{const t=flaggedList().map(id=>{const m=id.match(/^(space|prop|thm)(.+)$/);return '- '+m[2]+' '+nameFor(id);}).join('\n');
+ navigator.clipboard.writeText(t);$('#fp-copy').textContent='copied';setTimeout(()=>$('#fp-copy').textContent='copy list',1200);};
+$('#fp-list').onclick=ev=>{const it=ev.target.closest('.fp-item');if(it){$('#flagpanel').classList.add('hidden');jumpTo(it.dataset.k,it.dataset.u);}};
+
+// tabs / filtering / progress
+let filter='spaces';
+function setFilter(f){filter=f;$$('#seg button').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
+ $('#trfilt').style.display=(f==='spaces')?'flex':'none';renderSection(f);update();}
+function update(){for(const k in SEC)$('#'+SEC[k]).classList.toggle('hidden',filter!==k);
+ const term=q.value.trim().toLowerCase(),hr=$('#hideRev').checked;let shown=0,rev=0,tot=0;const sec=$('#'+SEC[filter]);
+ sec.querySelectorAll('.entry').forEach(e=>{tot++;const m=marks[idOf(e)];let ok=!term||e.dataset.search.includes(term);
+  if(hr&&m)ok=false;e.classList.toggle('hidden',!ok);if(ok){shown++;if(m)rev++;}});
+ $('#count').textContent=shown+' shown · '+rev+'/'+tot+' reviewed';focusFix();}
+$$('#seg button').forEach(b=>b.onclick=()=>setFilter(b.dataset.f));
+q.oninput=update;$('#hideRev').onchange=update;
+
+// keyboard navigation
+let cur=-1;
+function visCards(){return $$('#'+SEC[filter]+' .entry:not(.hidden)');}
+function focusCard(i){const v=visCards();if(!v.length)return;cur=Math.max(0,Math.min(i,v.length-1));
+ v.forEach(e=>e.classList.remove('focused'));const e=v[cur];e.classList.add('focused');e.scrollIntoView({block:'center'});}
+function focusFix(){const v=visCards();$$('.entry.focused').forEach(e=>{if(!v.includes(e))e.classList.remove('focused');});}
+function nextUnrev(){const v=visCards();for(let k=1;k<=v.length;k++){const i=(cur+k)%v.length;if(!marks[idOf(v[i])]){focusCard(i);return;}}}
+$('#btn-next').onclick=nextUnrev;
+document.addEventListener('keydown',ev=>{if(/input|textarea/i.test(ev.target.tagName)){if(ev.key==='Escape')ev.target.blur();return;}
+ const v=visCards();
+ if(ev.key==='j')focusCard(cur+1);else if(ev.key==='k')focusCard(cur-1);
+ else if(ev.key==='n')nextUnrev();
+ else if(ev.key==='o'&&v[cur])setMark(v[cur],'ok');
+ else if(ev.key==='f'&&v[cur])setMark(v[cur],'flag');
+ else if(ev.key==='/'){ev.preventDefault();q.focus();return;}
+ else return;ev.preventDefault();});
+
+renderSection('spaces');refreshFlag();update();
+</script>'''
 
 
 if __name__ == "__main__":
