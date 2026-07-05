@@ -21,7 +21,7 @@ def S11 : Type := Fin 3
 
 /-- The open sets: every subset avoiding the excluded point `0`, together with
 the whole space. -/
-instance : TopologicalSpace S11 :=
+instance S11_top : TopologicalSpace S11 :=
   TopologicalSpace.generateFrom
     ({s : Set (Fin 3) | (0 : Fin 3) ∉ s} ∪ {(Set.univ : Set (Fin 3))})
 
@@ -31,6 +31,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S11 as a bundled `Space` (carrier + topology). -/
-noncomputable def S11 : Space := ⟨PiBase.Spaces.S11.S11, inferInstance⟩
+noncomputable def S11 : Space := ⟨PiBase.Spaces.S11.S11, PiBase.Spaces.S11.S11_top⟩
 
 end PiBase.Formal

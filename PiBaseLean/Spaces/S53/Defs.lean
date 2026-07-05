@@ -26,7 +26,7 @@ def S53 : Type := ℕ+
 def subbasis : Set (Set S53) :=
   {s | ∃ p : ℕ, ∃ b : ℕ, p.Prime ∧ ¬ p ∣ b ∧ s = {x : ℕ+ | (x : ℕ) ≡ b [MOD p]}}
 
-instance : TopologicalSpace S53 := TopologicalSpace.generateFrom subbasis
+instance S53_top : TopologicalSpace S53 := TopologicalSpace.generateFrom subbasis
 
 end S53
 end PiBase.Spaces
@@ -34,6 +34,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S53 as a bundled `Space` (carrier + topology). -/
-noncomputable def S53 : Space := ⟨PiBase.Spaces.S53.S53, inferInstance⟩
+noncomputable def S53 : Space := ⟨PiBase.Spaces.S53.S53, PiBase.Spaces.S53.S53_top⟩
 
 end PiBase.Formal

@@ -19,7 +19,7 @@ the singleton {c} (S162) and the indiscrete two-point space {a, b} (S4). -/
 /-- Sum of singleton and two-point indiscrete space (pi-Base S164). -/
 def S164 : Type := Fin 3
 
-instance : TopologicalSpace S164 :=
+instance S164_top : TopologicalSpace S164 :=
   TopologicalSpace.generateFrom {({0, 1} : Set (Fin 3)), ({2} : Set (Fin 3))}
 
 instance : Finite S164 := inferInstanceAs (Finite (Fin 3))
@@ -32,6 +32,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S164 as a bundled `Space` (carrier + topology). -/
-noncomputable def S164 : Space := ⟨PiBase.Spaces.S164.S164, inferInstance⟩
+noncomputable def S164 : Space := ⟨PiBase.Spaces.S164.S164, PiBase.Spaces.S164.S164_top⟩
 
 end PiBase.Formal

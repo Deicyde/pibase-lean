@@ -21,7 +21,7 @@ Euclidean open sets (S25) and the cocountable-or-empty sets (S17). -/
 /-- Countable complement extension topology on ℝ (pi-Base S55). -/
 def S55 : Type := ℝ
 
-instance : TopologicalSpace S55 :=
+instance S55_top : TopologicalSpace S55 :=
   TopologicalSpace.generateFrom
     ({s : Set S55 | IsOpen (X := ℝ) s} ∪ {s : Set S55 | s = ∅ ∨ sᶜ.Countable})
 
@@ -31,6 +31,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S55 as a bundled `Space` (carrier + topology). -/
-noncomputable def S55 : Space := ⟨PiBase.Spaces.S55.S55, inferInstance⟩
+noncomputable def S55 : Space := ⟨PiBase.Spaces.S55.S55, PiBase.Spaces.S55.S55_top⟩
 
 end PiBase.Formal

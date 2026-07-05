@@ -22,7 +22,7 @@ discrete topology `⊥` on each factor `ℕ`. -/
 /-- Continuum power of a countable discrete space (pi-Base S101). -/
 def S101 : Type := ℝ → ℕ
 
-instance : TopologicalSpace S101 :=
+instance S101_top : TopologicalSpace S101 :=
   @Pi.topologicalSpace ℝ (fun _ => ℕ) (fun _ => ⊥)
 
 end S101
@@ -31,6 +31,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S101 as a bundled `Space` (carrier + topology). -/
-noncomputable def S101 : Space := ⟨PiBase.Spaces.S101.S101, inferInstance⟩
+noncomputable def S101 : Space := ⟨PiBase.Spaces.S101.S101, PiBase.Spaces.S101.S101_top⟩
 
 end PiBase.Formal

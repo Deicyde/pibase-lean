@@ -33,7 +33,7 @@ def S141 : Type 1 := (Omega1 ⊕ₗ PUnit.{1}) ⊕ₗ ℕᵒᵈ
 noncomputable instance : LinearOrder S141 :=
   inferInstanceAs (LinearOrder ((Omega1 ⊕ₗ PUnit.{1}) ⊕ₗ ℕᵒᵈ))
 
-noncomputable instance : TopologicalSpace S141 := Preorder.topology S141
+noncomputable instance S141_top : TopologicalSpace S141 := Preorder.topology S141
 
 instance : OrderTopology S141 := ⟨rfl⟩
 
@@ -43,6 +43,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S141 as a bundled `Space` (carrier + topology). -/
-noncomputable def S141 : Space := ⟨PiBase.Spaces.S141.S141, inferInstance⟩
+noncomputable def S141 : Space := ⟨PiBase.Spaces.S141.S141, PiBase.Spaces.S141.S141_top⟩
 
 end PiBase.Formal

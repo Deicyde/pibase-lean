@@ -26,7 +26,7 @@ noncomputable instance : LinearOrder S220 :=
 
 /-- The right "closed-ray" topology: open sets are the upward-closed sets of
 `(S220, ≤)`, i.e. `∅` and the "closed rays" `[α, →)`. -/
-noncomputable instance : TopologicalSpace S220 := Topology.upperSet S220
+noncomputable instance S220_top : TopologicalSpace S220 := Topology.upperSet S220
 
 end S220
 end PiBase.Spaces
@@ -34,6 +34,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S220 as a bundled `Space` (carrier + topology). -/
-noncomputable def S220 : Space := ⟨PiBase.Spaces.S220.S220, inferInstance⟩
+noncomputable def S220 : Space := ⟨PiBase.Spaces.S220.S220, PiBase.Spaces.S220.S220_top⟩
 
 end PiBase.Formal

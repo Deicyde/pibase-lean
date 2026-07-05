@@ -69,7 +69,7 @@ metric `d`. -/
 def S132 : Type := S132.X
 
 /-- The topology on `X`, generated from the open balls of the distance function `d`. -/
-instance : TopologicalSpace S132 :=
+instance S132_top : TopologicalSpace S132 :=
   TopologicalSpace.generateFrom {s : Set S132.X | ∃ (p : S132.X) (ε : ℝ), s = S132.ball p ε}
 
 end S132
@@ -78,6 +78,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S132 as a bundled `Space` (carrier + topology). -/
-noncomputable def S132 : Space := ⟨PiBase.Spaces.S132.S132, inferInstance⟩
+noncomputable def S132 : Space := ⟨PiBase.Spaces.S132.S132, PiBase.Spaces.S132.S132_top⟩
 
 end PiBase.Formal

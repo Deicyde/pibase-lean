@@ -62,7 +62,7 @@ def S126Set : Set (ℝ × ℝ) := (S126.A ∪ S126.B) \ {S126.apex}
 (pi-Base S125) with its apex removed, as a subspace of `ℝ × ℝ`. -/
 noncomputable def S126 : Type := S126Set
 
-instance : TopologicalSpace S126 := inferInstanceAs (TopologicalSpace S126Set)
+instance S126_top : TopologicalSpace S126 := inferInstanceAs (TopologicalSpace S126Set)
 
 end S126
 end PiBase.Spaces
@@ -70,6 +70,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S126 as a bundled `Space` (carrier + topology). -/
-noncomputable def S126 : Space := ⟨PiBase.Spaces.S126.S126, inferInstance⟩
+noncomputable def S126 : Space := ⟨PiBase.Spaces.S126.S126, PiBase.Spaces.S126.S126_top⟩
 
 end PiBase.Formal

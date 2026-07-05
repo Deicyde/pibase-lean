@@ -19,7 +19,7 @@ induced from the ambient Euclidean metric. -/
 /-- Sphere $S^2$ (pi-Base S169). -/
 def S169 : Type := Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 
-instance : TopologicalSpace S169 :=
+instance S169_top : TopologicalSpace S169 :=
   TopologicalSpace.induced (Subtype.val : S169 → EuclideanSpace ℝ (Fin 3)) inferInstance
 
 end S169
@@ -28,6 +28,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S169 as a bundled `Space` (carrier + topology). -/
-noncomputable def S169 : Space := ⟨PiBase.Spaces.S169.S169, inferInstance⟩
+noncomputable def S169 : Space := ⟨PiBase.Spaces.S169.S169, PiBase.Spaces.S169.S169_top⟩
 
 end PiBase.Formal

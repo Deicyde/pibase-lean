@@ -19,7 +19,7 @@ The subspace topology on `{x : ℝ // Irrational x}` inherited from ℝ (π-Base
 /-- The irrational numbers ℝ ∖ ℚ (pi-Base S28). -/
 def S28 : Type := {x : ℝ // Irrational x}
 
-instance : TopologicalSpace S28 := instTopologicalSpaceSubtype
+instance S28_top : TopologicalSpace S28 := instTopologicalSpaceSubtype
 
 end S28
 end PiBase.Spaces
@@ -27,6 +27,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S28 as a bundled `Space` (carrier + topology). -/
-noncomputable def S28 : Space := ⟨PiBase.Spaces.S28.S28, inferInstance⟩
+noncomputable def S28 : Space := ⟨PiBase.Spaces.S28.S28, PiBase.Spaces.S28.S28_top⟩
 
 end PiBase.Formal

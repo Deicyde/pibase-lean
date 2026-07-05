@@ -30,7 +30,7 @@ def S171 : Type := ℝ
 pi-Base states (P166) that Brian's true topology is strictly finer than this one. The finer
 topology from mo:416331 is not reconstructed here for lack of an explicit definition in the
 pi-Base source data. -/
-instance : TopologicalSpace S171 := (inferInstance : TopologicalSpace ℝ)
+instance S171_top : TopologicalSpace S171 := (inferInstance : TopologicalSpace ℝ)
 
 end S171
 end PiBase.Spaces
@@ -38,6 +38,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S171 as a bundled `Space` (carrier + topology). -/
-noncomputable def S171 : Space := ⟨PiBase.Spaces.S171.S171, inferInstance⟩
+noncomputable def S171 : Space := ⟨PiBase.Spaces.S171.S171, PiBase.Spaces.S171.S171_top⟩
 
 end PiBase.Formal

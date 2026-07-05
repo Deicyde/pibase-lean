@@ -68,7 +68,7 @@ noncomputable def S196.setoid : Setoid S39 where
 identified, carrying the quotient topology. -/
 def S196 : Type := Quotient S196.setoid
 
-noncomputable instance : TopologicalSpace S196 :=
+noncomputable instance S196_top : TopologicalSpace S196 :=
   inferInstanceAs (TopologicalSpace (Quotient S196.setoid))
 
 end S196
@@ -77,6 +77,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S196 as a bundled `Space` (carrier + topology). -/
-noncomputable def S196 : Space := ⟨PiBase.Spaces.S196.S196, inferInstance⟩
+noncomputable def S196 : Space := ⟨PiBase.Spaces.S196.S196, PiBase.Spaces.S196.S196_top⟩
 
 end PiBase.Formal

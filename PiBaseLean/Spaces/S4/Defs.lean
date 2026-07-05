@@ -22,7 +22,7 @@ def Indiscrete2 : Type := Fin 2
 
 namespace Indiscrete2
 
-instance : TopologicalSpace Indiscrete2 := ⊤
+instance S4_top : TopologicalSpace Indiscrete2 := ⊤
 instance : Finite Indiscrete2 := inferInstanceAs (Finite (Fin 2))
 instance : DecidableEq Indiscrete2 := inferInstanceAs (DecidableEq (Fin 2))
 instance : CompactSpace Indiscrete2 := Finite.compactSpace
@@ -57,6 +57,6 @@ end PiBase.Formal
 namespace PiBase.Formal
 
 /-- π-Base S4 as a bundled `Space` (carrier + topology). -/
-noncomputable def S4 : Space := ⟨PiBase.Spaces.Indiscrete2, inferInstance⟩
+noncomputable def S4 : Space := ⟨PiBase.Spaces.Indiscrete2, PiBase.Spaces.Indiscrete2.S4_top⟩
 
 end PiBase.Formal

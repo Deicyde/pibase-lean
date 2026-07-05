@@ -21,7 +21,7 @@ together with the whole space `ℝ`. -/
 /-- Excluded point topology on ℝ (pi-Base S13), excluding the point `0`. -/
 def S13 : Type := ℝ
 
-instance : TopologicalSpace S13 :=
+instance S13_top : TopologicalSpace S13 :=
   TopologicalSpace.generateFrom
     ({s : Set S13 | (0 : ℝ) ∉ s} ∪ {(Set.univ : Set S13)})
 
@@ -31,6 +31,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S13 as a bundled `Space` (carrier + topology). -/
-noncomputable def S13 : Space := ⟨PiBase.Spaces.S13.S13, inferInstance⟩
+noncomputable def S13 : Space := ⟨PiBase.Spaces.S13.S13, PiBase.Spaces.S13.S13_top⟩
 
 end PiBase.Formal

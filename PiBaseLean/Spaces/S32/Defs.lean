@@ -20,7 +20,7 @@ The countable product of copies of the unit interval `unitInterval` (S158), carr
 /-- The Hilbert cube $[0,1]^\omega$ (pi-Base S32). -/
 def S32 : Type := ℕ → unitInterval
 
-instance : TopologicalSpace S32 := Pi.topologicalSpace
+instance S32_top : TopologicalSpace S32 := Pi.topologicalSpace
 
 /-- The Hilbert cube is compact, by Tychonoff's theorem (pi-Base P16). -/
 instance : CompactSpace S32 := inferInstanceAs (CompactSpace (ℕ → unitInterval))
@@ -31,6 +31,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S32 as a bundled `Space` (carrier + topology). -/
-noncomputable def S32 : Space := ⟨PiBase.Spaces.S32.S32, inferInstance⟩
+noncomputable def S32 : Space := ⟨PiBase.Spaces.S32.S32, PiBase.Spaces.S32.S32_top⟩
 
 end PiBase.Formal

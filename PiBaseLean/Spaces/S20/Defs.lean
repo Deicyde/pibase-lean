@@ -21,7 +21,7 @@ discrete space `ℕ`, so we take it as `OnePoint ℕ` with its standard instance
 one-point compactification of the discrete space `ℕ`. -/
 def S20 : Type := OnePoint ℕ
 
-instance : TopologicalSpace S20 := inferInstanceAs (TopologicalSpace (OnePoint ℕ))
+instance S20_top : TopologicalSpace S20 := inferInstanceAs (TopologicalSpace (OnePoint ℕ))
 
 end S20
 end PiBase.Spaces
@@ -29,6 +29,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S20 as a bundled `Space` (carrier + topology). -/
-noncomputable def S20 : Space := ⟨PiBase.Spaces.S20.S20, inferInstance⟩
+noncomputable def S20 : Space := ⟨PiBase.Spaces.S20.S20, PiBase.Spaces.S20.S20_top⟩
 
 end PiBase.Formal

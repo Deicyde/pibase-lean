@@ -55,7 +55,7 @@ Hausdorff (P48). -/
 def S178.generators : Set (Set S178) :=
   {s | ∃ α β : S178.Omega1, s = {Sum.inl (α, β)}} ∪ {s | ∃ γ : S178.Omega1, s = S178.column γ}
 
-instance : TopologicalSpace S178 := TopologicalSpace.generateFrom S178.generators
+instance S178_top : TopologicalSpace S178 := TopologicalSpace.generateFrom S178.generators
 
 end S178
 end PiBase.Spaces
@@ -63,6 +63,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S178 as a bundled `Space` (carrier + topology). -/
-noncomputable def S178 : Space := ⟨PiBase.Spaces.S178.S178, inferInstance⟩
+noncomputable def S178 : Space := ⟨PiBase.Spaces.S178.S178, PiBase.Spaces.S178.S178_top⟩
 
 end PiBase.Formal

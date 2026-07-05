@@ -52,7 +52,7 @@ instance instTopologicalSpacePlankZ : TopologicalSpace PlankZ :=
 /-- Dieudonné plank (pi-Base S191): the product `Y × Z`. -/
 def S191 : Type := PlankY × PlankZ
 
-instance : TopologicalSpace S191 :=
+instance S191_top : TopologicalSpace S191 :=
   inferInstanceAs (TopologicalSpace (PlankY × PlankZ))
 
 end S191
@@ -61,6 +61,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S191 as a bundled `Space` (carrier + topology). -/
-noncomputable def S191 : Space := ⟨PiBase.Spaces.S191.S191, inferInstance⟩
+noncomputable def S191 : Space := ⟨PiBase.Spaces.S191.S191, PiBase.Spaces.S191.S191_top⟩
 
 end PiBase.Formal

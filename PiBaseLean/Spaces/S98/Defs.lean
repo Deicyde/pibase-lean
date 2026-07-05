@@ -56,7 +56,7 @@ def S98.generators : Set (Set S98) :=
   { s | ∃ n : ℕ, s = {Sum.inr true} ∪
       {p : S98 | ∃ (k j : ℕ), p = Sum.inl (Sum.inl (true, k), j) ∧ n < j} }
 
-instance : TopologicalSpace S98 := TopologicalSpace.generateFrom S98.generators
+instance S98_top : TopologicalSpace S98 := TopologicalSpace.generateFrom S98.generators
 
 end S98
 end PiBase.Spaces
@@ -64,6 +64,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S98 as a bundled `Space` (carrier + topology). -/
-noncomputable def S98 : Space := ⟨PiBase.Spaces.S98.S98, inferInstance⟩
+noncomputable def S98 : Space := ⟨PiBase.Spaces.S98.S98, PiBase.Spaces.S98.S98_top⟩
 
 end PiBase.Formal

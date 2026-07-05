@@ -42,7 +42,7 @@ def S120.C (n : ℕ) : Set (ℝ × ℝ × ℝ) :=
 def S120 : Type :=
   ↥(⋃ n ∈ {n : ℕ | 1 ≤ n}, (S120.A n ∪ S120.B n ∪ S120.C n))
 
-instance : TopologicalSpace S120 := instTopologicalSpaceSubtype
+instance S120_top : TopologicalSpace S120 := instTopologicalSpaceSubtype
 
 end S120
 end PiBase.Spaces
@@ -50,6 +50,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S120 as a bundled `Space` (carrier + topology). -/
-noncomputable def S120 : Space := ⟨PiBase.Spaces.S120.S120, inferInstance⟩
+noncomputable def S120 : Space := ⟨PiBase.Spaces.S120.S120, PiBase.Spaces.S120.S120_top⟩
 
 end PiBase.Formal

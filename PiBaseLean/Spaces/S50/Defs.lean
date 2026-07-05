@@ -22,7 +22,7 @@ i.e. the only neighborhood of the focal point `∞` is all of `X`. -/
 /-- ℚ extended by a focal point (pi-Base S50). -/
 def S50 : Type := Option ℚ
 
-instance : TopologicalSpace S50 :=
+instance S50_top : TopologicalSpace S50 :=
   TopologicalSpace.generateFrom
     {s : Set S50 | none ∉ s ∧ IsOpen[TopologicalSpace.induced ((↑) : ℚ → ℝ) inferInstance]
       (Option.some ⁻¹' s : Set ℚ)}
@@ -33,6 +33,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S50 as a bundled `Space` (carrier + topology). -/
-noncomputable def S50 : Space := ⟨PiBase.Spaces.S50.S50, inferInstance⟩
+noncomputable def S50 : Space := ⟨PiBase.Spaces.S50.S50, PiBase.Spaces.S50.S50_top⟩
 
 end PiBase.Formal

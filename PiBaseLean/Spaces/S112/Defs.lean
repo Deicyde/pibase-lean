@@ -41,7 +41,7 @@ end S112
 /-- Nested rectangles in the real plane (pi-Base S112). -/
 def S112 : Type := S112.carrier
 
-instance : TopologicalSpace S112 := instTopologicalSpaceSubtype
+instance S112_top : TopologicalSpace S112 := instTopologicalSpaceSubtype
 
 end S112
 end PiBase.Spaces
@@ -49,6 +49,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S112 as a bundled `Space` (carrier + topology). -/
-noncomputable def S112 : Space := ⟨PiBase.Spaces.S112.S112, inferInstance⟩
+noncomputable def S112 : Space := ⟨PiBase.Spaces.S112.S112, PiBase.Spaces.S112.S112_top⟩
 
 end PiBase.Formal

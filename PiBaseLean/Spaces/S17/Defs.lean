@@ -20,7 +20,7 @@ On `X = ℝ`, a set is open iff it is empty or its complement is countable. -/
 /-- Cocountable topology on ℝ (pi-Base S17). -/
 def S17 : Type := ℝ
 
-instance : TopologicalSpace S17 :=
+instance S17_top : TopologicalSpace S17 :=
   TopologicalSpace.generateFrom {s : Set S17 | s = ∅ ∨ sᶜ.Countable}
 
 end S17
@@ -29,6 +29,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S17 as a bundled `Space` (carrier + topology). -/
-noncomputable def S17 : Space := ⟨PiBase.Spaces.S17.S17, inferInstance⟩
+noncomputable def S17 : Space := ⟨PiBase.Spaces.S17.S17, PiBase.Spaces.S17.S17_top⟩
 
 end PiBase.Formal

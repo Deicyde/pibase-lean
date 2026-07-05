@@ -24,7 +24,7 @@ summand is open). -/
 since `#ℝ = 𝔠` (`Cardinal.mk_real`). -/
 def S182 : Type := Σ _ : ℝ, ℚ
 
-instance : TopologicalSpace S182 := instTopologicalSpaceSigma
+instance S182_top : TopologicalSpace S182 := instTopologicalSpaceSigma
 
 end S182
 end PiBase.Spaces
@@ -32,6 +32,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S182 as a bundled `Space` (carrier + topology). -/
-noncomputable def S182 : Space := ⟨PiBase.Spaces.S182.S182, inferInstance⟩
+noncomputable def S182 : Space := ⟨PiBase.Spaces.S182.S182, PiBase.Spaces.S182.S182_top⟩
 
 end PiBase.Formal

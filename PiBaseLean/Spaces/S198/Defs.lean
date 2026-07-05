@@ -20,7 +20,7 @@ via the standard coproduct topology on `ℝ ⊕ Unit` (coinduced by the two incl
 /-- Disjoint union of the reals and a singleton (pi-Base S198). -/
 def S198 : Type := ℝ ⊕ Unit
 
-instance : TopologicalSpace S198 := inferInstanceAs (TopologicalSpace (ℝ ⊕ Unit))
+instance S198_top : TopologicalSpace S198 := inferInstanceAs (TopologicalSpace (ℝ ⊕ Unit))
 
 end S198
 end PiBase.Spaces
@@ -28,6 +28,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S198 as a bundled `Space` (carrier + topology). -/
-noncomputable def S198 : Space := ⟨PiBase.Spaces.S198.S198, inferInstance⟩
+noncomputable def S198 : Space := ⟨PiBase.Spaces.S198.S198, PiBase.Spaces.S198.S198_top⟩
 
 end PiBase.Formal

@@ -19,7 +19,7 @@ The countable product of copies of ℝ (S25), carried by `ℕ → ℝ` with the 
 /-- The countable product of reals $\mathbb R^\omega$ (pi-Base S30). -/
 def S30 : Type := ℕ → ℝ
 
-instance : TopologicalSpace S30 := Pi.topologicalSpace
+instance S30_top : TopologicalSpace S30 := Pi.topologicalSpace
 
 end S30
 end PiBase.Spaces
@@ -27,6 +27,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S30 as a bundled `Space` (carrier + topology). -/
-noncomputable def S30 : Space := ⟨PiBase.Spaces.S30.S30, inferInstance⟩
+noncomputable def S30 : Space := ⟨PiBase.Spaces.S30.S30, PiBase.Spaces.S30.S30_top⟩
 
 end PiBase.Formal

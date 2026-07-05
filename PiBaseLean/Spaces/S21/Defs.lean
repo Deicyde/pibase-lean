@@ -27,7 +27,7 @@ The carrier is `ℓ²(ℕ, ℝ)`, the separable infinite-dimensional real Hilber
 square-summable real sequences. -/
 def S21 : Type := WeakBilin (innerₗ ℓ²(ℕ, ℝ))
 
-noncomputable instance : TopologicalSpace S21 :=
+noncomputable instance S21_top : TopologicalSpace S21 :=
   WeakBilin.instTopologicalSpace (innerₗ ℓ²(ℕ, ℝ))
 
 end S21
@@ -36,6 +36,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S21 as a bundled `Space` (carrier + topology). -/
-noncomputable def S21 : Space := ⟨PiBase.Spaces.S21.S21, inferInstance⟩
+noncomputable def S21 : Space := ⟨PiBase.Spaces.S21.S21, PiBase.Spaces.S21.S21_top⟩
 
 end PiBase.Formal

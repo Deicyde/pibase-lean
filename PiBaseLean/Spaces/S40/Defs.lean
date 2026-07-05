@@ -42,7 +42,7 @@ def S40.subbasis : Set (Set S40) :=
   { s | ∃ a : { o : Ordinal.{0} // o < ω₁ },
       s = insert none (some '' { p : S40Ray | a.1 ≤ (ofLex p).1.1 ∧ 0 < ((ofLex p).2 : ℝ) }) }
 
-instance : TopologicalSpace S40 := TopologicalSpace.generateFrom S40.subbasis
+instance S40_top : TopologicalSpace S40 := TopologicalSpace.generateFrom S40.subbasis
 
 end S40
 end PiBase.Spaces
@@ -50,6 +50,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S40 as a bundled `Space` (carrier + topology). -/
-noncomputable def S40 : Space := ⟨PiBase.Spaces.S40.S40, inferInstance⟩
+noncomputable def S40 : Space := ⟨PiBase.Spaces.S40.S40, PiBase.Spaces.S40.S40_top⟩
 
 end PiBase.Formal

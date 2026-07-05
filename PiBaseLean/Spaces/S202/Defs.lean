@@ -35,7 +35,7 @@ def S202.generators : Set (Set S202) :=
   { s | ∃ F : Set ℕ, F.Finite ∧
       s = {x : S202 | x = none ∨ ∃ p : ℕ × ℕ, x = some p ∧ p.1 ∉ F} }
 
-instance : TopologicalSpace S202 := TopologicalSpace.generateFrom S202.generators
+instance S202_top : TopologicalSpace S202 := TopologicalSpace.generateFrom S202.generators
 
 end S202
 end PiBase.Spaces
@@ -43,6 +43,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S202 as a bundled `Space` (carrier + topology). -/
-noncomputable def S202 : Space := ⟨PiBase.Spaces.S202.S202, inferInstance⟩
+noncomputable def S202 : Space := ⟨PiBase.Spaces.S202.S202, PiBase.Spaces.S202.S202_top⟩
 
 end PiBase.Formal

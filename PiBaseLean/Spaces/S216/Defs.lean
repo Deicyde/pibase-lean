@@ -53,7 +53,7 @@ noncomputable def katetovCarrier : Set (Ultrafilter ℕ) :=
 `ℕ ∪ D ⊆ βℕ` of the Stone-Čech compactification of the naturals. -/
 def S216 : Type := katetovCarrier
 
-instance : TopologicalSpace S216 := inferInstanceAs (TopologicalSpace katetovCarrier)
+instance S216_top : TopologicalSpace S216 := inferInstanceAs (TopologicalSpace katetovCarrier)
 
 end S216
 end PiBase.Spaces
@@ -61,6 +61,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S216 as a bundled `Space` (carrier + topology). -/
-noncomputable def S216 : Space := ⟨PiBase.Spaces.S216.S216, inferInstance⟩
+noncomputable def S216 : Space := ⟨PiBase.Spaces.S216.S216, PiBase.Spaces.S216.S216_top⟩
 
 end PiBase.Formal

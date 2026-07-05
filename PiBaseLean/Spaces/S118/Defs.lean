@@ -33,7 +33,7 @@ def S118.generators : Set (Set S118) :=
   { s | ∃ a : ℕ, ∃ W : Set ℝ, IsOpen W ∧
       s = {p : S118 | a ≤ p.1 ∧ (p.2 : ℝ) ∈ W} }
 
-instance : TopologicalSpace S118 := TopologicalSpace.generateFrom S118.generators
+instance S118_top : TopologicalSpace S118 := TopologicalSpace.generateFrom S118.generators
 
 end S118
 end PiBase.Spaces
@@ -41,6 +41,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S118 as a bundled `Space` (carrier + topology). -/
-noncomputable def S118 : Space := ⟨PiBase.Spaces.S118.S118, inferInstance⟩
+noncomputable def S118 : Space := ⟨PiBase.Spaces.S118.S118, PiBase.Spaces.S118.S118_top⟩
 
 end PiBase.Formal

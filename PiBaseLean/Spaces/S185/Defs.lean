@@ -40,7 +40,7 @@ def S185.generators : Set (Set S185) :=
   { s | ∃ F : Set ℕ, F.Finite ∧
       s = insert (Sum.inr true) {x : S185 | ∃ p : ℕ × ℕ, x = Sum.inl p ∧ p.2 ∉ F} }
 
-instance : TopologicalSpace S185 := TopologicalSpace.generateFrom S185.generators
+instance S185_top : TopologicalSpace S185 := TopologicalSpace.generateFrom S185.generators
 
 end S185
 end PiBase.Spaces
@@ -48,6 +48,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S185 as a bundled `Space` (carrier + topology). -/
-noncomputable def S185 : Space := ⟨PiBase.Spaces.S185.S185, inferInstance⟩
+noncomputable def S185 : Space := ⟨PiBase.Spaces.S185.S185, PiBase.Spaces.S185.S185_top⟩
 
 end PiBase.Formal

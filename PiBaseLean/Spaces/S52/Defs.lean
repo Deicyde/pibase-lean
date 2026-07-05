@@ -29,7 +29,7 @@ def S52Generators : Set (Set S52) :=
   Set.range fun p : {p : ℕ+ × ℕ+ // Nat.gcd p.1 p.2 = 1} =>
     {x : S52 | (p.1.1 : ℤ) ∣ ((show ℕ+ from x : ℕ) : ℤ) - (p.1.2 : ℤ)}
 
-instance : TopologicalSpace S52 := TopologicalSpace.generateFrom S52Generators
+instance S52_top : TopologicalSpace S52 := TopologicalSpace.generateFrom S52Generators
 
 end S52
 end PiBase.Spaces
@@ -37,6 +37,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S52 as a bundled `Space` (carrier + topology). -/
-noncomputable def S52 : Space := ⟨PiBase.Spaces.S52.S52, inferInstance⟩
+noncomputable def S52 : Space := ⟨PiBase.Spaces.S52.S52, PiBase.Spaces.S52.S52_top⟩
 
 end PiBase.Formal

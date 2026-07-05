@@ -19,7 +19,7 @@ or is empty. -/
 /-- Particular point topology on a countably infinite set (pi-Base S8). -/
 def S8 : Type := ℕ
 
-instance : TopologicalSpace S8 :=
+instance S8_top : TopologicalSpace S8 :=
   TopologicalSpace.generateFrom {s : Set S8 | (Nat.zero : S8) ∈ s ∨ s = ∅}
 
 end S8
@@ -28,6 +28,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S8 as a bundled `Space` (carrier + topology). -/
-noncomputable def S8 : Space := ⟨PiBase.Spaces.S8.S8, inferInstance⟩
+noncomputable def S8 : Space := ⟨PiBase.Spaces.S8.S8, PiBase.Spaces.S8.S8_top⟩
 
 end PiBase.Formal

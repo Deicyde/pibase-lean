@@ -20,7 +20,7 @@ all singletons `{x}` for `x` irrational (so every subset of the irrationals is o
 /-- Michael line (pi-Base S63). -/
 def S63 : Type := ℝ
 
-instance : TopologicalSpace S63 :=
+instance S63_top : TopologicalSpace S63 :=
   TopologicalSpace.generateFrom
     ({U : Set ℝ | IsOpen U} ∪ {V : Set ℝ | ∃ x : ℝ, Irrational x ∧ V = {x}})
 
@@ -30,6 +30,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S63 as a bundled `Space` (carrier + topology). -/
-noncomputable def S63 : Space := ⟨PiBase.Spaces.S63.S63, inferInstance⟩
+noncomputable def S63 : Space := ⟨PiBase.Spaces.S63.S63, PiBase.Spaces.S63.S63_top⟩
 
 end PiBase.Formal

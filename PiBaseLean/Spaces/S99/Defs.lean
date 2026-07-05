@@ -36,7 +36,7 @@ set `F` of first coordinates not containing `x`. -/
 def S99.diagNbhd (x : ↥(Set.Icc (0 : ℝ) 1)) (F : Set ↥(Set.Icc (0 : ℝ) 1)) (ε : ℝ) : Set S99 :=
   {q : S99 | q.1 ∉ F ∧ |(q.2.val : ℝ) - x.val| < ε}
 
-instance : TopologicalSpace S99 :=
+instance S99_top : TopologicalSpace S99 :=
   TopologicalSpace.generateFrom
     ({s : Set S99 | ∃ p : S99, p.1 ≠ p.2 ∧ ∃ ε > (0 : ℝ), s = S99.vertNbhd p ε} ∪
       {s : Set S99 | ∃ x : ↥(Set.Icc (0 : ℝ) 1), ∃ F : Set ↥(Set.Icc (0 : ℝ) 1), F.Finite ∧
@@ -48,6 +48,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S99 as a bundled `Space` (carrier + topology). -/
-noncomputable def S99 : Space := ⟨PiBase.Spaces.S99.S99, inferInstance⟩
+noncomputable def S99 : Space := ⟨PiBase.Spaces.S99.S99, PiBase.Spaces.S99.S99_top⟩
 
 end PiBase.Formal

@@ -32,7 +32,7 @@ def S85Rel (p q : ℝ × S85Origins) : Prop := p.1 = q.1 ∧ (p.1 ≠ 0 ∨ p.2 
 /-- Line with uncountably many origins (pi-Base S85). -/
 def S85 : Type := Quot S85Rel
 
-instance : TopologicalSpace S85 :=
+instance S85_top : TopologicalSpace S85 :=
   TopologicalSpace.coinduced (Quot.mk S85Rel) instTopologicalSpaceProd
 
 end S85
@@ -41,6 +41,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S85 as a bundled `Space` (carrier + topology). -/
-noncomputable def S85 : Space := ⟨PiBase.Spaces.S85.S85, inferInstance⟩
+noncomputable def S85 : Space := ⟨PiBase.Spaces.S85.S85, PiBase.Spaces.S85.S85_top⟩
 
 end PiBase.Formal

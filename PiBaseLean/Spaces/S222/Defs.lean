@@ -22,7 +22,7 @@ topology `⊥` on each factor `ℕ`. -/
 /-- Product topology on `ω^(2^𝔠)` (pi-Base S222), the carrier `Set ℝ → ℕ`. -/
 def S222 : Type := Set ℝ → ℕ
 
-instance : TopologicalSpace S222 :=
+instance S222_top : TopologicalSpace S222 :=
   @Pi.topologicalSpace (Set ℝ) (fun _ => ℕ) (fun _ => (⊥ : TopologicalSpace ℕ))
 
 end S222
@@ -31,6 +31,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S222 as a bundled `Space` (carrier + topology). -/
-noncomputable def S222 : Space := ⟨PiBase.Spaces.S222.S222, inferInstance⟩
+noncomputable def S222 : Space := ⟨PiBase.Spaces.S222.S222, PiBase.Spaces.S222.S222_top⟩
 
 end PiBase.Formal

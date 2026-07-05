@@ -19,7 +19,7 @@ for U Euclidean-open in ℝ and x ∈ U. -/
 /-- Pointed rational extension of ℝ (pi-Base S60). -/
 def S60 : Type := ℝ
 
-instance : TopologicalSpace S60 :=
+instance S60_top : TopologicalSpace S60 :=
   TopologicalSpace.generateFrom
     {s : Set ℝ | ∃ U : Set ℝ, IsOpen U ∧ ∃ x ∈ U, s = {x} ∪ (Set.range ((↑) : ℚ → ℝ) ∩ U)}
 
@@ -29,6 +29,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S60 as a bundled `Space` (carrier + topology). -/
-noncomputable def S60 : Space := ⟨PiBase.Spaces.S60.S60, inferInstance⟩
+noncomputable def S60 : Space := ⟨PiBase.Spaces.S60.S60, PiBase.Spaces.S60.S60_top⟩
 
 end PiBase.Formal

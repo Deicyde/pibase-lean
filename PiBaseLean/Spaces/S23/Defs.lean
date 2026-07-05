@@ -23,7 +23,7 @@ def S23 : Type := ℕ × ℕ
 /-- The generating open sets: every singleton not containing `(0, 0)`, together
 with every set containing `(0, 0)` that meets all but finitely many columns
 `{p | p.1 = n}` in a cofinite subset of that column. -/
-instance : TopologicalSpace S23 :=
+instance S23_top : TopologicalSpace S23 :=
   TopologicalSpace.generateFrom
     ({s : Set (ℕ × ℕ) | ∃ p : ℕ × ℕ, p ≠ (0, 0) ∧ s = {p}} ∪
       {s : Set (ℕ × ℕ) | (0, 0) ∈ s ∧
@@ -34,6 +34,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S23 as a bundled `Space` (carrier + topology). -/
-noncomputable def S23 : Space := ⟨PiBase.Spaces.S23, inferInstance⟩
+noncomputable def S23 : Space := ⟨PiBase.Spaces.S23, PiBase.Spaces.S23_top⟩
 
 end PiBase.Formal

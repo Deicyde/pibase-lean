@@ -52,7 +52,7 @@ instance : TopologicalSpace BingG :=
 with the subspace topology. This `Y` is closed in `X`. -/
 def S137 : Type := ↥(BingG.M ∪ BingG.F)
 
-instance : TopologicalSpace S137 := inferInstanceAs (TopologicalSpace ↥(BingG.M ∪ BingG.F))
+instance S137_top : TopologicalSpace S137 := inferInstanceAs (TopologicalSpace ↥(BingG.M ∪ BingG.F))
 
 end S137
 end PiBase.Spaces
@@ -60,6 +60,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S137 as a bundled `Space` (carrier + topology). -/
-noncomputable def S137 : Space := ⟨PiBase.Spaces.S137.S137, inferInstance⟩
+noncomputable def S137 : Space := ⟨PiBase.Spaces.S137.S137, PiBase.Spaces.S137.S137_top⟩
 
 end PiBase.Formal

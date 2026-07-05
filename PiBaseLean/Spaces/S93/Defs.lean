@@ -28,7 +28,7 @@ def S93 : Type :=
 
 noncomputable instance : LinearOrder S93 := Subtype.instLinearOrder _
 
-noncomputable instance : TopologicalSpace S93 := Preorder.topology S93
+noncomputable instance S93_top : TopologicalSpace S93 := Preorder.topology S93
 
 end S93
 end PiBase.Spaces
@@ -36,6 +36,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S93 as a bundled `Space` (carrier + topology). -/
-noncomputable def S93 : Space := ⟨PiBase.Spaces.S93.S93, inferInstance⟩
+noncomputable def S93 : Space := ⟨PiBase.Spaces.S93.S93, PiBase.Spaces.S93.S93_top⟩
 
 end PiBase.Formal

@@ -21,7 +21,7 @@ Carrier `X = (0, ∞) \ ℤ ⊆ ℝ`; topologized by taking, for each `n ≥ 1`,
 def S46 : Type := ↥(Set.Ioi (0 : ℝ) \ Set.range ((↑) : ℤ → ℝ))
 
 /-- The subbasic sets `Sₙ = (0, 1/n) ∪ (n, n+1)`, `n ≥ 1`, restricted to `S46`. -/
-instance : TopologicalSpace S46 :=
+instance S46_top : TopologicalSpace S46 :=
   TopologicalSpace.generateFrom
     {s : Set S46 | ∃ n : ℕ, 1 ≤ n ∧
       s = {x : S46 | (x.val : ℝ) ∈ Set.Ioo (0 : ℝ) (1 / (n : ℝ)) ∪ Set.Ioo (n : ℝ) (n + 1)}}
@@ -32,6 +32,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S46 as a bundled `Space` (carrier + topology). -/
-noncomputable def S46 : Space := ⟨PiBase.Spaces.S46.S46, inferInstance⟩
+noncomputable def S46 : Space := ⟨PiBase.Spaces.S46.S46, PiBase.Spaces.S46.S46_top⟩
 
 end PiBase.Formal

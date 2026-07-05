@@ -19,7 +19,7 @@ X = 2^omega with the product topology (each factor Bool/2 carrying the discrete 
 /-- The Cantor space `2^ω` (pi-Base S26), realized as `ℕ → Bool` with the product topology. -/
 def S26 : Type := ℕ → Bool
 
-instance : TopologicalSpace S26 := Pi.topologicalSpace
+instance S26_top : TopologicalSpace S26 := Pi.topologicalSpace
 
 end S26
 end PiBase.Spaces
@@ -27,6 +27,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S26 as a bundled `Space` (carrier + topology). -/
-noncomputable def S26 : Space := ⟨PiBase.Spaces.S26.S26, inferInstance⟩
+noncomputable def S26 : Space := ⟨PiBase.Spaces.S26.S26, PiBase.Spaces.S26.S26_top⟩
 
 end PiBase.Formal

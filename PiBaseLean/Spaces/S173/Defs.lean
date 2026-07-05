@@ -43,7 +43,7 @@ instance : TopologicalSpace S173.Cube := Pi.topologicalSpace
 /-- Product of long ray and continuum power of a closed interval (pi-Base S173). -/
 def S173 : Type 1 := S173.LongRay × S173.Cube
 
-noncomputable instance : TopologicalSpace S173 :=
+noncomputable instance S173_top : TopologicalSpace S173 :=
   inferInstanceAs (TopologicalSpace (S173.LongRay × S173.Cube))
 
 end S173
@@ -52,6 +52,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S173 as a bundled `Space` (carrier + topology). -/
-noncomputable def S173 : Space := ⟨PiBase.Spaces.S173.S173, inferInstance⟩
+noncomputable def S173 : Space := ⟨PiBase.Spaces.S173.S173, PiBase.Spaces.S173.S173_top⟩
 
 end PiBase.Formal

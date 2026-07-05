@@ -54,7 +54,7 @@ noncomputable def S87.corner : S87.Y × S87.Z := (S87.Y.top, (∞ : OnePoint ℕ
 the subspace topology. -/
 def S87 : Type 1 := {p : S87.Y × S87.Z // p ≠ S87.corner}
 
-noncomputable instance : TopologicalSpace S87 :=
+noncomputable instance S87_top : TopologicalSpace S87 :=
   inferInstanceAs (TopologicalSpace {p : S87.Y × S87.Z // p ≠ S87.corner})
 
 end S87
@@ -63,6 +63,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S87 as a bundled `Space` (carrier + topology). -/
-noncomputable def S87 : Space := ⟨PiBase.Spaces.S87.S87, inferInstance⟩
+noncomputable def S87 : Space := ⟨PiBase.Spaces.S87.S87, PiBase.Spaces.S87.S87_top⟩
 
 end PiBase.Formal

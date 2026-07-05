@@ -153,7 +153,7 @@ plank `Y = S91` and its two inseparable closed subsets `H, K`, realized as the q
 `Z / ~` of the pre-quotient space `Z = (Y × ℤ) ⊕ Bool` by the gluing relation `S92.glue`. -/
 def S92 : Type := Quotient S92.setoid
 
-instance : TopologicalSpace S92 := instTopologicalSpaceQuotient
+instance S92_top : TopologicalSpace S92 := instTopologicalSpaceQuotient
 
 end S92
 end PiBase.Spaces
@@ -161,6 +161,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S92 as a bundled `Space` (carrier + topology). -/
-noncomputable def S92 : Space := ⟨PiBase.Spaces.S92.S92, inferInstance⟩
+noncomputable def S92 : Space := ⟨PiBase.Spaces.S92.S92, PiBase.Spaces.S92.S92_top⟩
 
 end PiBase.Formal

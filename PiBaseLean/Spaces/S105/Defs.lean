@@ -22,7 +22,7 @@ consisting of all non-decreasing functions `unitInterval → unitInterval`. -/
 (pi-Base S105). -/
 def S105 : Type := {f : unitInterval → unitInterval // Monotone f}
 
-instance : TopologicalSpace S105 := instTopologicalSpaceSubtype
+instance S105_top : TopologicalSpace S105 := instTopologicalSpaceSubtype
 
 end S105
 end PiBase.Spaces
@@ -30,6 +30,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S105 as a bundled `Space` (carrier + topology). -/
-noncomputable def S105 : Space := ⟨PiBase.Spaces.S105.S105, inferInstance⟩
+noncomputable def S105 : Space := ⟨PiBase.Spaces.S105.S105, PiBase.Spaces.S105.S105_top⟩
 
 end PiBase.Formal

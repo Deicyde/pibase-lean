@@ -25,7 +25,7 @@ def S214 : Type := Lex (Ordinal.ToType (Ordinal.omega 1) → ℤ)
 noncomputable instance : LinearOrder S214 :=
   Pi.Lex.linearOrder (ι := Ordinal.ToType (Ordinal.omega 1)) (β := fun _ => ℤ)
 
-noncomputable instance : TopologicalSpace S214 := Preorder.topology S214
+noncomputable instance S214_top : TopologicalSpace S214 := Preorder.topology S214
 
 end S214
 end PiBase.Spaces
@@ -33,6 +33,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S214 as a bundled `Space` (carrier + topology). -/
-noncomputable def S214 : Space := ⟨PiBase.Spaces.S214.S214, inferInstance⟩
+noncomputable def S214 : Space := ⟨PiBase.Spaces.S214.S214, PiBase.Spaces.S214.S214_top⟩
 
 end PiBase.Formal

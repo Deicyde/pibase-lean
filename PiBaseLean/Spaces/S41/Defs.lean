@@ -24,7 +24,7 @@ def S41 : Type := (Set.Icc (0 : ℝ) 1) ×ₗ (Set.Icc (0 : ℝ) 1)
 noncomputable instance : LinearOrder S41 :=
   inferInstanceAs (LinearOrder ((Set.Icc (0 : ℝ) 1) ×ₗ (Set.Icc (0 : ℝ) 1)))
 
-noncomputable instance : TopologicalSpace S41 := Preorder.topology S41
+noncomputable instance S41_top : TopologicalSpace S41 := Preorder.topology S41
 
 end S41
 end PiBase.Spaces
@@ -32,6 +32,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S41 as a bundled `Space` (carrier + topology). -/
-noncomputable def S41 : Space := ⟨PiBase.Spaces.S41.S41, inferInstance⟩
+noncomputable def S41 : Space := ⟨PiBase.Spaces.S41.S41, PiBase.Spaces.S41.S41_top⟩
 
 end PiBase.Formal

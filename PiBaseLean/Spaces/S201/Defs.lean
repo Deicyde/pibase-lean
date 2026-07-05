@@ -27,7 +27,7 @@ Euclidean plane `ℝ × ℝ` consisting of the union of circles of radius `1/n` 
 at `(1/n, 0)`, for positive integers `n`. -/
 def S201 : Type := S201.carrier
 
-instance : TopologicalSpace S201 := instTopologicalSpaceSubtype
+instance S201_top : TopologicalSpace S201 := instTopologicalSpaceSubtype
 
 end S201
 end PiBase.Spaces
@@ -35,6 +35,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S201 as a bundled `Space` (carrier + topology). -/
-noncomputable def S201 : Space := ⟨PiBase.Spaces.S201.S201, inferInstance⟩
+noncomputable def S201 : Space := ⟨PiBase.Spaces.S201.S201, PiBase.Spaces.S201.S201_top⟩
 
 end PiBase.Formal

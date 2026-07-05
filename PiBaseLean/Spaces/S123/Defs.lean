@@ -58,7 +58,7 @@ def S123.generators : Set (Set S123) :=
   { s | ∃ n : ℕ,
       s = {x : S123 | x = none ∨ ∃ q : S123.Grid, x = some q ∧ 2 * n ≤ (q.val : ℚ × ℕ).2} }
 
-instance : TopologicalSpace S123 := TopologicalSpace.generateFrom S123.generators
+instance S123_top : TopologicalSpace S123 := TopologicalSpace.generateFrom S123.generators
 
 end S123
 end PiBase.Spaces
@@ -66,6 +66,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S123 as a bundled `Space` (carrier + topology). -/
-noncomputable def S123 : Space := ⟨PiBase.Spaces.S123.S123, inferInstance⟩
+noncomputable def S123 : Space := ⟨PiBase.Spaces.S123.S123, PiBase.Spaces.S123.S123_top⟩
 
 end PiBase.Formal

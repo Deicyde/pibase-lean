@@ -39,7 +39,7 @@ def S135.subbasisStarUnions : Set (Set (ℝ × ℝ)) :=
 /-- Radial interval topology on ℝ² (pi-Base S135). -/
 def S135 : Type := ℝ × ℝ
 
-instance : TopologicalSpace S135 :=
+instance S135_top : TopologicalSpace S135 :=
   TopologicalSpace.generateFrom
     (S135.subbasisLineIntervals ∪ S135.subbasisStarUnions)
 
@@ -49,6 +49,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S135 as a bundled `Space` (carrier + topology). -/
-noncomputable def S135 : Space := ⟨PiBase.Spaces.S135.S135, inferInstance⟩
+noncomputable def S135 : Space := ⟨PiBase.Spaces.S135.S135, PiBase.Spaces.S135.S135_top⟩
 
 end PiBase.Formal

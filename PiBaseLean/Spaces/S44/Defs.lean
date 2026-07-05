@@ -24,7 +24,7 @@ def S44 : Type := ↥(Set.Ioo (0 : ℝ) 1)
 
 /-- The generating subbasis: the whole space together with the nested intervals
 `(0, (n+1)/(n+2))` for `n : ℕ`. -/
-instance : TopologicalSpace S44 :=
+instance S44_top : TopologicalSpace S44 :=
   TopologicalSpace.generateFrom
     ({(Set.univ : Set S44)} ∪
       {s : Set S44 | ∃ n : ℕ, s = {x : S44 | (x.val : ℝ) < (n + 1) / (n + 2)}})
@@ -35,6 +35,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S44 as a bundled `Space` (carrier + topology). -/
-noncomputable def S44 : Space := ⟨PiBase.Spaces.S44.S44, inferInstance⟩
+noncomputable def S44 : Space := ⟨PiBase.Spaces.S44.S44, PiBase.Spaces.S44.S44_top⟩
 
 end PiBase.Formal

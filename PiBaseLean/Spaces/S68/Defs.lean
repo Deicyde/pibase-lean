@@ -29,7 +29,7 @@ def S68Basis : Set (Set (EuclideanSpace ℝ (Fin 2))) :=
   Set.range fun p : (EuclideanSpace ℝ (Fin 2)) × {r : ℝ // 0 < r} =>
     Metric.ball p.1 p.2.1 \ {x : EuclideanSpace ℝ (Fin 2) | x 1 = p.1 1 ∧ x ≠ p.1}
 
-instance : TopologicalSpace S68 := TopologicalSpace.generateFrom (S68Basis : Set (Set S68))
+instance S68_top : TopologicalSpace S68 := TopologicalSpace.generateFrom (S68Basis : Set (Set S68))
 
 end S68
 end PiBase.Spaces
@@ -37,6 +37,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S68 as a bundled `Space` (carrier + topology). -/
-noncomputable def S68 : Space := ⟨PiBase.Spaces.S68.S68, inferInstance⟩
+noncomputable def S68 : Space := ⟨PiBase.Spaces.S68.S68, PiBase.Spaces.S68.S68_top⟩
 
 end PiBase.Formal

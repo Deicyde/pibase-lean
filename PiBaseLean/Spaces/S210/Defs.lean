@@ -18,7 +18,7 @@ The subspace topology on `{x : ℝ // 0 ≤ x ∧ x < 1}` inherited from ℝ (π
 /-- The interval [0,1) (pi-Base S210). -/
 def S210 : Type := {x : ℝ // 0 ≤ x ∧ x < 1}
 
-instance : TopologicalSpace S210 := instTopologicalSpaceSubtype
+instance S210_top : TopologicalSpace S210 := instTopologicalSpaceSubtype
 
 end S210
 end PiBase.Spaces
@@ -26,6 +26,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S210 as a bundled `Space` (carrier + topology). -/
-noncomputable def S210 : Space := ⟨PiBase.Spaces.S210.S210, inferInstance⟩
+noncomputable def S210 : Space := ⟨PiBase.Spaces.S210.S210, PiBase.Spaces.S210.S210_top⟩
 
 end PiBase.Formal

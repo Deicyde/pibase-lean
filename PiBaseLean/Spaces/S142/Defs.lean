@@ -25,7 +25,7 @@ def S142.IsRatSeq (x : lp (fun _ : ℕ => ℝ) 2) : Prop := ∀ i, ∃ q : ℚ, 
 coordinates rational. -/
 noncomputable def S142 : Type := {x : lp (fun _ : ℕ => ℝ) 2 // S142.IsRatSeq x}
 
-noncomputable instance : TopologicalSpace S142 := instTopologicalSpaceSubtype
+noncomputable instance S142_top : TopologicalSpace S142 := instTopologicalSpaceSubtype
 
 end S142
 end PiBase.Spaces
@@ -33,6 +33,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S142 as a bundled `Space` (carrier + topology). -/
-noncomputable def S142 : Space := ⟨PiBase.Spaces.S142.S142, inferInstance⟩
+noncomputable def S142 : Space := ⟨PiBase.Spaces.S142.S142, PiBase.Spaces.S142.S142_top⟩
 
 end PiBase.Formal

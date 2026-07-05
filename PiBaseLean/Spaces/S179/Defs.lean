@@ -56,7 +56,7 @@ def S179 : Type 1 := ↥S179.Grp
 
 noncomputable instance : AddCommGroup S179 := inferInstanceAs (AddCommGroup ↥S179.Grp)
 
-instance : TopologicalSpace S179 :=
+instance S179_top : TopologicalSpace S179 :=
   TopologicalSpace.induced (Subtype.val : S179 → S179.Amb) inferInstance
 
 end S179
@@ -65,6 +65,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S179 as a bundled `Space` (carrier + topology). -/
-noncomputable def S179 : Space := ⟨PiBase.Spaces.S179.S179, inferInstance⟩
+noncomputable def S179 : Space := ⟨PiBase.Spaces.S179.S179, PiBase.Spaces.S179.S179_top⟩
 
 end PiBase.Formal

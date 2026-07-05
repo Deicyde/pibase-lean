@@ -27,7 +27,7 @@ def S183 : Type := ℝ ⊕ OnePoint ℕ
 topology as a subspace), the set `Y` itself (so that `Z = Yᶜ` is closed), and
 complements of `Sum.inl`-images of countable subsets of `Y` (so that every
 countable subset of `Y` is closed in `X`). -/
-instance : TopologicalSpace S183 :=
+instance S183_top : TopologicalSpace S183 :=
   TopologicalSpace.generateFrom
     ({ s : Set S183 | ∃ V : Set (OnePoint ℕ), IsOpen V ∧ s = Sum.inr '' V } ∪
       {Set.range (Sum.inl : ℝ → S183)} ∪
@@ -39,6 +39,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S183 as a bundled `Space` (carrier + topology). -/
-noncomputable def S183 : Space := ⟨PiBase.Spaces.S183.S183, inferInstance⟩
+noncomputable def S183 : Space := ⟨PiBase.Spaces.S183.S183, PiBase.Spaces.S183.S183_top⟩
 
 end PiBase.Formal

@@ -98,7 +98,7 @@ end S80
 /-- The topology on `X`, generated from: the Euclidean-inherited balls (local basis on
 `S \ M`), together with the special local bases `Uₙ(0,0)`, `Uₙ(1,0)` and `Uₙ(1/2,q)` for
 `q` ranging over `Qpart (1/2)` (local bases at the corner points and at `M`). -/
-noncomputable instance : TopologicalSpace S80 :=
+noncomputable instance S80_top : TopologicalSpace S80 :=
   TopologicalSpace.generateFrom
     ({s : Set S80 | ∃ (p : ℚ × ℚ) (ε : ℝ), ε > 0 ∧ s = S80.ballNbhd p ε} ∪
       {s : Set S80 | ∃ n : ℕ, s = S80.U0 n} ∪
@@ -111,6 +111,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S80 as a bundled `Space` (carrier + topology). -/
-noncomputable def S80 : Space := ⟨PiBase.Spaces.S80.S80, inferInstance⟩
+noncomputable def S80 : Space := ⟨PiBase.Spaces.S80.S80, PiBase.Spaces.S80.S80_top⟩
 
 end PiBase.Formal

@@ -19,7 +19,7 @@ All subsets of the two-point set are open. -/
 /-- The discrete topology on `Fin 2` (pi-Base S1). -/
 def S1 : Type := Fin 2
 
-instance : TopologicalSpace S1 := ⊥
+instance S1_top : TopologicalSpace S1 := ⊥
 
 instance : Finite S1 := inferInstanceAs (Finite (Fin 2))
 instance : DecidableEq S1 := inferInstanceAs (DecidableEq (Fin 2))
@@ -32,6 +32,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S1 as a bundled `Space` (carrier + topology). -/
-noncomputable def S1 : Space := ⟨PiBase.Spaces.S1.S1, inferInstance⟩
+noncomputable def S1 : Space := ⟨PiBase.Spaces.S1.S1, PiBase.Spaces.S1.S1_top⟩
 
 end PiBase.Formal

@@ -26,7 +26,7 @@ instance : LinearOrder S151 := inferInstanceAs (LinearOrder {q : ℚ // 0 ≤ q 
 
 /-- The generating open sets: the whole carrier, together with every open ray
 `(x, →)` for `x` in the carrier. -/
-instance : TopologicalSpace S151 :=
+instance S151_top : TopologicalSpace S151 :=
   TopologicalSpace.generateFrom
     ({(Set.univ : Set S151)} ∪ {s : Set S151 | ∃ x : S151, s = Set.Ioi x})
 
@@ -36,6 +36,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S151 as a bundled `Space` (carrier + topology). -/
-noncomputable def S151 : Space := ⟨PiBase.Spaces.S151.S151, inferInstance⟩
+noncomputable def S151 : Space := ⟨PiBase.Spaces.S151.S151, PiBase.Spaces.S151.S151_top⟩
 
 end PiBase.Formal

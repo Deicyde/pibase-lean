@@ -29,7 +29,7 @@ def S69.subbasis : Set (Set (ℝ × ℝ)) :=
       s = { p : ℝ × ℝ | (p.1 - a) ^ 2 + (p.2 - b) ^ 2 < r ^ 2 } \
           { p : ℝ × ℝ | p.2 = b ∧ a < p.1 ∧ p.1 < a + r } }
 
-instance : TopologicalSpace S69 := TopologicalSpace.generateFrom S69.subbasis
+instance S69_top : TopologicalSpace S69 := TopologicalSpace.generateFrom S69.subbasis
 
 end S69
 end PiBase.Spaces
@@ -37,6 +37,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S69 as a bundled `Space` (carrier + topology). -/
-noncomputable def S69 : Space := ⟨PiBase.Spaces.S69.S69, inferInstance⟩
+noncomputable def S69 : Space := ⟨PiBase.Spaces.S69.S69, PiBase.Spaces.S69.S69_top⟩
 
 end PiBase.Formal

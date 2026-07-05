@@ -24,7 +24,7 @@ as a subspace of `ℝ × ℝ`. -/
 def S114 : Type :=
   {p : ℝ × ℝ // (0 < p.1 ∧ p.1 ≤ 1 ∧ p.2 = Real.sin (1 / p.1)) ∨ (p.1 = 0 ∧ p.2 ∈ Set.Icc (-1 : ℝ) 1)}
 
-instance : TopologicalSpace S114 := instTopologicalSpaceSubtype
+instance S114_top : TopologicalSpace S114 := instTopologicalSpaceSubtype
 
 end S114
 end PiBase.Spaces
@@ -32,6 +32,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S114 as a bundled `Space` (carrier + topology). -/
-noncomputable def S114 : Space := ⟨PiBase.Spaces.S114.S114, inferInstance⟩
+noncomputable def S114 : Space := ⟨PiBase.Spaces.S114.S114, PiBase.Spaces.S114.S114_top⟩
 
 end PiBase.Formal

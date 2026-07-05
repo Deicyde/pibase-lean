@@ -36,7 +36,7 @@ def S83Generators : Set (Set S83) :=
   (Set.range fun U : { U : Set ℝ // IsOpen U ∧ (0 : ℝ) ∈ U } =>
     Sum.inl '' ((U : Set ℝ) \ {0}) ∪ {Sum.inr ()})
 
-instance : TopologicalSpace S83 := TopologicalSpace.generateFrom S83Generators
+instance S83_top : TopologicalSpace S83 := TopologicalSpace.generateFrom S83Generators
 
 end S83
 end PiBase.Spaces
@@ -44,6 +44,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S83 as a bundled `Space` (carrier + topology). -/
-noncomputable def S83 : Space := ⟨PiBase.Spaces.S83.S83, inferInstance⟩
+noncomputable def S83 : Space := ⟨PiBase.Spaces.S83.S83, PiBase.Spaces.S83.S83_top⟩
 
 end PiBase.Formal

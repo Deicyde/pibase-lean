@@ -35,7 +35,7 @@ instance : TopologicalSpace S77.Irrationals := instTopologicalSpaceSubtype
 /-- Product of Michael line and irrational numbers (pi-Base S77). -/
 def S77 : Type := S77.Michael × S77.Irrationals
 
-instance : TopologicalSpace S77 := instTopologicalSpaceProd
+instance S77_top : TopologicalSpace S77 := instTopologicalSpaceProd
 
 end S77
 end PiBase.Spaces
@@ -43,6 +43,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S77 as a bundled `Space` (carrier + topology). -/
-noncomputable def S77 : Space := ⟨PiBase.Spaces.S77.S77, inferInstance⟩
+noncomputable def S77 : Space := ⟨PiBase.Spaces.S77.S77, PiBase.Spaces.S77.S77_top⟩
 
 end PiBase.Formal

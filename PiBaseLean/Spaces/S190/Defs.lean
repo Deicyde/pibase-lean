@@ -18,7 +18,7 @@ The only open sets are the whole set and the empty set. -/
 /-- The indiscrete topology on `Fin 3` (pi-Base S190). -/
 def S190 : Type := Fin 3
 
-instance : TopologicalSpace S190 := ⊤
+instance S190_top : TopologicalSpace S190 := ⊤
 
 end S190
 end PiBase.Spaces
@@ -26,6 +26,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S190 as a bundled `Space` (carrier + topology). -/
-noncomputable def S190 : Space := ⟨PiBase.Spaces.S190.S190, inferInstance⟩
+noncomputable def S190 : Space := ⟨PiBase.Spaces.S190.S190, PiBase.Spaces.S190.S190_top⟩
 
 end PiBase.Formal

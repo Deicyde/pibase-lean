@@ -20,7 +20,7 @@ topologized with the product topology built from the discrete topology `⊥` on 
 /-- Baire space of weight continuum `B(𝔠)` (pi-Base S102), the carrier `ℕ → ℝ`. -/
 def S102 : Type := ℕ → ℝ
 
-instance : TopologicalSpace S102 :=
+instance S102_top : TopologicalSpace S102 :=
   @Pi.topologicalSpace ℕ (fun _ => ℝ) (fun _ => (⊥ : TopologicalSpace ℝ))
 
 end S102
@@ -29,6 +29,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S102 as a bundled `Space` (carrier + topology). -/
-noncomputable def S102 : Space := ⟨PiBase.Spaces.S102.S102, inferInstance⟩
+noncomputable def S102 : Space := ⟨PiBase.Spaces.S102.S102, PiBase.Spaces.S102.S102_top⟩
 
 end PiBase.Formal

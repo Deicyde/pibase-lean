@@ -19,7 +19,7 @@ the sets `ℚ ∩ U` for `U` Euclidean open — finer than the Euclidean topolog
 /-- Indiscrete rational extension of ℝ (pi-Base S58). -/
 def S58 : Type := ℝ
 
-instance : TopologicalSpace S58 :=
+instance S58_top : TopologicalSpace S58 :=
   TopologicalSpace.generateFrom
     ({ U : Set ℝ | IsOpen U } ∪ { s : Set ℝ | ∃ U : Set ℝ, IsOpen U ∧ s = Set.range ((↑) : ℚ → ℝ) ∩ U })
 
@@ -29,6 +29,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S58 as a bundled `Space` (carrier + topology). -/
-noncomputable def S58 : Space := ⟨PiBase.Spaces.S58.S58, inferInstance⟩
+noncomputable def S58 : Space := ⟨PiBase.Spaces.S58.S58, PiBase.Spaces.S58.S58_top⟩
 
 end PiBase.Formal

@@ -26,7 +26,7 @@ def S167 : Type := ℕ∞ ⊕ₗ ℕᵒᵈ
 
 instance : LinearOrder S167 := inferInstanceAs (LinearOrder (ℕ∞ ⊕ₗ ℕᵒᵈ))
 
-instance : TopologicalSpace S167 :=
+instance S167_top : TopologicalSpace S167 :=
   TopologicalSpace.generateFrom
     ({Set.univ} ∪ {U : Set S167 | ∃ a : S167, U = Set.Ioi a})
 
@@ -36,6 +36,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S167 as a bundled `Space` (carrier + topology). -/
-noncomputable def S167 : Space := ⟨PiBase.Spaces.S167.S167, inferInstance⟩
+noncomputable def S167 : Space := ⟨PiBase.Spaces.S167.S167, PiBase.Spaces.S167.S167_top⟩
 
 end PiBase.Formal

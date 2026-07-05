@@ -30,7 +30,7 @@ sitting in the `false` copy. -/
 def basicOpen (x : ℝ) (i : Bool) (ε : ℝ) : Set S86 :=
   {(x, i)} ∪ ((Set.Ioo (x - ε) x ∪ Set.Ioo x (x + ε)) ×ˢ ({false} : Set Bool))
 
-instance : TopologicalSpace S86 :=
+instance S86_top : TopologicalSpace S86 :=
   TopologicalSpace.generateFrom
     {s : Set S86 | ∃ x : ℝ, ∃ i : Bool, ∃ ε : ℝ, ε > 0 ∧ s = basicOpen x i ε}
 
@@ -40,6 +40,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S86 as a bundled `Space` (carrier + topology). -/
-noncomputable def S86 : Space := ⟨PiBase.Spaces.S86.S86, inferInstance⟩
+noncomputable def S86 : Space := ⟨PiBase.Spaces.S86.S86, PiBase.Spaces.S86.S86_top⟩
 
 end PiBase.Formal

@@ -23,7 +23,7 @@ def S33 : Type 1 := {o : Ordinal.{0} // o < ω + ω}
 noncomputable instance : LinearOrder S33 :=
   inferInstanceAs (LinearOrder {o : Ordinal.{0} // o < ω + ω})
 
-noncomputable instance : TopologicalSpace S33 := Preorder.topology S33
+noncomputable instance S33_top : TopologicalSpace S33 := Preorder.topology S33
 
 instance : OrderTopology S33 := ⟨rfl⟩
 
@@ -33,6 +33,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S33 as a bundled `Space` (carrier + topology). -/
-noncomputable def S33 : Space := ⟨PiBase.Spaces.S33.S33, inferInstance⟩
+noncomputable def S33 : Space := ⟨PiBase.Spaces.S33.S33, PiBase.Spaces.S33.S33_top⟩
 
 end PiBase.Formal

@@ -38,7 +38,7 @@ noncomputable instance : LinearOrder S153.Y :=
 
 noncomputable instance : TopologicalSpace S153.Y := Preorder.topology S153.Y
 
-instance : TopologicalSpace S153 :=
+instance S153_top : TopologicalSpace S153 :=
   inferInstanceAs (TopologicalSpace {p : S153.Y // p ≠ S153.zero})
 
 end S153
@@ -47,6 +47,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S153 as a bundled `Space` (carrier + topology). -/
-noncomputable def S153 : Space := ⟨PiBase.Spaces.S153.S153, inferInstance⟩
+noncomputable def S153 : Space := ⟨PiBase.Spaces.S153.S153, PiBase.Spaces.S153.S153_top⟩
 
 end PiBase.Formal

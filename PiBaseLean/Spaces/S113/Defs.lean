@@ -23,7 +23,7 @@ topology inherited from `ℝ²` (with its usual product topology). -/
 def S113 : Type :=
   ↥({p : ℝ × ℝ | ∃ x : ℝ, x ∈ Set.Ioc (0 : ℝ) 1 ∧ p = (x, Real.sin (1 / x))} ∪ {(0, 0)})
 
-instance : TopologicalSpace S113 := instTopologicalSpaceSubtype
+instance S113_top : TopologicalSpace S113 := instTopologicalSpaceSubtype
 
 end S113
 end PiBase.Spaces
@@ -31,6 +31,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S113 as a bundled `Space` (carrier + topology). -/
-noncomputable def S113 : Space := ⟨PiBase.Spaces.S113.S113, inferInstance⟩
+noncomputable def S113 : Space := ⟨PiBase.Spaces.S113.S113, PiBase.Spaces.S113.S113_top⟩
 
 end PiBase.Formal

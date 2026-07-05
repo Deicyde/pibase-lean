@@ -19,7 +19,7 @@ the singleton {0} (S162) and the Sierpinski space {1, 2} (S10). -/
 /-- Sum of singleton and Sierpinski space (pi-Base S188). -/
 def S188 : Type := Fin 3
 
-instance : TopologicalSpace S188 :=
+instance S188_top : TopologicalSpace S188 :=
   TopologicalSpace.generateFrom
     {({0} : Set (Fin 3)), ({1} : Set (Fin 3)), ({1, 2} : Set (Fin 3))}
 
@@ -33,6 +33,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S188 as a bundled `Space` (carrier + topology). -/
-noncomputable def S188 : Space := ⟨PiBase.Spaces.S188.S188, inferInstance⟩
+noncomputable def S188 : Space := ⟨PiBase.Spaces.S188.S188, PiBase.Spaces.S188.S188_top⟩
 
 end PiBase.Formal

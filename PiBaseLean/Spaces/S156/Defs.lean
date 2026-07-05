@@ -33,7 +33,7 @@ def S156 : Type := Option (Option ℕ × ℕ)
 `n, m : ℕ`; for each column `m`, every set containing `(∞, m)` that is
 cofinite in that column; and every set containing `∞'` that, for all but
 finitely many columns `m`, contains `(∞, m)` and is cofinite in column `m`. -/
-instance : TopologicalSpace S156 :=
+instance S156_top : TopologicalSpace S156 :=
   TopologicalSpace.generateFrom
     ({s : Set S156 | ∃ n m : ℕ, s = {some (some n, m)}} ∪
       {s : Set S156 | ∃ m : ℕ, some (none, m) ∈ s ∧
@@ -47,6 +47,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S156 as a bundled `Space` (carrier + topology). -/
-noncomputable def S156 : Space := ⟨PiBase.Spaces.S156.S156, inferInstance⟩
+noncomputable def S156 : Space := ⟨PiBase.Spaces.S156.S156, PiBase.Spaces.S156.S156_top⟩
 
 end PiBase.Formal

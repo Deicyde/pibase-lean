@@ -19,7 +19,7 @@ The carrier is the three-element set X = {0, 1, 2}, with every subset of X decla
 /-- Discrete topology on `{0, 1, 2}` (pi-Base S189). -/
 def S189 : Type := Fin 3
 
-instance : TopologicalSpace S189 := ⊥
+instance S189_top : TopologicalSpace S189 := ⊥
 
 instance : Finite S189 := inferInstanceAs (Finite (Fin 3))
 instance : DecidableEq S189 := inferInstanceAs (DecidableEq (Fin 3))
@@ -32,6 +32,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S189 as a bundled `Space` (carrier + topology). -/
-noncomputable def S189 : Space := ⟨PiBase.Spaces.S189.S189, inferInstance⟩
+noncomputable def S189 : Space := ⟨PiBase.Spaces.S189.S189, PiBase.Spaces.S189.S189_top⟩
 
 end PiBase.Formal

@@ -19,7 +19,7 @@ The carrier is the real numbers, topologized with only ∅ and the whole space o
 /-- Indiscrete topology on ℝ (pi-Base S194). -/
 def S194 : Type := ℝ
 
-instance : TopologicalSpace S194 := ⊤
+instance S194_top : TopologicalSpace S194 := ⊤
 
 end S194
 end PiBase.Spaces
@@ -27,6 +27,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S194 as a bundled `Space` (carrier + topology). -/
-noncomputable def S194 : Space := ⟨PiBase.Spaces.S194.S194, inferInstance⟩
+noncomputable def S194 : Space := ⟨PiBase.Spaces.S194.S194, PiBase.Spaces.S194.S194_top⟩
 
 end PiBase.Formal

@@ -23,7 +23,7 @@ product topology. -/
 (pi-Base S107). -/
 def S107 : Type := ℕ → ℝ
 
-instance : TopologicalSpace S107 :=
+instance S107_top : TopologicalSpace S107 :=
   TopologicalSpace.generateFrom
     {t : Set S107 | ∃ U : ℕ → Set ℝ, (∀ i, IsOpen (U i)) ∧ t = Set.pi Set.univ U}
 
@@ -33,6 +33,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S107 as a bundled `Space` (carrier + topology). -/
-noncomputable def S107 : Space := ⟨PiBase.Spaces.S107.S107, inferInstance⟩
+noncomputable def S107 : Space := ⟨PiBase.Spaces.S107.S107, PiBase.Spaces.S107.S107_top⟩
 
 end PiBase.Formal

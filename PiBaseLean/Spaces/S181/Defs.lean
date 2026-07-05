@@ -40,7 +40,7 @@ product (ω₁+1)^ω consisting of all functions `ω → (ω₁+1)` with finite 
 i.e. those non-zero on only finitely many inputs. -/
 def S181 : Type 1 := {f : ℕ → S181.Factor // (Function.support f).Finite}
 
-noncomputable instance : TopologicalSpace S181 :=
+noncomputable instance S181_top : TopologicalSpace S181 :=
   inferInstanceAs (TopologicalSpace {f : ℕ → S181.Factor // (Function.support f).Finite})
 
 end S181
@@ -49,6 +49,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S181 as a bundled `Space` (carrier + topology). -/
-noncomputable def S181 : Space := ⟨PiBase.Spaces.S181.S181, inferInstance⟩
+noncomputable def S181 : Space := ⟨PiBase.Spaces.S181.S181, PiBase.Spaces.S181.S181_top⟩
 
 end PiBase.Formal

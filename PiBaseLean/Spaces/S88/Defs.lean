@@ -158,7 +158,7 @@ as the quotient `Z / ~` of the pre-quotient space `Z = (Y × ℤ) ⊕ Bool` by t
 relation `S88.glue`. -/
 def S88 : Type 1 := Quotient S88.setoid
 
-instance : TopologicalSpace S88 := instTopologicalSpaceQuotient
+instance S88_top : TopologicalSpace S88 := instTopologicalSpaceQuotient
 
 end S88
 end PiBase.Spaces
@@ -166,6 +166,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S88 as a bundled `Space` (carrier + topology). -/
-noncomputable def S88 : Space := ⟨PiBase.Spaces.S88.S88, inferInstance⟩
+noncomputable def S88 : Space := ⟨PiBase.Spaces.S88.S88, PiBase.Spaces.S88.S88_top⟩
 
 end PiBase.Formal

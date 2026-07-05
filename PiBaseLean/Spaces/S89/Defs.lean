@@ -93,7 +93,7 @@ end S89
 with its limit point `a⁻` removed, as a subtype with the subspace topology. -/
 def S89 : Type 1 := {x : S89.PreQuotient // x ≠ S89.aNeg}
 
-instance : TopologicalSpace S89 := inferInstanceAs (TopologicalSpace {x : S89.PreQuotient // x ≠ S89.aNeg})
+instance S89_top : TopologicalSpace S89 := inferInstanceAs (TopologicalSpace {x : S89.PreQuotient // x ≠ S89.aNeg})
 
 end S89
 end PiBase.Spaces
@@ -101,6 +101,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S89 as a bundled `Space` (carrier + topology). -/
-noncomputable def S89 : Space := ⟨PiBase.Spaces.S89.S89, inferInstance⟩
+noncomputable def S89 : Space := ⟨PiBase.Spaces.S89.S89, PiBase.Spaces.S89.S89_top⟩
 
 end PiBase.Formal

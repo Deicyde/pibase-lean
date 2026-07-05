@@ -20,7 +20,7 @@ rays `{x : y < x}` (i.e. `Set.Ioi y`) for each `y : Fin 3`, giving the opens
 /-- Right ray topology on a three-point set (pi-Base S187). -/
 def S187 : Type := Fin 3
 
-instance : TopologicalSpace S187 :=
+instance S187_top : TopologicalSpace S187 :=
   TopologicalSpace.generateFrom {s : Set (Fin 3) | ∃ y : Fin 3, s = Set.Ioi y}
 
 instance : Finite S187 := inferInstanceAs (Finite (Fin 3))
@@ -32,6 +32,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S187 as a bundled `Space` (carrier + topology). -/
-noncomputable def S187 : Space := ⟨PiBase.Spaces.S187.S187, inferInstance⟩
+noncomputable def S187 : Space := ⟨PiBase.Spaces.S187.S187, PiBase.Spaces.S187.S187_top⟩
 
 end PiBase.Formal

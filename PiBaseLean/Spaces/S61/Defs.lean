@@ -20,7 +20,7 @@ irrational numbers, `U ⊆ ℝ` is Euclidean-open, and `x ∈ U`. -/
 /-- Pointed irrational extension of ℝ (pi-Base S61). -/
 def S61 : Type := ℝ
 
-instance : TopologicalSpace S61 :=
+instance S61_top : TopologicalSpace S61 :=
   TopologicalSpace.generateFrom
     {s : Set ℝ | ∃ U : Set ℝ, IsOpen U ∧ ∃ x ∈ U, s = {x} ∪ ({y : ℝ | Irrational y} ∩ U)}
 
@@ -30,6 +30,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S61 as a bundled `Space` (carrier + topology). -/
-noncomputable def S61 : Space := ⟨PiBase.Spaces.S61.S61, inferInstance⟩
+noncomputable def S61 : Space := ⟨PiBase.Spaces.S61.S61, PiBase.Spaces.S61.S61_top⟩
 
 end PiBase.Formal

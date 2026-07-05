@@ -40,7 +40,7 @@ instance : TopologicalSpace S78.Snd := inferInstanceAs (TopologicalSpace (OnePoi
 /-- Tychonoff plank (pi-Base S78): the product `[0, ω₁] × [0, ω]`. -/
 def S78 : Type 1 := S78.Fst × S78.Snd
 
-noncomputable instance : TopologicalSpace S78 :=
+noncomputable instance S78_top : TopologicalSpace S78 :=
   inferInstanceAs (TopologicalSpace (S78.Fst × S78.Snd))
 
 end PiBase.Spaces
@@ -48,6 +48,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S78 as a bundled `Space` (carrier + topology). -/
-noncomputable def S78 : Space := ⟨PiBase.Spaces.S78, inferInstance⟩
+noncomputable def S78 : Space := ⟨PiBase.Spaces.S78, PiBase.Spaces.S78_top⟩
 
 end PiBase.Formal

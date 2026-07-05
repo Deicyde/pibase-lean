@@ -34,7 +34,7 @@ def AppertOpen (U : Set ℕ+) : Prop :=
 /-- Appert space (pi-Base S96). -/
 def S96 : Type := ℕ+
 
-instance : TopologicalSpace S96 := TopologicalSpace.generateFrom {U : Set ℕ+ | AppertOpen U}
+instance S96_top : TopologicalSpace S96 := TopologicalSpace.generateFrom {U : Set ℕ+ | AppertOpen U}
 
 end S96
 end PiBase.Spaces
@@ -42,6 +42,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S96 as a bundled `Space` (carrier + topology). -/
-noncomputable def S96 : Space := ⟨PiBase.Spaces.S96.S96, inferInstance⟩
+noncomputable def S96 : Space := ⟨PiBase.Spaces.S96.S96, PiBase.Spaces.S96.S96_top⟩
 
 end PiBase.Formal

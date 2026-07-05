@@ -41,7 +41,7 @@ def S192Generators : Set (Set S192) :=
   (Set.range fun a : ↥(Set.Ici (0 : ℝ)) =>
     (Sum.inl '' (Set.Ioi a \ S192.D)) ∪ {Sum.inr true})
 
-instance : TopologicalSpace S192 := TopologicalSpace.generateFrom S192Generators
+instance S192_top : TopologicalSpace S192 := TopologicalSpace.generateFrom S192Generators
 
 end S192
 end PiBase.Spaces
@@ -49,6 +49,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S192 as a bundled `Space` (carrier + topology). -/
-noncomputable def S192 : Space := ⟨PiBase.Spaces.S192.S192, inferInstance⟩
+noncomputable def S192 : Space := ⟨PiBase.Spaces.S192.S192, PiBase.Spaces.S192.S192_top⟩
 
 end PiBase.Formal

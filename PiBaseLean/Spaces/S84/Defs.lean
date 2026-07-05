@@ -28,7 +28,7 @@ def S84 : Type := {p : ℝ × ℕ // p.1 = 0 ∨ p.2 = 0}
 /-- Basic open sets: for `U` open in `ℝ` and `α : ℕ`, the set of points `(x, β)`
 with `x ∈ U` and either `x ≠ 0` (any copy) or `β = α` (the `α`-th origin). This is
 `U` with its origin, if any, specialized to the single origin `0_α`. -/
-instance : TopologicalSpace S84 :=
+instance S84_top : TopologicalSpace S84 :=
   TopologicalSpace.generateFrom
     {s : Set S84 | ∃ (U : Set ℝ), IsOpen U ∧ ∃ α : ℕ,
       s = {p : S84 | p.val.1 ∈ U ∧ (p.val.1 ≠ 0 ∨ p.val.2 = α)}}
@@ -39,6 +39,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S84 as a bundled `Space` (carrier + topology). -/
-noncomputable def S84 : Space := ⟨PiBase.Spaces.S84.S84, inferInstance⟩
+noncomputable def S84 : Space := ⟨PiBase.Spaces.S84.S84, PiBase.Spaces.S84.S84_top⟩
 
 end PiBase.Formal

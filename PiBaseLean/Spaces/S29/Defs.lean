@@ -21,7 +21,7 @@ compactification of ℚ (with its usual order/metric topology). -/
 /-- One-point compactification of ℚ (pi-Base S29). -/
 def S29 : Type := OnePoint ℚ
 
-instance : TopologicalSpace S29 := inferInstanceAs (TopologicalSpace (OnePoint ℚ))
+instance S29_top : TopologicalSpace S29 := inferInstanceAs (TopologicalSpace (OnePoint ℚ))
 
 end S29
 end PiBase.Spaces
@@ -29,6 +29,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S29 as a bundled `Space` (carrier + topology). -/
-noncomputable def S29 : Space := ⟨PiBase.Spaces.S29.S29, inferInstance⟩
+noncomputable def S29 : Space := ⟨PiBase.Spaces.S29.S29, PiBase.Spaces.S29.S29_top⟩
 
 end PiBase.Formal

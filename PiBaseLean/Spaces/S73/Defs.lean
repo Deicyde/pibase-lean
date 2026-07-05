@@ -25,7 +25,7 @@ def S73 : Type := ↥((Set.Ioo (0 : ℝ) 1 ×ˢ Set.Ioo (0 : ℝ) 1) ∪ {((0 : 
 /-- The generating open sets: every Euclidean-open subset of `ℝ × ℝ` restricted
 to `X` (giving `(0,1)²` its subspace topology), together with the local-basis
 sets `Uₙ(0,0)` and `Uₙ(1,0)` at the two corner points, for each `n ≥ 1`. -/
-instance : TopologicalSpace S73 :=
+instance S73_top : TopologicalSpace S73 :=
   TopologicalSpace.generateFrom
     ({s : Set S73 | ∃ u : Set (ℝ × ℝ), IsOpen u ∧ s = {x : S73 | (x.val : ℝ × ℝ) ∈ u}} ∪
       {s : Set S73 | ∃ n : ℕ, 1 ≤ n ∧
@@ -41,6 +41,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S73 as a bundled `Space` (carrier + topology). -/
-noncomputable def S73 : Space := ⟨PiBase.Spaces.S73.S73, inferInstance⟩
+noncomputable def S73 : Space := ⟨PiBase.Spaces.S73.S73, PiBase.Spaces.S73.S73_top⟩
 
 end PiBase.Formal

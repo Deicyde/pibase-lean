@@ -20,7 +20,7 @@ the sets `D ∩ U` for `D` the irrationals and `U` Euclidean open. -/
 /-- Indiscrete irrational extension of ℝ (pi-Base S59). -/
 def S59 : Type := ℝ
 
-instance : TopologicalSpace S59 :=
+instance S59_top : TopologicalSpace S59 :=
   TopologicalSpace.generateFrom
     ({U : Set ℝ | IsOpen U} ∪ {V : Set ℝ | ∃ U : Set ℝ, IsOpen U ∧ V = {x | Irrational x} ∩ U})
 
@@ -30,6 +30,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S59 as a bundled `Space` (carrier + topology). -/
-noncomputable def S59 : Space := ⟨PiBase.Spaces.S59.S59, inferInstance⟩
+noncomputable def S59 : Space := ⟨PiBase.Spaces.S59.S59, PiBase.Spaces.S59.S59_top⟩
 
 end PiBase.Formal

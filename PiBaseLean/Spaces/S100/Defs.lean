@@ -80,7 +80,7 @@ def subbasis : Set (Set S100) := compl '' closedSubbasis
 
 end S100
 
-instance : TopologicalSpace S100 := TopologicalSpace.generateFrom S100.subbasis
+instance S100_top : TopologicalSpace S100 := TopologicalSpace.generateFrom S100.subbasis
 
 end S100
 end PiBase.Spaces
@@ -88,6 +88,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S100 as a bundled `Space` (carrier + topology). -/
-noncomputable def S100 : Space := ⟨PiBase.Spaces.S100.S100, inferInstance⟩
+noncomputable def S100 : Space := ⟨PiBase.Spaces.S100.S100, PiBase.Spaces.S100.S100_top⟩
 
 end PiBase.Formal

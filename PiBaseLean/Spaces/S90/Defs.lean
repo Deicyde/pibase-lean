@@ -65,7 +65,7 @@ quotient of `Z' = (Y × ℤ) ⊕ Bool` by the gluing relation identifying
 `(x, 2n) ∼ (x, 2n+1)` for `x ∈ H` and `(x, 2n-1) ∼ (x, 2n)` for `x ∈ K`. -/
 def S90.T : Type 1 := Quotient S90.T.setoid
 
-noncomputable instance : TopologicalSpace S90.T :=
+noncomputable instance S90_top : TopologicalSpace S90.T :=
   inferInstanceAs (TopologicalSpace (Quotient S90.T.setoid))
 
 /-- The distinguished point `p⁻` of `T` (the class of the `false` summand of `Z'`). -/
@@ -222,6 +222,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S90 as a bundled `Space` (carrier + topology). -/
-noncomputable def S90 : Space := ⟨PiBase.Spaces.S90.S90.T, inferInstance⟩
+noncomputable def S90 : Space := ⟨PiBase.Spaces.S90.S90.T, PiBase.Spaces.S90.S90_top⟩
 
 end PiBase.Formal

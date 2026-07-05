@@ -21,7 +21,7 @@ the topology is generated from the Euclidean-open subsets of ℝ together with t
 /-- ℝ extended by a point with co-countable open neighborhoods (pi-Base S140). -/
 def S140 : Type := Option ℝ
 
-instance : TopologicalSpace S140 :=
+instance S140_top : TopologicalSpace S140 :=
   TopologicalSpace.generateFrom
     ({s | ∃ U : Set ℝ, IsOpen U ∧ s = Option.some '' U} ∪
       {s | ∃ U : Set ℝ, IsOpen U ∧ Uᶜ.Countable ∧ s = insert none (Option.some '' U)})
@@ -32,6 +32,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S140 as a bundled `Space` (carrier + topology). -/
-noncomputable def S140 : Space := ⟨PiBase.Spaces.S140.S140, inferInstance⟩
+noncomputable def S140 : Space := ⟨PiBase.Spaces.S140.S140, PiBase.Spaces.S140.S140_top⟩
 
 end PiBase.Formal

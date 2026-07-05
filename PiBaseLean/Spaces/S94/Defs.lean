@@ -31,7 +31,7 @@ def S94.generators : Set (Set S94) :=
   { s | ∃ a b : ℝ, s = {p : S94 | (p.1.2 = 0 ∧ a < p.1.1 ∧ p.1.1 ≤ b) ∨
       (p.1.2 = 1 ∧ a < p.1.1 ∧ p.1.1 < b)} }
 
-instance : TopologicalSpace S94 := TopologicalSpace.generateFrom S94.generators
+instance S94_top : TopologicalSpace S94 := TopologicalSpace.generateFrom S94.generators
 
 end S94
 end PiBase.Spaces
@@ -39,6 +39,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S94 as a bundled `Space` (carrier + topology). -/
-noncomputable def S94 : Space := ⟨PiBase.Spaces.S94.S94, inferInstance⟩
+noncomputable def S94 : Space := ⟨PiBase.Spaces.S94.S94, PiBase.Spaces.S94.S94_top⟩
 
 end PiBase.Formal

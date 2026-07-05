@@ -27,7 +27,7 @@ def warsawCircleSet : Set (ℝ × ℝ) :=
 /-- The Warsaw circle (pi-Base S205), as a subset of `ℝ × ℝ`. -/
 def S205 : Type := {p : ℝ × ℝ // p ∈ warsawCircleSet}
 
-instance : TopologicalSpace S205 := instTopologicalSpaceSubtype
+instance S205_top : TopologicalSpace S205 := instTopologicalSpaceSubtype
 
 end S205
 end PiBase.Spaces
@@ -35,6 +35,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S205 as a bundled `Space` (carrier + topology). -/
-noncomputable def S205 : Space := ⟨PiBase.Spaces.S205.S205, inferInstance⟩
+noncomputable def S205 : Space := ⟨PiBase.Spaces.S205.S205, PiBase.Spaces.S205.S205_top⟩
 
 end PiBase.Formal

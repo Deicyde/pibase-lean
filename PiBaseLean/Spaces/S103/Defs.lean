@@ -20,7 +20,7 @@ carried by `unitInterval → unitInterval` with the product topology. -/
 /-- The continuum power of $[0,1]$, i.e. $I^I$ (pi-Base S103). -/
 def S103 : Type := unitInterval → unitInterval
 
-instance : TopologicalSpace S103 := Pi.topologicalSpace
+instance S103_top : TopologicalSpace S103 := Pi.topologicalSpace
 
 /-- $I^I$ is compact, by Tychonoff's theorem (pi-Base P16). -/
 instance : CompactSpace S103 := inferInstanceAs (CompactSpace (unitInterval → unitInterval))
@@ -31,6 +31,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S103 as a bundled `Space` (carrier + topology). -/
-noncomputable def S103 : Space := ⟨PiBase.Spaces.S103.S103, inferInstance⟩
+noncomputable def S103 : Space := ⟨PiBase.Spaces.S103.S103, PiBase.Spaces.S103.S103_top⟩
 
 end PiBase.Formal

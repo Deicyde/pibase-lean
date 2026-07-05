@@ -59,7 +59,7 @@ nested sequence of closed, compact "chains" in ℝ² (a subspace of ℝ²), matc
 the INFEASIBLE-GAP TODO above. -/
 def S127 : Type := ⋂ n, someChainSequence.chain n
 
-instance : TopologicalSpace S127 := instTopologicalSpaceSubtype
+instance S127_top : TopologicalSpace S127 := instTopologicalSpaceSubtype
 
 end S127
 end PiBase.Spaces
@@ -67,6 +67,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S127 as a bundled `Space` (carrier + topology). -/
-noncomputable def S127 : Space := ⟨PiBase.Spaces.S127.S127, inferInstance⟩
+noncomputable def S127 : Space := ⟨PiBase.Spaces.S127.S127, PiBase.Spaces.S127.S127_top⟩
 
 end PiBase.Formal

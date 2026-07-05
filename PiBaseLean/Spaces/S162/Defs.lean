@@ -18,7 +18,7 @@ X = {x} with its only valid topology {∅, X}. -/
 /-- The Singleton (pi-Base S162). -/
 def S162 : Type := Unit
 
-instance : TopologicalSpace S162 := (⊤ : TopologicalSpace Unit)
+instance S162_top : TopologicalSpace S162 := (⊤ : TopologicalSpace Unit)
 
 end S162
 end PiBase.Spaces
@@ -26,6 +26,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S162 as a bundled `Space` (carrier + topology). -/
-noncomputable def S162 : Space := ⟨PiBase.Spaces.S162.S162, inferInstance⟩
+noncomputable def S162 : Space := ⟨PiBase.Spaces.S162.S162, PiBase.Spaces.S162.S162_top⟩
 
 end PiBase.Formal

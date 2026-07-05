@@ -44,7 +44,7 @@ instance : OrderTopology S218.Right := ⟨rfl⟩
 space ω₁ and the ordinal space ω₁+1. -/
 def S218 : Type 1 := S218.Left × S218.Right
 
-noncomputable instance : TopologicalSpace S218 :=
+noncomputable instance S218_top : TopologicalSpace S218 :=
   inferInstanceAs (TopologicalSpace (S218.Left × S218.Right))
 
 end S218
@@ -53,6 +53,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S218 as a bundled `Space` (carrier + topology). -/
-noncomputable def S218 : Space := ⟨PiBase.Spaces.S218.S218, inferInstance⟩
+noncomputable def S218 : Space := ⟨PiBase.Spaces.S218.S218, PiBase.Spaces.S218.S218_top⟩
 
 end PiBase.Formal

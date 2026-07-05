@@ -21,7 +21,7 @@ of the standard topology on ℝ. -/
 /-- The double pointed reals (pi-Base S54): `ℝ × Fin 2`. -/
 def S54 : Type := ℝ × Fin 2
 
-instance : TopologicalSpace S54 :=
+instance S54_top : TopologicalSpace S54 :=
   @instTopologicalSpaceProd ℝ (Fin 2) inferInstance ⊤
 
 end S54
@@ -30,6 +30,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S54 as a bundled `Space` (carrier + topology). -/
-noncomputable def S54 : Space := ⟨PiBase.Spaces.S54.S54, inferInstance⟩
+noncomputable def S54 : Space := ⟨PiBase.Spaces.S54.S54, PiBase.Spaces.S54.S54_top⟩
 
 end PiBase.Formal

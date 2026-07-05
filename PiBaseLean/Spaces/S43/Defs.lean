@@ -21,7 +21,7 @@ See https://topology.pi-base.org/spaces/S000043.
 the basis of right half-open intervals `[a, b)`. -/
 def S43 : Type := ℝ
 
-instance : TopologicalSpace S43 :=
+instance S43_top : TopologicalSpace S43 :=
   TopologicalSpace.generateFrom {U : Set ℝ | ∃ a b : ℝ, U = Set.Ico a b}
 
 end S43
@@ -30,6 +30,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S43 as a bundled `Space` (carrier + topology). -/
-noncomputable def S43 : Space := ⟨PiBase.Spaces.S43.S43, inferInstance⟩
+noncomputable def S43 : Space := ⟨PiBase.Spaces.S43.S43, PiBase.Spaces.S43.S43_top⟩
 
 end PiBase.Formal

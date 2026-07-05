@@ -36,7 +36,7 @@ def S209Generators : Set (Set S209) :=
   (Set.range fun U : { U : Set Circle // IsOpen U ∧ (1 : Circle) ∈ U } =>
     Sum.inl '' ((U : Set Circle) \ {1}) ∪ {Sum.inr ()})
 
-instance : TopologicalSpace S209 := TopologicalSpace.generateFrom S209Generators
+instance S209_top : TopologicalSpace S209 := TopologicalSpace.generateFrom S209Generators
 
 end S209
 end PiBase.Spaces
@@ -44,6 +44,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S209 as a bundled `Space` (carrier + topology). -/
-noncomputable def S209 : Space := ⟨PiBase.Spaces.S209.S209, inferInstance⟩
+noncomputable def S209 : Space := ⟨PiBase.Spaces.S209.S209, PiBase.Spaces.S209.S209_top⟩
 
 end PiBase.Formal

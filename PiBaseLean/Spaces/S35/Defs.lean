@@ -23,7 +23,7 @@ def S35 : Type 1 := {o : Ordinal.{0} // o < ω₁}
 noncomputable instance : LinearOrder S35 :=
   inferInstanceAs (LinearOrder {o : Ordinal.{0} // o < ω₁})
 
-noncomputable instance : TopologicalSpace S35 := Preorder.topology S35
+noncomputable instance S35_top : TopologicalSpace S35 := Preorder.topology S35
 
 instance : OrderTopology S35 := ⟨rfl⟩
 
@@ -33,6 +33,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S35 as a bundled `Space` (carrier + topology). -/
-noncomputable def S35 : Space := ⟨PiBase.Spaces.S35.S35, inferInstance⟩
+noncomputable def S35 : Space := ⟨PiBase.Spaces.S35.S35, PiBase.Spaces.S35.S35_top⟩
 
 end PiBase.Formal

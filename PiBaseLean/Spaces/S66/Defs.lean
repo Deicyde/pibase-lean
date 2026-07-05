@@ -38,7 +38,7 @@ def S66.Generators : Set (Set S66) :=
     (Sum.inl '' {p : ℝ × ℝ | p.1 ^ 2 + p.2 ^ 2 < 1 / (n + 1 : ℝ) ^ 2 ∧ p.2 < 0}) ∪
       {Sum.inr ()})
 
-instance : TopologicalSpace S66 := TopologicalSpace.generateFrom S66.Generators
+instance S66_top : TopologicalSpace S66 := TopologicalSpace.generateFrom S66.Generators
 
 end S66
 end PiBase.Spaces
@@ -46,6 +46,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S66 as a bundled `Space` (carrier + topology). -/
-noncomputable def S66 : Space := ⟨PiBase.Spaces.S66.S66, inferInstance⟩
+noncomputable def S66 : Space := ⟨PiBase.Spaces.S66.S66, PiBase.Spaces.S66.S66_top⟩
 
 end PiBase.Formal

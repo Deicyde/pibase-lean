@@ -63,7 +63,7 @@ def generators : Set (Set S152) :=
 
 end S152
 
-instance : TopologicalSpace S152 := TopologicalSpace.generateFrom S152.generators
+instance S152_top : TopologicalSpace S152 := TopologicalSpace.generateFrom S152.generators
 
 end S152
 end PiBase.Spaces
@@ -71,6 +71,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S152 as a bundled `Space` (carrier + topology). -/
-noncomputable def S152 : Space := ⟨PiBase.Spaces.S152.S152, inferInstance⟩
+noncomputable def S152 : Space := ⟨PiBase.Spaces.S152.S152, PiBase.Spaces.S152.S152_top⟩
 
 end PiBase.Formal

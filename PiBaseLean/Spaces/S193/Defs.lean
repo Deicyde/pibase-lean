@@ -19,7 +19,7 @@ whole space, i.e. the indiscrete topology `⊤`. -/
 /-- Indiscrete topology on `ω` (pi-Base S193). -/
 def S193 : Type := ℕ
 
-instance : TopologicalSpace S193 := ⊤
+instance S193_top : TopologicalSpace S193 := ⊤
 
 end S193
 end PiBase.Spaces
@@ -27,6 +27,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S193 as a bundled `Space` (carrier + topology). -/
-noncomputable def S193 : Space := ⟨PiBase.Spaces.S193.S193, inferInstance⟩
+noncomputable def S193 : Space := ⟨PiBase.Spaces.S193.S193, PiBase.Spaces.S193.S193_top⟩
 
 end PiBase.Formal

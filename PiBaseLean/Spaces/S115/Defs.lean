@@ -25,7 +25,7 @@ def S115Set : Set (ℝ × ℝ) :=
 /-- Extended topologist's sine curve (pi-Base S115). -/
 def S115 : Type := S115Set
 
-instance : TopologicalSpace S115 := inferInstanceAs (TopologicalSpace S115Set)
+instance S115_top : TopologicalSpace S115 := inferInstanceAs (TopologicalSpace S115Set)
 
 end S115
 end PiBase.Spaces
@@ -33,6 +33,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S115 as a bundled `Space` (carrier + topology). -/
-noncomputable def S115 : Space := ⟨PiBase.Spaces.S115.S115, inferInstance⟩
+noncomputable def S115 : Space := ⟨PiBase.Spaces.S115.S115, PiBase.Spaces.S115.S115_top⟩
 
 end PiBase.Formal

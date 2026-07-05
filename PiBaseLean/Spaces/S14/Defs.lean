@@ -19,7 +19,7 @@ Carrier `X = [-1, 1] ⊆ ℝ`; a set `U ⊆ X` is open iff `0 ∉ U` or `(-1, 1)
 /-- Either-Or Topology (pi-Base S14), on the interval `[-1, 1] ⊆ ℝ`. -/
 def S14 : Type := ↥(Set.Icc (-1 : ℝ) 1)
 
-instance : TopologicalSpace S14 :=
+instance S14_top : TopologicalSpace S14 :=
   TopologicalSpace.generateFrom
     {s : Set S14 |
       (∀ x ∈ s, (x.val : ℝ) ≠ 0) ∨
@@ -31,6 +31,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S14 as a bundled `Space` (carrier + topology). -/
-noncomputable def S14 : Space := ⟨PiBase.Spaces.S14.S14, inferInstance⟩
+noncomputable def S14 : Space := ⟨PiBase.Spaces.S14.S14, PiBase.Spaces.S14.S14_top⟩
 
 end PiBase.Formal

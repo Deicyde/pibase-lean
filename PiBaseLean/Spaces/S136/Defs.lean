@@ -38,7 +38,7 @@ end S136
 `Set ℝ → Bool` (discrete `Bool` factors), together with singletons of every point
 outside `M` — so points of `M` retain their usual product neighborhoods and every point
 of `X \ M` is isolated. -/
-instance : TopologicalSpace S136 :=
+instance S136_top : TopologicalSpace S136 :=
   TopologicalSpace.generateFrom
     ({s : Set S136 | IsOpen[Pi.topologicalSpace] s} ∪ {s : Set S136 | ∃ x ∉ S136.M, s = {x}})
 
@@ -48,6 +48,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S136 as a bundled `Space` (carrier + topology). -/
-noncomputable def S136 : Space := ⟨PiBase.Spaces.S136.S136, inferInstance⟩
+noncomputable def S136 : Space := ⟨PiBase.Spaces.S136.S136, PiBase.Spaces.S136.S136_top⟩
 
 end PiBase.Formal

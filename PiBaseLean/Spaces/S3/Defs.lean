@@ -19,7 +19,7 @@ The carrier is ℝ, topologized with the discrete topology `⊥` (every subset i
 /-- Discrete topology on ℝ (pi-Base S3). -/
 def S3 : Type := ℝ
 
-instance : TopologicalSpace S3 := ⊥
+instance S3_top : TopologicalSpace S3 := ⊥
 
 instance : DiscreteTopology S3 := discreteTopology_bot S3
 
@@ -29,6 +29,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S3 as a bundled `Space` (carrier + topology). -/
-noncomputable def S3 : Space := ⟨PiBase.Spaces.S3.S3, inferInstance⟩
+noncomputable def S3 : Space := ⟨PiBase.Spaces.S3.S3, PiBase.Spaces.S3.S3_top⟩
 
 end PiBase.Formal

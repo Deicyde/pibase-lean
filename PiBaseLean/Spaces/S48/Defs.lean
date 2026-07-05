@@ -20,7 +20,7 @@ set is open iff it contains `p` and has finite complement. -/
 (pi-Base S48). The point `p` is represented as `none`. -/
 def S48 : Type := Option ℕ
 
-instance : TopologicalSpace S48 :=
+instance S48_top : TopologicalSpace S48 :=
   TopologicalSpace.generateFrom
     {s : Set (Option ℕ) | (none : Option ℕ) ∈ s ∧ sᶜ.Finite}
 
@@ -30,6 +30,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S48 as a bundled `Space` (carrier + topology). -/
-noncomputable def S48 : Space := ⟨PiBase.Spaces.S48.S48, inferInstance⟩
+noncomputable def S48 : Space := ⟨PiBase.Spaces.S48.S48, PiBase.Spaces.S48.S48_top⟩
 
 end PiBase.Formal

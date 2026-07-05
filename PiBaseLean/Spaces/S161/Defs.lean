@@ -39,7 +39,7 @@ def S161 : Type := ℕ
 
 /-- TODO: placeholder topology only -- see the module docstring. The real topology is
 van Douwen's specific Section 5 construction on `ω`, not reproduced here. -/
-instance : TopologicalSpace S161 := ⊤
+instance S161_top : TopologicalSpace S161 := ⊤
 
 end S161
 end PiBase.Spaces
@@ -47,6 +47,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S161 as a bundled `Space` (carrier + topology). -/
-noncomputable def S161 : Space := ⟨PiBase.Spaces.S161.S161, inferInstance⟩
+noncomputable def S161 : Space := ⟨PiBase.Spaces.S161.S161, PiBase.Spaces.S161.S161_top⟩
 
 end PiBase.Formal

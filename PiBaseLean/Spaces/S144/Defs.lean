@@ -34,7 +34,7 @@ def S144.generators : Set (Set S144) :=
     ({((2 : Fin 4) : S144), ((3 : Fin 4) : S144)} : Set S144),
     ({((3 : Fin 4) : S144)} : Set S144) }
 
-instance : TopologicalSpace S144 := TopologicalSpace.generateFrom S144.generators
+instance S144_top : TopologicalSpace S144 := TopologicalSpace.generateFrom S144.generators
 
 end S144
 end PiBase.Spaces
@@ -42,6 +42,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S144 as a bundled `Space` (carrier + topology). -/
-noncomputable def S144 : Space := ⟨PiBase.Spaces.S144.S144, inferInstance⟩
+noncomputable def S144 : Space := ⟨PiBase.Spaces.S144.S144, PiBase.Spaces.S144.S144_top⟩
 
 end PiBase.Formal

@@ -38,7 +38,7 @@ of the cocountable topology on ℝ (S17) with the indiscrete topology on a
 two-point set (S4). -/
 def S18 : Type := CocountableReal × Indiscrete2
 
-instance : TopologicalSpace S18 :=
+instance S18_top : TopologicalSpace S18 :=
   inferInstanceAs (TopologicalSpace (CocountableReal × Indiscrete2))
 
 end S18
@@ -47,6 +47,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S18 as a bundled `Space` (carrier + topology). -/
-noncomputable def S18 : Space := ⟨PiBase.Spaces.S18.S18, inferInstance⟩
+noncomputable def S18 : Space := ⟨PiBase.Spaces.S18.S18, PiBase.Spaces.S18.S18_top⟩
 
 end PiBase.Formal

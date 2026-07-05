@@ -29,7 +29,7 @@ def S117.carrier : Set (ℝ × ℝ) :=
 /-- Closed infinite broom (pi-Base S117). -/
 def S117 : Type := S117.carrier
 
-instance : TopologicalSpace S117 := instTopologicalSpaceSubtype
+instance S117_top : TopologicalSpace S117 := instTopologicalSpaceSubtype
 
 end S117
 end PiBase.Spaces
@@ -37,6 +37,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S117 as a bundled `Space` (carrier + topology). -/
-noncomputable def S117 : Space := ⟨PiBase.Spaces.S117.S117, inferInstance⟩
+noncomputable def S117 : Space := ⟨PiBase.Spaces.S117.S117, PiBase.Spaces.S117.S117_top⟩
 
 end PiBase.Formal

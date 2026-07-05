@@ -26,7 +26,7 @@ def S195 : Type 1 := {o : Ordinal.{0} // o < ω₁}
 noncomputable instance : LinearOrder S195 :=
   inferInstanceAs (LinearOrder {o : Ordinal.{0} // o < ω₁})
 
-instance : TopologicalSpace S195 :=
+instance S195_top : TopologicalSpace S195 :=
   TopologicalSpace.generateFrom
     {s : Set S195 | ∃ (a : S195) (F : Finset S195), s = {x : S195 | x < a} \ ↑F}
 
@@ -36,6 +36,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S195 as a bundled `Space` (carrier + topology). -/
-noncomputable def S195 : Space := ⟨PiBase.Spaces.S195.S195, inferInstance⟩
+noncomputable def S195 : Space := ⟨PiBase.Spaces.S195.S195, PiBase.Spaces.S195.S195_top⟩
 
 end PiBase.Formal

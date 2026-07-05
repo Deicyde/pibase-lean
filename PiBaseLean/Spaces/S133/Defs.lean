@@ -24,7 +24,7 @@ exactly `(-ε, ε)`. -/
 /-- Real line with the post office metric topology (pi-Base S133). -/
 def S133 : Type := ℝ
 
-instance : TopologicalSpace S133 :=
+instance S133_top : TopologicalSpace S133 :=
   TopologicalSpace.generateFrom
     ({s : Set ℝ | ∃ x ≠ (0 : ℝ), s = {x}} ∪ {s : Set ℝ | ∃ ε > (0 : ℝ), s = Set.Ioo (-ε) ε})
 
@@ -34,6 +34,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S133 as a bundled `Space` (carrier + topology). -/
-noncomputable def S133 : Space := ⟨PiBase.Spaces.S133.S133, inferInstance⟩
+noncomputable def S133 : Space := ⟨PiBase.Spaces.S133.S133, PiBase.Spaces.S133.S133_top⟩
 
 end PiBase.Formal

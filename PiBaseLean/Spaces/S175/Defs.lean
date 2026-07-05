@@ -25,7 +25,7 @@ def S175 : Type := ℝ × ℝ
 
 /-- The radial (a.k.a. core) topology on `ℝ × ℝ`: the finest topology making every
 line `t ↦ x + t • v` (for `x : ℝ × ℝ`, `v ≠ 0`) continuous from ℝ. -/
-instance : TopologicalSpace S175 :=
+instance S175_top : TopologicalSpace S175 :=
   ⨆ (x : ℝ × ℝ) (v : ℝ × ℝ) (_ : v ≠ 0),
     TopologicalSpace.coinduced (fun t : ℝ => x + t • v) inferInstance
 
@@ -35,6 +35,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S175 as a bundled `Space` (carrier + topology). -/
-noncomputable def S175 : Space := ⟨PiBase.Spaces.S175.S175, inferInstance⟩
+noncomputable def S175 : Space := ⟨PiBase.Spaces.S175.S175, PiBase.Spaces.S175.S175_top⟩
 
 end PiBase.Formal

@@ -32,7 +32,7 @@ def S37Generators : Set (Set S37) :=
   (Set.range fun p : {o : Ordinal.{0} // o < ω₁} × Bool =>
     (Sum.inl '' Set.Ioi p.1) ∪ {Sum.inr p.2})
 
-instance : TopologicalSpace S37 := TopologicalSpace.generateFrom S37Generators
+instance S37_top : TopologicalSpace S37 := TopologicalSpace.generateFrom S37Generators
 
 end S37
 end PiBase.Spaces
@@ -40,6 +40,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S37 as a bundled `Space` (carrier + topology). -/
-noncomputable def S37 : Space := ⟨PiBase.Spaces.S37.S37, inferInstance⟩
+noncomputable def S37 : Space := ⟨PiBase.Spaces.S37.S37, PiBase.Spaces.S37.S37_top⟩
 
 end PiBase.Formal

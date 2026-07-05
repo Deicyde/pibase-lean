@@ -38,7 +38,7 @@ instance S139.setoid : Setoid ℝ := ⟨S139.r, S139.r.equivalence⟩
 by collapsing all of `ℤ` to a single point. -/
 def S139 : Type := Quotient S139.setoid
 
-instance : TopologicalSpace S139 := inferInstanceAs (TopologicalSpace (Quotient S139.setoid))
+instance S139_top : TopologicalSpace S139 := inferInstanceAs (TopologicalSpace (Quotient S139.setoid))
 
 end S139
 end PiBase.Spaces
@@ -46,6 +46,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S139 as a bundled `Space` (carrier + topology). -/
-noncomputable def S139 : Space := ⟨PiBase.Spaces.S139.S139, inferInstance⟩
+noncomputable def S139 : Space := ⟨PiBase.Spaces.S139.S139, PiBase.Spaces.S139.S139_top⟩
 
 end PiBase.Formal

@@ -21,7 +21,7 @@ Alexandrov topology for the reverse ordering (open sets = downward-closed subset
 `ω+1`. -/
 def S166 : Type := ℕ∞
 
-instance : TopologicalSpace S166 :=
+instance S166_top : TopologicalSpace S166 :=
   TopologicalSpace.generateFrom {s : Set ℕ∞ | ∃ a : ℕ∞, s = Set.Iio a}
 
 end S166
@@ -30,6 +30,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S166 as a bundled `Space` (carrier + topology). -/
-noncomputable def S166 : Space := ⟨PiBase.Spaces.S166.S166, inferInstance⟩
+noncomputable def S166 : Space := ⟨PiBase.Spaces.S166.S166, PiBase.Spaces.S166.S166_top⟩
 
 end PiBase.Formal

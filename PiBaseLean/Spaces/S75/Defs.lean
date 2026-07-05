@@ -35,7 +35,7 @@ to `X` (giving the open upper half plane its usual Euclidean neighborhoods),
 together with the tangent-disc local basis `{(q, 0)} ∪ D` at each rational
 boundary point `q : ℚ`, where `D` is the open disc of center `(q, r)` and
 radius `r > 0` (so `D` is tangent to the `x`-axis at `(q, 0)`). -/
-instance : TopologicalSpace S75 :=
+instance S75_top : TopologicalSpace S75 :=
   TopologicalSpace.generateFrom
     ({s : Set S75 | ∃ u : Set (ℝ × ℝ), IsOpen u ∧ s = {x : S75 | (x.val : ℝ × ℝ) ∈ u}} ∪
       {s : Set S75 | ∃ q : ℚ, ∃ r : ℝ, 0 < r ∧
@@ -48,6 +48,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S75 as a bundled `Space` (carrier + topology). -/
-noncomputable def S75 : Space := ⟨PiBase.Spaces.S75.S75, inferInstance⟩
+noncomputable def S75 : Space := ⟨PiBase.Spaces.S75.S75, PiBase.Spaces.S75.S75_top⟩
 
 end PiBase.Formal

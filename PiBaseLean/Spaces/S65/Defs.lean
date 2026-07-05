@@ -31,7 +31,7 @@ def S65Generators : Set (Set S65) :=
   (Set.range fun a : ↥(Set.Icc (0 : ℝ) 1) =>
     (Sum.inl '' {x : ↥(Set.Icc (0 : ℝ) 1) | (a : ℝ) < x ∧ (x : ℝ) < 1}) ∪ {Sum.inr ()})
 
-instance : TopologicalSpace S65 := TopologicalSpace.generateFrom S65Generators
+instance S65_top : TopologicalSpace S65 := TopologicalSpace.generateFrom S65Generators
 
 end S65
 end PiBase.Spaces
@@ -39,6 +39,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S65 as a bundled `Space` (carrier + topology). -/
-noncomputable def S65 : Space := ⟨PiBase.Spaces.S65.S65, inferInstance⟩
+noncomputable def S65 : Space := ⟨PiBase.Spaces.S65.S65, PiBase.Spaces.S65.S65_top⟩
 
 end PiBase.Formal

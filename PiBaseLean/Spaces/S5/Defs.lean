@@ -20,7 +20,7 @@ of pairs `{2k-1, 2k}` for `k : ℕ+`. -/
 /-- Odd-Even Topology (pi-Base S5). -/
 def S5 : Type := ℕ+
 
-instance : TopologicalSpace S5 :=
+instance S5_top : TopologicalSpace S5 :=
   TopologicalSpace.generateFrom {s : Set S5 | ∃ k : ℕ+, s = {2 * k - 1, 2 * k}}
 
 end S5
@@ -29,6 +29,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S5 as a bundled `Space` (carrier + topology). -/
-noncomputable def S5 : Space := ⟨PiBase.Spaces.S5.S5, inferInstance⟩
+noncomputable def S5 : Space := ⟨PiBase.Spaces.S5.S5, PiBase.Spaces.S5.S5_top⟩
 
 end PiBase.Formal

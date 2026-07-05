@@ -57,7 +57,7 @@ noncomputable def S207.generators : Set (Set S207) :=
   {s | ∃ (γ : S207.Fst),
         s = ({S207.zeroFst} : Set S207.Fst) ×ˢ (Set.Ioc (S207.fstToSnd γ) S207.top)}
 
-instance : TopologicalSpace S207 := TopologicalSpace.generateFrom S207.generators
+instance S207_top : TopologicalSpace S207 := TopologicalSpace.generateFrom S207.generators
 
 end S207
 end PiBase.Spaces
@@ -65,6 +65,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S207 as a bundled `Space` (carrier + topology). -/
-noncomputable def S207 : Space := ⟨PiBase.Spaces.S207.S207, inferInstance⟩
+noncomputable def S207 : Space := ⟨PiBase.Spaces.S207.S207, PiBase.Spaces.S207.S207_top⟩
 
 end PiBase.Formal

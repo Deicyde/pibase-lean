@@ -63,7 +63,7 @@ noncomputable def S81Extra : Set (Set S81) :=
 def S81Generators : Set (Set S81) :=
   {s | IsOpen[instTopologicalSpaceProd] s} ∪ S81Extra
 
-instance : TopologicalSpace S81 := TopologicalSpace.generateFrom S81Generators
+instance S81_top : TopologicalSpace S81 := TopologicalSpace.generateFrom S81Generators
 
 end S81
 end PiBase.Spaces
@@ -71,6 +71,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S81 as a bundled `Space` (carrier + topology). -/
-noncomputable def S81 : Space := ⟨PiBase.Spaces.S81.S81, inferInstance⟩
+noncomputable def S81 : Space := ⟨PiBase.Spaces.S81.S81, PiBase.Spaces.S81.S81_top⟩
 
 end PiBase.Formal

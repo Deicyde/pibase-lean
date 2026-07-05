@@ -38,7 +38,7 @@ instance S168.setoid : Setoid (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1)
 (Euclidean subspace topology) identifying antipodal points. -/
 def S168 : Type := Quotient S168.setoid
 
-instance : TopologicalSpace S168 := inferInstanceAs (TopologicalSpace (Quotient S168.setoid))
+instance S168_top : TopologicalSpace S168 := inferInstanceAs (TopologicalSpace (Quotient S168.setoid))
 
 end S168
 end PiBase.Spaces
@@ -46,6 +46,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S168 as a bundled `Space` (carrier + topology). -/
-noncomputable def S168 : Space := ⟨PiBase.Spaces.S168.S168, inferInstance⟩
+noncomputable def S168 : Space := ⟨PiBase.Spaces.S168.S168, PiBase.Spaces.S168.S168_top⟩
 
 end PiBase.Formal

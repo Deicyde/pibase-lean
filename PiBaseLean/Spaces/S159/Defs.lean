@@ -19,7 +19,7 @@ to the carrier, which realizes exactly X and (a,1] as the open sets. -/
 /-- Right "open-ray" topology on `[0,1]` (pi-Base S159). -/
 def S159 : Type := Set.Icc (0 : ℝ) 1
 
-instance : TopologicalSpace S159 :=
+instance S159_top : TopologicalSpace S159 :=
   TopologicalSpace.generateFrom {s : Set S159 | ∃ a : ℝ, s = {x : S159 | a < x.1}}
 
 end S159
@@ -28,6 +28,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S159 as a bundled `Space` (carrier + topology). -/
-noncomputable def S159 : Space := ⟨PiBase.Spaces.S159.S159, inferInstance⟩
+noncomputable def S159 : Space := ⟨PiBase.Spaces.S159.S159, PiBase.Spaces.S159.S159_top⟩
 
 end PiBase.Formal

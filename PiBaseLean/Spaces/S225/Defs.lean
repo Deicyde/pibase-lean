@@ -19,7 +19,7 @@ topology induced from the product topology on ℝ × ℝ. -/
 /-- The closed upper half-plane `{(x, y) ∈ ℝ² : y ≥ 0}` (pi-Base S225). -/
 def S225 : Type := {p : ℝ × ℝ // 0 ≤ p.2}
 
-instance : TopologicalSpace S225 :=
+instance S225_top : TopologicalSpace S225 :=
   inferInstanceAs (TopologicalSpace {p : ℝ × ℝ // 0 ≤ p.2})
 
 end S225
@@ -28,6 +28,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S225 as a bundled `Space` (carrier + topology). -/
-noncomputable def S225 : Space := ⟨PiBase.Spaces.S225.S225, inferInstance⟩
+noncomputable def S225 : Space := ⟨PiBase.Spaces.S225.S225, PiBase.Spaces.S225.S225_top⟩
 
 end PiBase.Formal

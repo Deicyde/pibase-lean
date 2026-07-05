@@ -30,7 +30,7 @@ def nestedAnglesCarrier : Set (ℝ × ℝ) :=
 /-- Nested angles in the real plane (pi-Base S119). -/
 def S119 : Type := nestedAnglesCarrier
 
-instance : TopologicalSpace S119 := inferInstanceAs (TopologicalSpace nestedAnglesCarrier)
+instance S119_top : TopologicalSpace S119 := inferInstanceAs (TopologicalSpace nestedAnglesCarrier)
 
 end S119
 end PiBase.Spaces
@@ -38,6 +38,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S119 as a bundled `Space` (carrier + topology). -/
-noncomputable def S119 : Space := ⟨PiBase.Spaces.S119.S119, inferInstance⟩
+noncomputable def S119 : Space := ⟨PiBase.Spaces.S119.S119, PiBase.Spaces.S119.S119_top⟩
 
 end PiBase.Formal

@@ -26,7 +26,7 @@ def S212 : Type := Lex (ℕ → Set.Icc (0 : ℝ) 1)
 noncomputable instance : LinearOrder S212 :=
   inferInstanceAs (LinearOrder (Lex (ℕ → Set.Icc (0 : ℝ) 1)))
 
-noncomputable instance : TopologicalSpace S212 := Preorder.topology S212
+noncomputable instance S212_top : TopologicalSpace S212 := Preorder.topology S212
 
 end S212
 end PiBase.Spaces
@@ -34,6 +34,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S212 as a bundled `Space` (carrier + topology). -/
-noncomputable def S212 : Space := ⟨PiBase.Spaces.S212.S212, inferInstance⟩
+noncomputable def S212 : Space := ⟨PiBase.Spaces.S212.S212, PiBase.Spaces.S212.S212_top⟩
 
 end PiBase.Formal

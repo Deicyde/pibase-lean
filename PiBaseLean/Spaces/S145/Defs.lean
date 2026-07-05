@@ -21,7 +21,7 @@ cofinite filter, which is free since it contains no finite set (in particular no
 /-- Free ultrafilter topology on `ω` (pi-Base S145). -/
 def S145 : Type := ℕ
 
-noncomputable instance : TopologicalSpace S145 :=
+noncomputable instance S145_top : TopologicalSpace S145 :=
   TopologicalSpace.generateFrom {S : Set ℕ | S ∈ Filter.hyperfilter ℕ}
 
 end S145
@@ -30,6 +30,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S145 as a bundled `Space` (carrier + topology). -/
-noncomputable def S145 : Space := ⟨PiBase.Spaces.S145.S145, inferInstance⟩
+noncomputable def S145 : Space := ⟨PiBase.Spaces.S145.S145, PiBase.Spaces.S145.S145_top⟩
 
 end PiBase.Formal

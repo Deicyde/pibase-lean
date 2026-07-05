@@ -31,7 +31,7 @@ def S131.generators : Set (Set S131) :=
   { s | ∃ f : ℕ → ℕ,
       s = {x : S131 | x = none ∨ ∃ p : ℕ × ℕ, x = some p ∧ f p.1 ≤ p.2} }
 
-instance : TopologicalSpace S131 := TopologicalSpace.generateFrom S131.generators
+instance S131_top : TopologicalSpace S131 := TopologicalSpace.generateFrom S131.generators
 
 end S131
 end PiBase.Spaces
@@ -39,6 +39,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S131 as a bundled `Space` (carrier + topology). -/
-noncomputable def S131 : Space := ⟨PiBase.Spaces.S131.S131, inferInstance⟩
+noncomputable def S131 : Space := ⟨PiBase.Spaces.S131.S131, PiBase.Spaces.S131.S131_top⟩
 
 end PiBase.Formal

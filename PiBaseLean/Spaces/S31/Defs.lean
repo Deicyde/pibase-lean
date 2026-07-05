@@ -21,7 +21,7 @@ product topology. -/
 /-- Square of one-point compactification of ℚ (pi-Base S31). -/
 def S31 : Type := OnePoint ℚ × OnePoint ℚ
 
-instance : TopologicalSpace S31 := inferInstanceAs (TopologicalSpace (OnePoint ℚ × OnePoint ℚ))
+instance S31_top : TopologicalSpace S31 := inferInstanceAs (TopologicalSpace (OnePoint ℚ × OnePoint ℚ))
 
 end S31
 end PiBase.Spaces
@@ -29,6 +29,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S31 as a bundled `Space` (carrier + topology). -/
-noncomputable def S31 : Space := ⟨PiBase.Spaces.S31.S31, inferInstance⟩
+noncomputable def S31 : Space := ⟨PiBase.Spaces.S31.S31, PiBase.Spaces.S31.S31_top⟩
 
 end PiBase.Formal

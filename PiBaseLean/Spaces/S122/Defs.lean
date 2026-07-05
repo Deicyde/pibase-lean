@@ -87,7 +87,7 @@ from the pi-Base definition. -/
 def V (i : ℕ+) (n : ℕ+) (w : W) : Set S122 :=
   {Sum.inr (n, w)} ∪ ⋃ α ∈ w.val, Sum.inl '' U i (α.val ++ [q n w])
 
-instance : TopologicalSpace S122 :=
+instance S122_top : TopologicalSpace S122 :=
   TopologicalSpace.generateFrom
     ({s : Set S122 | ∃ i : ℕ+, ∃ α : List ℕ+, s = Sum.inl '' U i α} ∪
       {s : Set S122 | ∃ i : ℕ+, ∃ n : ℕ+, ∃ w : W, s = V i n w})
@@ -100,6 +100,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S122 as a bundled `Space` (carrier + topology). -/
-noncomputable def S122 : Space := ⟨PiBase.Spaces.S122.S122, inferInstance⟩
+noncomputable def S122 : Space := ⟨PiBase.Spaces.S122.S122, PiBase.Spaces.S122.S122.S122_top⟩
 
 end PiBase.Formal

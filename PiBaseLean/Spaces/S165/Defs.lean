@@ -21,7 +21,7 @@ it contains `∞` then the complement of that preimage is compact. -/
 /-- One-point compactification of the Arens-Fort space (pi-Base S165). -/
 def S165 : Type := OnePoint S23
 
-instance : TopologicalSpace S165 := inferInstanceAs (TopologicalSpace (OnePoint S23))
+instance S165_top : TopologicalSpace S165 := inferInstanceAs (TopologicalSpace (OnePoint S23))
 
 end S165
 end PiBase.Spaces
@@ -29,6 +29,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S165 as a bundled `Space` (carrier + topology). -/
-noncomputable def S165 : Space := ⟨PiBase.Spaces.S165.S165, inferInstance⟩
+noncomputable def S165 : Space := ⟨PiBase.Spaces.S165.S165, PiBase.Spaces.S165.S165_top⟩
 
 end PiBase.Formal

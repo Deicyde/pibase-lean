@@ -37,7 +37,7 @@ def S67.N (p : S67) (ε : ℝ) : Set S67 :=
     {q : S67 | q.2.val = 0 ∧ q.1 ∈ S67.B (p.1 - p.2.val / S67.theta) ε} ∪
     {q : S67 | q.2.val = 0 ∧ q.1 ∈ S67.B (p.1 + p.2.val / S67.theta) ε}
 
-instance : TopologicalSpace S67 :=
+instance S67_top : TopologicalSpace S67 :=
   TopologicalSpace.generateFrom {s : Set S67 | ∃ p : S67, ∃ ε > (0 : ℝ), s = S67.N p ε}
 
 end S67
@@ -46,6 +46,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S67 as a bundled `Space` (carrier + topology). -/
-noncomputable def S67 : Space := ⟨PiBase.Spaces.S67.S67, inferInstance⟩
+noncomputable def S67 : Space := ⟨PiBase.Spaces.S67.S67, PiBase.Spaces.S67.S67_top⟩
 
 end PiBase.Formal

@@ -36,7 +36,7 @@ def S172 : Type := ℕ
 Hart's actual topology, which is not reconstructed here for lack of an explicit definition
 in the pi-Base source data (see the module doc above). In particular this placeholder does
 NOT satisfy P138 (countably many continuous self-maps): flagged, not claimed. -/
-instance : TopologicalSpace S172 := ⊥
+instance S172_top : TopologicalSpace S172 := ⊥
 
 end S172
 end PiBase.Spaces
@@ -44,6 +44,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S172 as a bundled `Space` (carrier + topology). -/
-noncomputable def S172 : Space := ⟨PiBase.Spaces.S172.S172, inferInstance⟩
+noncomputable def S172 : Space := ⟨PiBase.Spaces.S172.S172, PiBase.Spaces.S172.S172_top⟩
 
 end PiBase.Formal

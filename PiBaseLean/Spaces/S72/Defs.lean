@@ -64,7 +64,7 @@ def S72.Ucol (r : ℚ) (n : ℕ) : Set (ℝ × ℝ) :=
 the generic part `S` (giving points of `S` their usual subspace neighborhoods), together
 with the local bases `Uₙ(0,0)`, `Uₙ(1,0)` and `Uₙ(1/2, r√2)` at the three special families
 of points. -/
-instance : TopologicalSpace S72 :=
+instance S72_top : TopologicalSpace S72 :=
   TopologicalSpace.generateFrom
     ({s : Set S72 | ∃ (x : ℝ × ℝ) (_ : x ∈ S72.genericPart) (U : Set (ℝ × ℝ)),
         IsOpen U ∧ x ∈ U ∧ s = {y : S72 | y.val ∈ S72.genericPart ∧ y.val ∈ U}} ∪
@@ -78,6 +78,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S72 as a bundled `Space` (carrier + topology). -/
-noncomputable def S72 : Space := ⟨PiBase.Spaces.S72.S72, inferInstance⟩
+noncomputable def S72 : Space := ⟨PiBase.Spaces.S72.S72, PiBase.Spaces.S72.S72_top⟩
 
 end PiBase.Formal

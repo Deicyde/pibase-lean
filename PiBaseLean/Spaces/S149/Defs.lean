@@ -48,7 +48,7 @@ def S149 : Type 1 := { x : LongRay149ᵒᵈ ⊕ₗ LongRay149 // ofLex x ≠ Sum
 noncomputable instance : LinearOrder S149 :=
   inferInstanceAs (LinearOrder { x : LongRay149ᵒᵈ ⊕ₗ LongRay149 // ofLex x ≠ Sum.inr longRay149Bot })
 
-noncomputable instance : TopologicalSpace S149 := Preorder.topology S149
+noncomputable instance S149_top : TopologicalSpace S149 := Preorder.topology S149
 
 instance : OrderTopology S149 := ⟨rfl⟩
 
@@ -58,6 +58,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S149 as a bundled `Space` (carrier + topology). -/
-noncomputable def S149 : Space := ⟨PiBase.Spaces.S149.S149, inferInstance⟩
+noncomputable def S149 : Space := ⟨PiBase.Spaces.S149.S149, PiBase.Spaces.S149.S149_top⟩
 
 end PiBase.Formal

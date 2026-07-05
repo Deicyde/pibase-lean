@@ -19,7 +19,7 @@ carrying the subspace topology induced from the Euclidean norm. -/
 /-- The circle $S^1$ (pi-Base S170). -/
 def S170 : Type := {x : EuclideanSpace ℝ (Fin 2) // ‖x‖ = 1}
 
-instance : TopologicalSpace S170 := instTopologicalSpaceSubtype
+instance S170_top : TopologicalSpace S170 := instTopologicalSpaceSubtype
 
 end S170
 end PiBase.Spaces
@@ -27,6 +27,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S170 as a bundled `Space` (carrier + topology). -/
-noncomputable def S170 : Space := ⟨PiBase.Spaces.S170.S170, inferInstance⟩
+noncomputable def S170 : Space := ⟨PiBase.Spaces.S170.S170, PiBase.Spaces.S170.S170_top⟩
 
 end PiBase.Formal

@@ -26,7 +26,7 @@ def S71 : Type :=
 /-- The generating subbasis: singletons at points of `A` (`i > 0`), the local
 basis `Uₙ(i) = {(i, k) : k = 0 ∨ k ≥ n}` at each point `(i, 0)` with `i > 0`, and
 the local basis `Vₙ = {(i, k) : (i, k) = (0, 0) ∨ (i ≥ n ∧ k ≥ n)}` at `(0, 0)`. -/
-instance : TopologicalSpace S71 :=
+instance S71_top : TopologicalSpace S71 :=
   TopologicalSpace.generateFrom
     ({s : Set S71 | ∃ a : S71, s = {a}} ∪
       {s : Set S71 | ∃ i : ℕ, 0 < i ∧ ∃ n : ℕ,
@@ -40,6 +40,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S71 as a bundled `Space` (carrier + topology). -/
-noncomputable def S71 : Space := ⟨PiBase.Spaces.S71.S71, inferInstance⟩
+noncomputable def S71 : Space := ⟨PiBase.Spaces.S71.S71, PiBase.Spaces.S71.S71_top⟩
 
 end PiBase.Formal

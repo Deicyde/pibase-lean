@@ -23,7 +23,7 @@ def S206.A : Set ℝ := ⋃ n : ℕ+, Set.Icc (1 / (2 * (n : ℝ) + 1)) (1 / (2 
 /-- Deleted Sequence of Intervals Topology (pi-Base S206). -/
 def S206 : Type := ℝ
 
-instance : TopologicalSpace S206 :=
+instance S206_top : TopologicalSpace S206 :=
   TopologicalSpace.generateFrom
     ({s : Set ℝ | IsOpen s} ∪ {(Set.univ \ S206.A : Set ℝ)})
 
@@ -33,6 +33,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S206 as a bundled `Space` (carrier + topology). -/
-noncomputable def S206 : Space := ⟨PiBase.Spaces.S206.S206, inferInstance⟩
+noncomputable def S206 : Space := ⟨PiBase.Spaces.S206.S206, PiBase.Spaces.S206.S206_top⟩
 
 end PiBase.Formal

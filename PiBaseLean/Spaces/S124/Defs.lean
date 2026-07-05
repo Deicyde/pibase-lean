@@ -50,7 +50,7 @@ def V (r : ℚ) (n : ℕ) (ε : ℚ) : Set (ℚ × ℕ) :=
   TopologicalSpace.generateFrom
     ({s | ∃ r n ε, s = U r n ε} ∪ {s | ∃ r n ε, s = V r n ε})
 
-noncomputable instance : TopologicalSpace S124 :=
+noncomputable instance S124_top : TopologicalSpace S124 :=
   @instTopologicalSpaceSubtype (ℚ × ℕ) (fun x => x.1 ∈ S124.C x.2) ambientTopology
 
 end S124
@@ -61,6 +61,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S124 as a bundled `Space` (carrier + topology). -/
-noncomputable def S124 : Space := ⟨PiBase.Spaces.S124.S124, inferInstance⟩
+noncomputable def S124 : Space := ⟨PiBase.Spaces.S124.S124, PiBase.Spaces.S124.S124.S124_top⟩
 
 end PiBase.Formal

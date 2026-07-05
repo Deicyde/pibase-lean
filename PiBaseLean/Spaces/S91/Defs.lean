@@ -39,13 +39,13 @@ def S91.generators : Set (Set S91) :=
   { s | ∃ (x : ℝ) (_ : x ∈ Set.Ioo (0 : ℝ) 1) (i : ℕ),
       s = {p : S91 | p.1.1 = x ∧ (p.1.2 = 0 ∨ ∃ n ≥ i, p.1.2 = 1 / (n + 1 : ℝ))} }
 
-instance : TopologicalSpace S91 := TopologicalSpace.generateFrom S91.generators
+instance S91_top : TopologicalSpace S91 := TopologicalSpace.generateFrom S91.generators
 
 end PiBase.Spaces
 
 namespace PiBase.Formal
 
 /-- π-Base S91 as a bundled `Space` (carrier + topology). -/
-noncomputable def S91 : Space := ⟨PiBase.Spaces.S91, inferInstance⟩
+noncomputable def S91 : Space := ⟨PiBase.Spaces.S91, PiBase.Spaces.S91_top⟩
 
 end PiBase.Formal

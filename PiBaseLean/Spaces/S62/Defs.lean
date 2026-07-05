@@ -19,7 +19,7 @@ all singletons `{x}` for `x ∈ ℚ` — finer than the indiscrete rational exte
 /-- Discrete rational extension of ℝ (pi-Base S62). -/
 def S62 : Type := ℝ
 
-instance : TopologicalSpace S62 :=
+instance S62_top : TopologicalSpace S62 :=
   TopologicalSpace.generateFrom
     ({ U : Set ℝ | IsOpen U } ∪ { s : Set ℝ | ∃ x : ℚ, s = {(x : ℝ)} })
 
@@ -29,6 +29,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S62 as a bundled `Space` (carrier + topology). -/
-noncomputable def S62 : Space := ⟨PiBase.Spaces.S62.S62, inferInstance⟩
+noncomputable def S62 : Space := ⟨PiBase.Spaces.S62.S62, PiBase.Spaces.S62.S62_top⟩
 
 end PiBase.Formal

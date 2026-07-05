@@ -19,7 +19,7 @@ All subsets of the countably infinite set `ℕ` are open. -/
 /-- The discrete topology on `ℕ` (pi-Base S2). -/
 def S2 : Type := ℕ
 
-instance : TopologicalSpace S2 := ⊥
+instance S2_top : TopologicalSpace S2 := ⊥
 
 instance : Infinite S2 := inferInstanceAs (Infinite ℕ)
 instance : Countable S2 := inferInstanceAs (Countable ℕ)
@@ -32,6 +32,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S2 as a bundled `Space` (carrier + topology). -/
-noncomputable def S2 : Space := ⟨PiBase.Spaces.S2.S2, inferInstance⟩
+noncomputable def S2 : Space := ⟨PiBase.Spaces.S2.S2, PiBase.Spaces.S2.S2_top⟩
 
 end PiBase.Formal

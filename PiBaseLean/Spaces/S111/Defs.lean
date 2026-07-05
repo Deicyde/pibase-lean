@@ -21,7 +21,7 @@ topology induced from βω (the space of all ultrafilters on ℕ, pi-Base S108).
 ultrafilters) together with one fixed non-principal ultrafilter on `ω = ℕ`. -/
 def S111 : Type := {u : Ultrafilter ℕ // (∃ n : ℕ, u = pure n) ∨ u = Filter.hyperfilter ℕ}
 
-instance : TopologicalSpace S111 := instTopologicalSpaceSubtype
+instance S111_top : TopologicalSpace S111 := instTopologicalSpaceSubtype
 
 end S111
 end PiBase.Spaces
@@ -29,6 +29,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S111 as a bundled `Space` (carrier + topology). -/
-noncomputable def S111 : Space := ⟨PiBase.Spaces.S111.S111, inferInstance⟩
+noncomputable def S111 : Space := ⟨PiBase.Spaces.S111.S111, PiBase.Spaces.S111.S111_top⟩
 
 end PiBase.Formal

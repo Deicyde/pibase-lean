@@ -28,7 +28,7 @@ instance : TopologicalSpace RightRay :=
 /-- Sum of continuum-many Right Ray Topology on the Reals (pi-Base S82). -/
 def S82 : Type := Σ _ : ℝ, RightRay
 
-instance : TopologicalSpace S82 := inferInstanceAs (TopologicalSpace (Σ _ : ℝ, RightRay))
+instance S82_top : TopologicalSpace S82 := inferInstanceAs (TopologicalSpace (Σ _ : ℝ, RightRay))
 
 end S82
 end PiBase.Spaces
@@ -36,6 +36,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S82 as a bundled `Space` (carrier + topology). -/
-noncomputable def S82 : Space := ⟨PiBase.Spaces.S82.S82, inferInstance⟩
+noncomputable def S82 : Space := ⟨PiBase.Spaces.S82.S82, PiBase.Spaces.S82.S82_top⟩
 
 end PiBase.Formal

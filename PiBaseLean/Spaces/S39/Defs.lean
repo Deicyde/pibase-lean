@@ -39,7 +39,7 @@ noncomputable def S39 : Type := {p : S39.Ord ×ₗ S39.Unit // p ≤ S39.topPoin
 noncomputable instance : LinearOrder S39 :=
   inferInstanceAs (LinearOrder {p : S39.Ord ×ₗ S39.Unit // p ≤ S39.topPoint})
 
-noncomputable instance : TopologicalSpace S39 :=
+noncomputable instance S39_top : TopologicalSpace S39 :=
   TopologicalSpace.generateFrom {s | ∃ a, s = Set.Ioi a ∨ s = Set.Iio a}
 
 end PiBase.Spaces
@@ -47,6 +47,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S39 as a bundled `Space` (carrier + topology). -/
-noncomputable def S39 : Space := ⟨PiBase.Spaces.S39, inferInstance⟩
+noncomputable def S39 : Space := ⟨PiBase.Spaces.S39, PiBase.Spaces.S39_top⟩
 
 end PiBase.Formal

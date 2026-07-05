@@ -35,7 +35,7 @@ def S97Generators : Set (Set S97) :=
   (Set.range fun n : ℕ =>
     (Sum.inl '' {p : ℕ × ℕ | p.2 ≥ n}) ∪ {Sum.inr true})
 
-instance : TopologicalSpace S97 := TopologicalSpace.generateFrom S97Generators
+instance S97_top : TopologicalSpace S97 := TopologicalSpace.generateFrom S97Generators
 
 end S97
 end PiBase.Spaces
@@ -43,6 +43,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S97 as a bundled `Space` (carrier + topology). -/
-noncomputable def S97 : Space := ⟨PiBase.Spaces.S97.S97, inferInstance⟩
+noncomputable def S97 : Space := ⟨PiBase.Spaces.S97.S97, PiBase.Spaces.S97.S97_top⟩
 
 end PiBase.Formal

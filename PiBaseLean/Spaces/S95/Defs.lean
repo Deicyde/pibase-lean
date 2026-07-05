@@ -52,7 +52,7 @@ noncomputable def generators : Set (Set S95) :=
 
 end S95
 
-instance : TopologicalSpace S95 := TopologicalSpace.generateFrom S95.generators
+instance S95_top : TopologicalSpace S95 := TopologicalSpace.generateFrom S95.generators
 
 end S95
 end PiBase.Spaces
@@ -60,6 +60,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S95 as a bundled `Space` (carrier + topology). -/
-noncomputable def S95 : Space := ⟨PiBase.Spaces.S95.S95, inferInstance⟩
+noncomputable def S95 : Space := ⟨PiBase.Spaces.S95.S95, PiBase.Spaces.S95.S95_top⟩
 
 end PiBase.Formal

@@ -25,7 +25,7 @@ def S184 : Type := Fin 2 ⊕ Fin 2
 
 instance : TopologicalSpace (Fin 2) := ⊤
 
-instance : TopologicalSpace S184 := instTopologicalSpaceSum
+instance S184_top : TopologicalSpace S184 := instTopologicalSpaceSum
 
 end S184
 end PiBase.Spaces
@@ -33,6 +33,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S184 as a bundled `Space` (carrier + topology). -/
-noncomputable def S184 : Space := ⟨PiBase.Spaces.S184.S184, inferInstance⟩
+noncomputable def S184 : Space := ⟨PiBase.Spaces.S184.S184, PiBase.Spaces.S184.S184_top⟩
 
 end PiBase.Formal

@@ -157,7 +157,7 @@ end S121
 /-- Bernstein's connected set (pi-Base S121), as the subset `A` of the plane ℝ². -/
 def S121 : Type := ↥S121.A
 
-instance : TopologicalSpace S121 := instTopologicalSpaceSubtype
+instance S121_top : TopologicalSpace S121 := instTopologicalSpaceSubtype
 
 end S121
 end PiBase.Spaces
@@ -165,6 +165,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S121 as a bundled `Space` (carrier + topology). -/
-noncomputable def S121 : Space := ⟨PiBase.Spaces.S121.S121, inferInstance⟩
+noncomputable def S121 : Space := ⟨PiBase.Spaces.S121.S121, PiBase.Spaces.S121.S121_top⟩
 
 end PiBase.Formal

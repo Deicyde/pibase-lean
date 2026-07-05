@@ -24,7 +24,7 @@ def S160 : Type := WithTop ℕ
 
 instance : LinearOrder S160 := inferInstanceAs (LinearOrder (WithTop ℕ))
 
-instance : TopologicalSpace S160 :=
+instance S160_top : TopologicalSpace S160 :=
   TopologicalSpace.generateFrom
     ({Set.univ} ∪ {U : Set S160 | ∃ a : S160, U = Set.Ioi a})
 
@@ -34,6 +34,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S160 as a bundled `Space` (carrier + topology). -/
-noncomputable def S160 : Space := ⟨PiBase.Spaces.S160.S160, inferInstance⟩
+noncomputable def S160 : Space := ⟨PiBase.Spaces.S160.S160, PiBase.Spaces.S160.S160_top⟩
 
 end PiBase.Formal

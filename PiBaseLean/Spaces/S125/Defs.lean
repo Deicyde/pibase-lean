@@ -49,7 +49,7 @@ def S125.carrier : Set (ℝ × ℝ) := S125.A ∪ S125.B
 /-- The Knaster-Kuratowski fan, a.k.a. Cantor's leaky tent (pi-Base S125). -/
 def S125 : Type := S125.carrier
 
-instance : TopologicalSpace S125 := instTopologicalSpaceSubtype
+instance S125_top : TopologicalSpace S125 := instTopologicalSpaceSubtype
 
 end S125
 end PiBase.Spaces
@@ -57,6 +57,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S125 as a bundled `Space` (carrier + topology). -/
-noncomputable def S125 : Space := ⟨PiBase.Spaces.S125.S125, inferInstance⟩
+noncomputable def S125 : Space := ⟨PiBase.Spaces.S125.S125, PiBase.Spaces.S125.S125_top⟩
 
 end PiBase.Formal

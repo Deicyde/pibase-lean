@@ -32,7 +32,7 @@ def S110.subbasis : Set (Set S110) :=
     {s | ∃ (F : S110.FreeUltrafilter) (A : Set ℕ), A ∈ F.val ∧
       s = Sum.inl '' A ∪ {Sum.inr F}}
 
-instance : TopologicalSpace S110 := TopologicalSpace.generateFrom S110.subbasis
+instance S110_top : TopologicalSpace S110 := TopologicalSpace.generateFrom S110.subbasis
 
 end S110
 end PiBase.Spaces
@@ -40,6 +40,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S110 as a bundled `Space` (carrier + topology). -/
-noncomputable def S110 : Space := ⟨PiBase.Spaces.S110.S110, inferInstance⟩
+noncomputable def S110 : Space := ⟨PiBase.Spaces.S110.S110, PiBase.Spaces.S110.S110_top⟩
 
 end PiBase.Formal

@@ -34,7 +34,7 @@ def S143.subbasis : Set (Set S143) :=
     s = insert (⟨(px, 0), le_refl 0⟩ : S143)
       {q : S143 | (q.1.1 - px) ^ 2 + q.1.2 ^ 2 < ε ^ 2 ∧ q.1.2 < ε * |q.1.1 - px|}}
 
-instance : TopologicalSpace S143 := TopologicalSpace.generateFrom S143.subbasis
+instance S143_top : TopologicalSpace S143 := TopologicalSpace.generateFrom S143.subbasis
 
 end S143
 end PiBase.Spaces
@@ -42,6 +42,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S143 as a bundled `Space` (carrier + topology). -/
-noncomputable def S143 : Space := ⟨PiBase.Spaces.S143.S143, inferInstance⟩
+noncomputable def S143 : Space := ⟨PiBase.Spaces.S143.S143, PiBase.Spaces.S143.S143_top⟩
 
 end PiBase.Formal

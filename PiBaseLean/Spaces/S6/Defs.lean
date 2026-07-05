@@ -22,7 +22,7 @@ def S6 : Type := {x : ℝ // ∀ n : ℤ, x ≠ n}
 
 /-- The generating basis: the open intervals `(n, n+1)` between consecutive
 integers, restricted to the carrier `ℝ ∖ ℤ`. -/
-instance : TopologicalSpace S6 :=
+instance S6_top : TopologicalSpace S6 :=
   TopologicalSpace.generateFrom
     {s : Set S6 | ∃ n : ℤ, s = {x : S6 | (n : ℝ) < x.1 ∧ x.1 < n + 1}}
 
@@ -32,6 +32,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S6 as a bundled `Space` (carrier + topology). -/
-noncomputable def S6 : Space := ⟨PiBase.Spaces.S6.S6, inferInstance⟩
+noncomputable def S6 : Space := ⟨PiBase.Spaces.S6.S6, PiBase.Spaces.S6.S6_top⟩
 
 end PiBase.Formal

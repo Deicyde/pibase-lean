@@ -19,7 +19,7 @@ carrying the subspace topology induced from ℝ. -/
 /-- The unit interval $[0,1]$ (pi-Base S158). -/
 def S158 : Type := {t : ℝ // 0 ≤ t ∧ t ≤ 1}
 
-instance : TopologicalSpace S158 := instTopologicalSpaceSubtype
+instance S158_top : TopologicalSpace S158 := instTopologicalSpaceSubtype
 
 end S158
 end PiBase.Spaces
@@ -27,6 +27,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S158 as a bundled `Space` (carrier + topology). -/
-noncomputable def S158 : Space := ⟨PiBase.Spaces.S158.S158, inferInstance⟩
+noncomputable def S158 : Space := ⟨PiBase.Spaces.S158.S158, PiBase.Spaces.S158.S158_top⟩
 
 end PiBase.Formal

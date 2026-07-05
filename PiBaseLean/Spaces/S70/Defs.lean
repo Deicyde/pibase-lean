@@ -33,7 +33,7 @@ def S70.subbasis : Set (Set S70) :=
   {s | ∃ (x : S70) (U : Set (ℝ × ℝ)), IsOpen U ∧ x.1 ∈ U ∧ x.1.2 = 0 ∧
     s = insert x {p : S70 | p.1 ∈ U ∧ 0 < p.1.2}}
 
-instance : TopologicalSpace S70 := TopologicalSpace.generateFrom S70.subbasis
+instance S70_top : TopologicalSpace S70 := TopologicalSpace.generateFrom S70.subbasis
 
 end S70
 end PiBase.Spaces
@@ -41,6 +41,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S70 as a bundled `Space` (carrier + topology). -/
-noncomputable def S70 : Space := ⟨PiBase.Spaces.S70.S70, inferInstance⟩
+noncomputable def S70 : Space := ⟨PiBase.Spaces.S70.S70, PiBase.Spaces.S70.S70_top⟩
 
 end PiBase.Formal

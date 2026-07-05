@@ -19,7 +19,7 @@ single subbasic set `{0}` (the particular-point topology at `0` on a two-point s
 /-- Sierpinski space (pi-Base S10). -/
 def S10 : Type := Fin 2
 
-instance : TopologicalSpace S10 :=
+instance S10_top : TopologicalSpace S10 :=
   TopologicalSpace.generateFrom {({0} : Set (Fin 2))}
 
 end S10
@@ -28,6 +28,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S10 as a bundled `Space` (carrier + topology). -/
-noncomputable def S10 : Space := ⟨PiBase.Spaces.S10.S10, inferInstance⟩
+noncomputable def S10 : Space := ⟨PiBase.Spaces.S10.S10, PiBase.Spaces.S10.S10_top⟩
 
 end PiBase.Formal

@@ -19,7 +19,7 @@ the opens ∅, {0, 1}, X). -/
 /-- Three-point set with the basis `{{0,1}, X}` (pi-Base S204). -/
 def S204 : Type := Fin 3
 
-instance : TopologicalSpace S204 :=
+instance S204_top : TopologicalSpace S204 :=
   TopologicalSpace.generateFrom {({0, 1} : Set (Fin 3))}
 
 end S204
@@ -28,6 +28,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S204 as a bundled `Space` (carrier + topology). -/
-noncomputable def S204 : Space := ⟨PiBase.Spaces.S204.S204, inferInstance⟩
+noncomputable def S204 : Space := ⟨PiBase.Spaces.S204.S204, PiBase.Spaces.S204.S204_top⟩
 
 end PiBase.Formal

@@ -41,7 +41,7 @@ noncomputable instance : TopologicalSpace S104.IPowI :=
 (pi-Base S104): `ω₁ × I^I`, with the product topology. -/
 def S104 : Type 1 := S104.Omega1 × S104.IPowI
 
-noncomputable instance : TopologicalSpace S104 :=
+noncomputable instance S104_top : TopologicalSpace S104 :=
   inferInstanceAs (TopologicalSpace (S104.Omega1 × S104.IPowI))
 
 end S104
@@ -50,6 +50,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S104 as a bundled `Space` (carrier + topology). -/
-noncomputable def S104 : Space := ⟨PiBase.Spaces.S104.S104, inferInstance⟩
+noncomputable def S104 : Space := ⟨PiBase.Spaces.S104.S104, PiBase.Spaces.S104.S104_top⟩
 
 end PiBase.Formal

@@ -22,7 +22,7 @@ noncomputable def S79.corner : S78 := (⟨ω₁, le_refl ω₁⟩, ∞)
 point `(ω₁, ∞)` removed, as a subtype of `S78` with the subspace topology. -/
 def S79 : Type 1 := {p : S78 // p ≠ S79.corner}
 
-noncomputable instance : TopologicalSpace S79 :=
+noncomputable instance S79_top : TopologicalSpace S79 :=
   inferInstanceAs (TopologicalSpace {p : S78 // p ≠ S79.corner})
 
 end PiBase.Spaces
@@ -30,6 +30,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S79 as a bundled `Space` (carrier + topology). -/
-noncomputable def S79 : Space := ⟨PiBase.Spaces.S79, inferInstance⟩
+noncomputable def S79 : Space := ⟨PiBase.Spaces.S79, PiBase.Spaces.S79_top⟩
 
 end PiBase.Formal

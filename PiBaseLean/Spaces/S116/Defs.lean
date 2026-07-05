@@ -30,7 +30,7 @@ def S116Set : Set (ℝ × ℝ) := (⋃ n : ℕ, S116.L n) ∪ S116.Handle
 /-- Infinite broom (pi-Base S116). -/
 def S116 : Type := S116Set
 
-instance : TopologicalSpace S116 := inferInstanceAs (TopologicalSpace S116Set)
+instance S116_top : TopologicalSpace S116 := inferInstanceAs (TopologicalSpace S116Set)
 
 end S116
 end PiBase.Spaces
@@ -38,6 +38,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S116 as a bundled `Space` (carrier + topology). -/
-noncomputable def S116 : Space := ⟨PiBase.Spaces.S116.S116, inferInstance⟩
+noncomputable def S116 : Space := ⟨PiBase.Spaces.S116.S116, PiBase.Spaces.S116.S116_top⟩
 
 end PiBase.Formal

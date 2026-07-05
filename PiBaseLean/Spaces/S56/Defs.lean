@@ -24,7 +24,7 @@ def S56.K : Set ℝ := {x : ℝ | ∃ n : ℕ+, x = 1 / (n : ℝ)}
 /-- Smirnov's deleted sequence topology (pi-Base S56), also known as the K-topology. -/
 def S56 : Type := ℝ
 
-instance : TopologicalSpace S56 :=
+instance S56_top : TopologicalSpace S56 :=
   TopologicalSpace.generateFrom
     {s : Set ℝ | ∃ U : Set ℝ, IsOpen U ∧ ∃ B ⊆ S56.K, s = U \ B}
 
@@ -34,6 +34,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S56 as a bundled `Space` (carrier + topology). -/
-noncomputable def S56 : Space := ⟨PiBase.Spaces.S56.S56, inferInstance⟩
+noncomputable def S56 : Space := ⟨PiBase.Spaces.S56.S56, PiBase.Spaces.S56.S56_top⟩
 
 end PiBase.Formal

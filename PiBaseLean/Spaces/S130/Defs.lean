@@ -44,7 +44,7 @@ def S130.generators : Set (Set S130) :=
   {s : Set ℝ | IsOpen s} ∪ {S130.A, S130.B} ∪
     {s : Set ℝ | ∃ c : ℝ, Irrational c ∧ ∃ δ > (0 : ℝ), s = S130.N c δ}
 
-instance : TopologicalSpace S130 := TopologicalSpace.generateFrom S130.generators
+instance S130_top : TopologicalSpace S130 := TopologicalSpace.generateFrom S130.generators
 
 end S130
 end PiBase.Spaces
@@ -52,6 +52,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S130 as a bundled `Space` (carrier + topology). -/
-noncomputable def S130 : Space := ⟨PiBase.Spaces.S130.S130, inferInstance⟩
+noncomputable def S130 : Space := ⟨PiBase.Spaces.S130.S130, PiBase.Spaces.S130.S130_top⟩
 
 end PiBase.Formal

@@ -33,7 +33,7 @@ set of cardinality 𝔠; the real construction (extra points `x_{r,s}`) is not
 reproducible from the available pi-Base data -- see the `TODO` above. -/
 def S180 : Type := ℝ
 
-instance : TopologicalSpace S180 := inferInstanceAs (TopologicalSpace ℝ)
+instance S180_top : TopologicalSpace S180 := inferInstanceAs (TopologicalSpace ℝ)
 
 end S180
 end PiBase.Spaces
@@ -41,6 +41,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S180 as a bundled `Space` (carrier + topology). -/
-noncomputable def S180 : Space := ⟨PiBase.Spaces.S180.S180, inferInstance⟩
+noncomputable def S180 : Space := ⟨PiBase.Spaces.S180.S180, PiBase.Spaces.S180.S180_top⟩
 
 end PiBase.Formal

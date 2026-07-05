@@ -39,7 +39,7 @@ instance : TopologicalSpace S138.Ambient :=
 def S138 : Type 1 :=
   {f : S138.Ambient // ∃ i : ℕ, ∀ n : ℕ, ℵ₀ < Ordinal.cof (f n).1 ∧ Ordinal.cof (f n).1 < ℵ_ (i : Ordinal)}
 
-instance : TopologicalSpace S138 := instTopologicalSpaceSubtype
+instance S138_top : TopologicalSpace S138 := instTopologicalSpaceSubtype
 
 end S138
 end PiBase.Spaces
@@ -47,6 +47,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S138 as a bundled `Space` (carrier + topology). -/
-noncomputable def S138 : Space := ⟨PiBase.Spaces.S138.S138, inferInstance⟩
+noncomputable def S138 : Space := ⟨PiBase.Spaces.S138.S138, PiBase.Spaces.S138.S138_top⟩
 
 end PiBase.Formal

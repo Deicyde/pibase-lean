@@ -21,7 +21,7 @@ def S150 : Type := ↥(Set.Icc (0 : ℚ) 1)
 
 instance : Preorder S150 := Subtype.preorder _
 
-instance : TopologicalSpace S150 :=
+instance S150_top : TopologicalSpace S150 :=
   TopologicalSpace.generateFrom {s | ∃ x : S150, s = Set.Ici x}
 
 end S150
@@ -30,6 +30,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S150 as a bundled `Space` (carrier + topology). -/
-noncomputable def S150 : Space := ⟨PiBase.Spaces.S150.S150, inferInstance⟩
+noncomputable def S150 : Space := ⟨PiBase.Spaces.S150.S150, PiBase.Spaces.S150.S150_top⟩
 
 end PiBase.Formal

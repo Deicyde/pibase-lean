@@ -64,7 +64,7 @@ noncomputable def someContinuumWitness : ContinuumWitness where
 module docstring), topologized as a subspace of `ℝ²`. -/
 def S128 : Type := someContinuumWitness.carrier
 
-instance : TopologicalSpace S128 := instTopologicalSpaceSubtype
+instance S128_top : TopologicalSpace S128 := instTopologicalSpaceSubtype
 
 end S128
 end PiBase.Spaces
@@ -72,6 +72,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S128 as a bundled `Space` (carrier + topology). -/
-noncomputable def S128 : Space := ⟨PiBase.Spaces.S128.S128, inferInstance⟩
+noncomputable def S128 : Space := ⟨PiBase.Spaces.S128.S128, PiBase.Spaces.S128.S128_top⟩
 
 end PiBase.Formal

@@ -19,7 +19,7 @@ The product topology on ℝ × ℝ. -/
 /-- Euclidean Plane ℝ² (pi-Base S176). -/
 def S176 : Type := ℝ × ℝ
 
-instance : TopologicalSpace S176 := instTopologicalSpaceProd
+instance S176_top : TopologicalSpace S176 := instTopologicalSpaceProd
 
 end S176
 end PiBase.Spaces
@@ -27,6 +27,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S176 as a bundled `Space` (carrier + topology). -/
-noncomputable def S176 : Space := ⟨PiBase.Spaces.S176.S176, inferInstance⟩
+noncomputable def S176 : Space := ⟨PiBase.Spaces.S176.S176, PiBase.Spaces.S176.S176_top⟩
 
 end PiBase.Formal

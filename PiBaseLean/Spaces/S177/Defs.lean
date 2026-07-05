@@ -44,7 +44,7 @@ sourced fact -- that the doubly-indexed points are isolated -- via the generatin
 their singletons. This under-approximates the true topology of `E₀` (it does not yet make
 `a`, `b`, or the `c_γ` isolated, nor build in the P-space/semiregular/non-Urysohn
 structure); a complete, faithful topology needs the primary source. -/
-instance : TopologicalSpace S177 :=
+instance S177_top : TopologicalSpace S177 :=
   TopologicalSpace.generateFrom
     {s : Set S177 | ∃ p : S177.DoubleIndex ⊕ S177.DoubleIndex, s = {Sum.inr (Sum.inr p)}}
 
@@ -54,6 +54,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S177 as a bundled `Space` (carrier + topology). -/
-noncomputable def S177 : Space := ⟨PiBase.Spaces.S177.S177, inferInstance⟩
+noncomputable def S177 : Space := ⟨PiBase.Spaces.S177.S177, PiBase.Spaces.S177.S177_top⟩
 
 end PiBase.Formal

@@ -36,7 +36,7 @@ def S129.generators : Set (Set S129) :=
   {s | ∃ q : ℝ × ℝ, q.1 ^ 2 + q.2 ^ 2 = 1 ∧ ∃ a b : ℝ, 0 ≤ a ∧ b ≤ 1 ∧
     s = {p : S129 | ∃ lam : ℝ, lam ∈ Set.Ioo a b ∧ p.1 = (lam * q.1, lam * q.2)}}
 
-instance : TopologicalSpace S129 := TopologicalSpace.generateFrom S129.generators
+instance S129_top : TopologicalSpace S129 := TopologicalSpace.generateFrom S129.generators
 
 end S129
 end PiBase.Spaces
@@ -44,6 +44,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S129 as a bundled `Space` (carrier + topology). -/
-noncomputable def S129 : Space := ⟨PiBase.Spaces.S129.S129, inferInstance⟩
+noncomputable def S129 : Space := ⟨PiBase.Spaces.S129.S129, PiBase.Spaces.S129.S129_top⟩
 
 end PiBase.Formal

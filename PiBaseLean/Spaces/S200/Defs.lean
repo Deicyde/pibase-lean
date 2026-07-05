@@ -18,7 +18,7 @@ See https://topology.pi-base.org/spaces/S000200.
 /-- Right ray topology on `ω` (pi-Base S200). -/
 def S200 : Type := ℕ
 
-instance : TopologicalSpace S200 :=
+instance S200_top : TopologicalSpace S200 :=
   TopologicalSpace.generateFrom {s : Set ℕ | ∃ n : ℕ, s = Set.Ici n}
 
 end S200
@@ -27,6 +27,6 @@ end PiBase.Spaces
 namespace PiBase.Formal
 
 /-- π-Base S200 as a bundled `Space` (carrier + topology). -/
-noncomputable def S200 : Space := ⟨PiBase.Spaces.S200.S200, inferInstance⟩
+noncomputable def S200 : Space := ⟨PiBase.Spaces.S200.S200, PiBase.Spaces.S200.S200_top⟩
 
 end PiBase.Formal
