@@ -16,8 +16,8 @@ import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-PIBASE_DATA = "/Users/jack/Desktop/LEAN/pi-base-lean/data/pibase.json"
-FELIX = os.environ.get("FELIX_REPO", "/Users/jack/Desktop/LEAN/pibase-lean")
+FELIX = os.environ.get("FELIX_REPO", os.path.dirname(HERE))  # repo root (scripts/..)
+PIBASE_DATA = os.path.join(FELIX, "data", "pibase.json")
 OUT = os.path.join(FELIX, "site", "index.html")
 PIBASE = "https://topology.pi-base.org"
 GH = "https://github.com/Deicyde/pibase-lean/blob/add-counterexample-spaces"
