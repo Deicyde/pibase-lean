@@ -1,0 +1,24 @@
+module
+
+public import Mathlib.Analysis.InnerProductSpace.PiL2
+
+@[expose] public section
+
+open Topology
+
+namespace PiBase.Spaces
+namespace S169
+
+/- Space 169: Sphere $S^2$.
+See https://topology.pi-base.org/spaces/S000169.
+The subspace `{x ∈ ℝ³ : ‖x‖ = 1}` of Euclidean space ℝ³, with the subspace topology
+induced from the ambient Euclidean metric. -/
+
+/-- Sphere $S^2$ (pi-Base S169). -/
+def S169 : Type := Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
+
+instance : TopologicalSpace S169 :=
+  TopologicalSpace.induced (Subtype.val : S169 → EuclideanSpace ℝ (Fin 3)) inferInstance
+
+end S169
+end PiBase.Spaces
