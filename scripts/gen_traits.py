@@ -123,6 +123,26 @@ def main():
         print(emit_space(uid, seeds[uid], avail_theorems, availP, pname, sname))
         return
 
+    if "--data" in sys.argv:
+        # per-space trait table for the review UI: property, value, and how it's known
+        out = {}
+        for suid in sorted(seeds):
+            known, deriv, order = close(seeds[suid], avail_theorems, availP)
+            rows = []
+            for p in order:
+                kind, thm, _ = deriv[p]
+                status = ("asserted" if kind == "asserted"
+                          else ("proven" if (kind == "mp" and known[p]) else "derivable"))
+                rows.append({"property": p, "name": pname.get(p, p), "value": known[p],
+                             "status": status, "via": (f"T{int(thm[1:])}" if thm else None)})
+            out[suid] = {"name": sname.get(suid, ""), "traits": rows}
+        dest = os.path.join(REPO, "data", "traits.json")
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
+        json.dump(out, open(dest, "w"), ensure_ascii=False, indent=0)
+        tot = sum(len(v["traits"]) for v in out.values())
+        print(f"wrote data/traits.json: {len(out)} spaces, {tot} trait cells")
+        return
+
     # ---- stats ----
     tot_ass = tot_der = tot_cells = 0
     per = []
@@ -146,32 +166,43 @@ def main():
         print(f"  {suid} «{sname.get(suid,'')[:34]:36}» {n:3} = {a} asserted + {d} derived")
 
 
+import json as _json
+_CARRIERS = _json.load(open("/Users/jack/Desktop/LEAN/pibase-source-data/carriers.json")) \
+    if os.path.exists("/Users/jack/Desktop/LEAN/pibase-source-data/carriers.json") else {}
+
+
+def _tname(n, q, w):
+    """Local trait-theorem name for property q (value w) on space S<n>."""
+    return f"S{n}_P{int(q[1:])}" + ("" if w else "_not")
+
+
 def emit_space(uid, seed, theorems, availP, pname, sname):
-    """First-cut Lean emission for one space's trait table (positive derivations)."""
+    """Lean emission for one space's trait table: derived traits as one-line proofs
+    off Felix's ≤ theorems, asserted traits as `sorry` obligations."""
     known, deriv, order = close(seed, theorems, availP)
     n = int(uid[1:])
-    lines = [f"-- Traits for π-Base {uid} «{sname.get(uid,'')}»  (S{n})",
-             f"-- {sum(1 for p in known if deriv[p][0]=='asserted')} asserted (sorry) "
-             f"+ {sum(1 for p in known if deriv[p][0]!='asserted')} derived",
-             ""]
+    C = _CARRIERS.get(f"S{n}", f"S{n}")               # fully-qualified carrier type
+    na = sum(1 for p in known if deriv[p][0] == 'asserted')
+    lines = [f"/-! Traits for π-Base {uid} «{sname.get(uid,'')}»  — carrier `{C}`.",
+             f"    {na} asserted (`sorry`) + {len(known)-na} derived off the ≤ theorems. -/",
+             "open PiBase.Formal"]
     for p in order:
-        v = known[p]
-        pn = int(p[1:])
-        goal = f"PiBase.Formal.P{pn} S{n}" if v else f"¬ PiBase.Formal.P{pn} S{n}"
+        v = known[p]; pn = int(p[1:])
+        P = f"P{pn}"; goal = f"{P} {C}" if v else f"¬ {P} {C}"
         kind, thm, pre = deriv[p]
-        nm = f"S{n}_P{pn}" + ("" if v else "_not")
+        nm = _tname(n, p, v)
         if kind == "asserted":
             lines.append(f"theorem {nm} : {goal} := sorry  -- ASSERTED «{pname.get(p,'')}»")
         elif kind == "mp" and v:
             tk = int(thm[1:])
-            args = " ".join(f"S{n}_P{int(q[1:])}" + ("" if w else "_not") for q, w in pre)
-            payload = args if len(pre) == 1 else "⟨" + ", ".join(
-                f"S{n}_P{int(q[1:])}" + ("" if w else "_not") for q, w in pre) + "⟩"
-            lines.append(f"theorem {nm} : {goal} := "
-                         f"PiBase.Formal.T{tk} S{n} inferInstance {payload}"
+            refs = [_tname(n, q, w) for q, w in pre]
+            payload = refs[0] if len(refs) == 1 else "⟨" + ", ".join(refs) + "⟩"
+            lines.append(f"theorem {nm} : {goal} := T{tk} {C} inferInstance {payload}"
                          f"  -- «{pname.get(p,'')}» via T{tk}")
         else:
-            lines.append(f"theorem {nm} : {goal} := sorry  -- derived ({kind} T{int(thm[1:])}) «{pname.get(p,'')}»")
+            # contrapositive / other: mechanizable, but proof-term construction is
+            # subtler (negative-antecedent bookkeeping); left as an obligation.
+            lines.append(f"theorem {nm} : {goal} := sorry  -- {kind} T{int(thm[1:])} «{pname.get(p,'')}» (derivable)")
     return "\n".join(lines)
 
 
