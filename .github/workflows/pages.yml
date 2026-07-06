@@ -22,6 +22,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0        # build_review.py reads git history for per-file authorship
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

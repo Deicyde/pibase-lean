@@ -13,6 +13,7 @@ import html
 import json
 import os
 import re
+import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -21,6 +22,50 @@ PIBASE_DATA = os.path.join(FELIX, "data", "pibase.json")
 OUT = os.path.join(FELIX, "site", "index.html")
 PIBASE = "https://topology.pi-base.org"
 GH = "https://github.com/Deicyde/pibase-lean/blob/add-counterexample-spaces"
+
+# ---------- per-file authorship (who wrote this Lean file) ----------
+# Fold aliases so one person reads as one name. Several of Felix's commits are
+# authored as "Batixx"/"felixpernegger" but share his uni-bonn email; our spaces
+# are Jack's. Everyone else (upstream theorem contributors) shows their own name.
+ME_EMAIL = "jack.mccarthy.1@stonybrook.edu"
+AUTHOR_ALIASES = {                       # email -> canonical display name
+    ME_EMAIL: "Jack McCarthy",
+    "s59fpern@uni-bonn.de": "Felix Pernegger",
+}
+AUTHORS = {}                             # repo-relative path -> (display_name, is_me)
+
+
+def load_authors(root):
+    """Attribute each Lean file to the author of the commit that ADDED it. These
+    files are effectively write-once (each space/property/theorem lands in one
+    commit and is rarely touched again), so added-by == author. One git pass;
+    returns {} on any failure — e.g. a shallow CI checkout with no history — so
+    the badges simply degrade to absent rather than breaking the build."""
+    try:
+        out = subprocess.run(
+            ["git", "-C", root, "log", "--reverse", "--no-renames",
+             "--diff-filter=A", "--format=%x00%an%x09%ae", "--name-only",
+             "--", "PiBaseLean"],
+            capture_output=True, text=True, check=True).stdout
+    except Exception:
+        return
+    name = email = None
+    for ln in out.splitlines():
+        if ln.startswith("\x00"):                     # commit header line
+            name, email = (ln[1:].split("\t", 1) + [""])[:2]
+        elif ln.strip() and ln not in AUTHORS:        # file added here (oldest wins)
+            disp = AUTHOR_ALIASES.get(email, name)
+            AUTHORS[ln] = (disp, email == ME_EMAIL)
+
+
+def author_badge(rel):
+    a = AUTHORS.get(rel)
+    if not a:
+        return ""
+    disp, me = a
+    return (f'<span class="auth{" me" if me else ""}" title="authored by {html.escape(disp)}">'
+            f'<span class="pen">✍</span>{html.escape(disp)}</span>')
+
 
 # ---------- Lean syntax highlighting (VS Code Light+ token classes) ----------
 KEYWORDS = {
@@ -116,6 +161,7 @@ def read_lean(path):
 
 
 def main():
+    load_authors(FELIX)
     data = json.load(open(PIBASE_DATA))
     P = {p["uid"]: p for p in data["properties"]}
     T = {t["uid"]: t for t in data["theorems"]}
@@ -140,11 +186,14 @@ def main():
         lean = defs or "-- (no Defs.lean)"
         extra = (f'<details class="more"><summary>+ Lemmas.lean</summary>'
                  f'<pre class="lean">{lean_html(lemmas)}</pre></details>' if lemmas else "")
+        rel = f"PiBaseLean/Properties/P{n}/Defs.lean"
+        aname = AUTHORS.get(rel, ("", False))[0]
         pcards.append(f'''<div class="entry" data-kind="prop" id="c-prop-P{n}"
-  data-search="{html.escape((uid + ' P' + str(n) + ' ' + nm).lower())}">
+  data-search="{html.escape((uid + ' P' + str(n) + ' ' + nm + ' ' + aname).lower())}">
   <header>
     <span class="uid"><a href="{PIBASE}/properties/{uid}" target="_blank" rel="noopener">P{n}</a></span>
     <span class="name" data-math>{html.escape(nm)}</span>
+    {author_badge(rel)}
     <a class="gh" href="{GH}/PiBaseLean/Properties/P{n}/Defs.lean" target="_blank" rel="noopener">source ↗</a>
     <span class="rev-controls"></span>
   </header>
@@ -174,11 +223,14 @@ def main():
                  f'<pre class="lean">{lean_html(lemmas)}</pre></details>' if lemmas else "")
         just_banner = (f'<div class="thm-just" data-md>{html.escape(just)}</div>'
                        if just else "")
+        rel = f"PiBaseLean/Theorems/T{n}/Theorem.lean"
+        aname = AUTHORS.get(rel, ("", False))[0]
         tcards.append(f'''<div class="entry thm" data-kind="thm" id="c-thm-T{n}"
-  data-search="{html.escape(('t'+str(n)+' '+re.sub(r'<[^>]+>','',stmt).lower()))}">
+  data-search="{html.escape(('t'+str(n)+' '+re.sub(r'<[^>]+>','',stmt).lower()+' '+aname.lower()))}">
   <header>
     <span class="uid"><a href="{PIBASE}/theorems/{uid}" target="_blank" rel="noopener">T{n}</a></span>
     <span class="name" data-math>{stmt}</span>
+    {author_badge(rel)}
     <a class="gh" href="{PIBASE}/theorems/{uid}" target="_blank" rel="noopener">π-Base ↗</a>
     <a class="gh" href="{GH}/PiBaseLean/Theorems/T{n}/Theorem.lean" target="_blank" rel="noopener">source ↗</a>
     <span class="rev-controls"></span>
@@ -213,11 +265,14 @@ def main():
                     f'{cnt["asserted"]} asserted · {cnt["derivable"]} derivable') if rows else "no trait data"
         traits_block = (f'<details class="traits" data-space="S{n}"><summary>{tsummary}</summary>'
                         f'<div class="trwrap"></div></details>') if rows else ""
+        rel = f"PiBaseLean/Spaces/S{n}/Defs.lean"
+        aname = AUTHORS.get(rel, ("", False))[0]
         scards.append(f'''<div class="entry" data-kind="space" id="c-space-S{n}"
-  data-search="{html.escape((uid + ' S' + str(n) + ' ' + nm).lower())}">
+  data-search="{html.escape((uid + ' S' + str(n) + ' ' + nm + ' ' + aname).lower())}">
   <header>
     <span class="uid"><a href="{PIBASE}/spaces/{uid}" target="_blank" rel="noopener">S{n}</a></span>
     <span class="name" data-math>{html.escape(nm)}</span>
+    {author_badge(rel)}
     <a class="gh" href="{PIBASE}/spaces/{uid}" target="_blank" rel="noopener">π-Base ↗</a>
     <a class="gh" href="{GH}/PiBaseLean/Spaces/S{n}/Defs.lean" target="_blank" rel="noopener">source ↗</a>
     <span class="rev-controls"></span>
@@ -276,6 +331,10 @@ h1{{font-size:1.5rem;margin:0 0 .25rem}}
 .entry header .name{{font-weight:600}}
 a.gh{{color:var(--accent);text-decoration:none;font-size:.76rem;border:1px solid #e0c8ba;border-radius:5px;padding:.03rem .4rem;margin-left:.2rem}}
 a.gh:hover{{background:#fbf6ec}}
+.auth{{font-size:.72rem;color:var(--muted);display:inline-flex;align-items:center;gap:.22rem;white-space:nowrap;
+ border:1px solid var(--rule);border-radius:20px;padding:.03rem .5rem;background:#fbf9f3}}
+.auth.me{{color:var(--accent);border-color:#e0c8ba;background:#fbf3ec}}
+.auth .pen{{opacity:.65;font-size:.85em}}
 .rev-controls{{margin-left:auto;display:flex;gap:.3rem}}
 .rev-controls button{{font:inherit;font-size:.78rem;padding:.15rem .5rem;border:1px solid var(--rule);background:#fff;border-radius:5px;cursor:pointer;color:var(--muted)}}
 .rev-controls button.on[data-v=ok]{{background:var(--gb);color:var(--g);border-color:#bfe0cb}}
