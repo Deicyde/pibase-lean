@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """
-build_review_pibase.py — human review UI over the felixpernegger/pibase-lean
-formalization. For each formalized property / theorem it shows the informal
-π-Base statement beside the Lean definition/proof from that repo, so a human can
-check faithfulness at a glance. Reuses the WikiLean review aesthetic.
+build_review_pibase.py - human review UI over the pibase-lean formalization.
+For each formalized property / theorem it shows the informal pi-Base statement
+beside the Lean definition/proof from this checkout, so a human can check
+faithfulness at a glance. Reuses the WikiLean review aesthetic.
 
-Reads:  the pi-base data blob (informal statements) + a checkout of
-        felixpernegger/pibase-lean (the Lean).
-Writes: <out>/index.html
+Reads:  the pi-base data blob (informal statements) + this Lean checkout.
+Writes: site/review.html
 """
 import html
 import json
@@ -17,11 +16,17 @@ import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-FELIX = os.environ.get("FELIX_REPO", os.path.dirname(HERE))  # repo root (scripts/..)
+FELIX = os.environ.get("PIBASE_LEAN_SOURCE", os.path.dirname(HERE))  # repo root (scripts/..)
 PIBASE_DATA = os.path.join(FELIX, "data", "pibase.json")
-OUT = os.path.join(FELIX, "site", "index.html")
+OUT = os.path.join(FELIX, "site", "review.html")
 PIBASE = "https://topology.pi-base.org"
-GH = "https://github.com/Deicyde/pibase-lean/blob/add-counterexample-spaces"
+BRANCH = (
+    os.environ.get("GITHUB_REF_NAME")
+    or subprocess.run(["git", "-C", FELIX, "branch", "--show-current"],
+                      capture_output=True, text=True).stdout.strip()
+    or "add-counterexample-spaces"
+)
+GH = f"https://github.com/Deicyde/pibase-lean/blob/{BRANCH}"
 
 # ---------- per-file authorship (who wrote this Lean file) ----------
 # Fold aliases so one person reads as one name. Several of Felix's commits are
@@ -405,8 +410,8 @@ label.chk{{font-size:.85rem;color:var(--muted);display:inline-flex;gap:.3rem;ali
 .hidden{{display:none}}
 </style></head><body>
 <h1>π-Base Lean — review</h1>
-<p class="lede">The <a href="https://github.com/felixpernegger/pibase-lean" target="_blank" rel="noopener">felixpernegger/pibase-lean</a>
-formalization, for human review. Each card shows the informal
+<p class="lede">The <a href="https://github.com/Deicyde/pibase-lean" target="_blank" rel="noopener">Deicyde/pibase-lean</a>
+fork of Felix Pernegger's formalization, for human review. Each card shows the informal
 <a href="https://topology.pi-base.org" target="_blank" rel="noopener">π-Base</a> statement beside the Lean
 definition/proof. Review marks are saved in your browser.</p>
 <div id="controls">
