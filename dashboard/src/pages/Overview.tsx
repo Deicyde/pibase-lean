@@ -6,6 +6,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useState } from "react";
+import ImplementationBar from "../components/ImplementationBar";
 import Matrix, { type MatrixMode } from "../components/Matrix";
 import Metric from "../components/Metric";
 import TrustBar from "../components/TrustBar";
@@ -46,9 +47,9 @@ export default function Overview({ bundle }: { bundle: DashboardBundle }) {
           icon={<ShieldCheck size={18} aria-hidden="true" />}
         />
         <Metric
-          label="Properties represented"
-          value={formatPercent(data.summary.propertyEntries, data.summary.propertyTotal)}
-          detail={`${formatNumber(data.summary.propertyEntries)} of ${formatNumber(data.summary.propertyTotal)} entries`}
+          label="Properties implemented"
+          value={formatPercent(data.summary.propertyImplementations, data.summary.propertyTotal)}
+          detail={`${formatNumber(data.summary.propertyImplementations)} definitions · ${formatNumber(data.summary.propertyTotal - data.summary.propertyImplementations)} remaining`}
           tone="represented"
           icon={<CheckCircle2 size={18} aria-hidden="true" />}
         />
@@ -115,13 +116,17 @@ export default function Overview({ bundle }: { bundle: DashboardBundle }) {
       <section className="dashboard-section section-split">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Formal trust</p>
-            <h2>Lean status ledger</h2>
+            <p className="eyebrow">Formalization status</p>
+            <h2>Lean implementation ledger</h2>
           </div>
           <a className="text-link" href={routeTo("review")}>Open review <ArrowRight size={15} aria-hidden="true" /></a>
         </div>
         <div className="trust-ledger">
-          <TrustBar label="Properties" values={data.trust.properties} />
+          <ImplementationBar
+            label="Properties"
+            implemented={data.summary.propertyImplementations}
+            total={data.summary.propertyTotal}
+          />
           <TrustBar label="Theorems" values={data.trust.theorems} />
           <TrustBar label="Spaces" values={data.trust.spaces} />
           <div className="trust-note">

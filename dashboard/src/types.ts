@@ -71,6 +71,7 @@ export interface DashboardData {
   };
   summary: {
     propertyEntries: number;
+    propertyImplementations: number;
     propertyTotal: number;
     mappedProperties: number;
     theoremEntries: number;

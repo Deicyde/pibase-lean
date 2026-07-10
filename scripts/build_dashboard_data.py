@@ -217,7 +217,12 @@ def analyze_lean_tree() -> tuple[dict[str, dict], dict[Path, dict]]:
             analyses.get(path, {}).get("axioms", 0) for path in dependency_files
         )
         declaration = True
-        if kind == "Theorems":
+        if kind == "Properties":
+            declaration = bool(
+                primary.exists()
+                and re.search(rf"\bdef\s+P{number}\b", analyses[primary]["code"])
+            )
+        elif kind == "Theorems":
             declaration = bool(
                 primary.exists()
                 and re.search(rf"\btheorem\s+T{number}\b", analyses[primary]["code"])
@@ -623,6 +628,7 @@ def main() -> None:
         },
         "summary": {
             "propertyEntries": len(property_statuses),
+            "propertyImplementations": sum(item["declarationPresent"] for item in property_statuses),
             "propertyTotal": len(data["properties"]),
             "mappedProperties": len(registry.get("properties", {})),
             "theoremEntries": len(theorem_statuses),

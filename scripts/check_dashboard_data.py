@@ -74,6 +74,11 @@ def main() -> None:
 
     summary = manifest["summary"]
     require(sum(manifest["trust"]["properties"].values()) == summary["propertyEntries"], "property trust totals disagree")
+    require(
+        summary["propertyImplementations"]
+        == summary["propertyEntries"] - manifest["trust"]["properties"].get("missing-declaration", 0),
+        "canonical property implementation count disagrees with trust ledger",
+    )
     require(sum(manifest["trust"]["theorems"].values()) == summary["theoremEntries"], "theorem trust totals disagree")
     require(sum(manifest["trust"]["spaces"].values()) == summary["spaceEntries"], "space trust totals disagree")
     require(

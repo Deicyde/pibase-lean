@@ -1,4 +1,5 @@
 import { Download, ExternalLink, FileCode2, GitCommitHorizontal } from "lucide-react";
+import ImplementationBar from "../components/ImplementationBar";
 import TrustBar from "../components/TrustBar";
 import { formatNumber, formatPercent } from "../lib";
 import type { DashboardData } from "../types";
@@ -38,12 +39,12 @@ export default function DataPage({ data }: { data: DashboardData }) {
 
       <section className="dashboard-section">
         <div className="section-heading">
-          <div><p className="eyebrow">Coverage</p><h2>Representation and trust</h2></div>
+          <div><p className="eyebrow">Coverage</p><h2>Implementation and trust</h2></div>
         </div>
         <div className="coverage-grid">
           <div className="coverage-item">
-            <div><strong>Properties represented</strong><span>{formatNumber(data.summary.propertyEntries)} / {formatNumber(data.summary.propertyTotal)}</span></div>
-            <div className="coverage-track"><i style={{ width: formatPercent(data.summary.propertyEntries, data.summary.propertyTotal) }} /></div>
+            <div><strong>Properties implemented</strong><span>{formatNumber(data.summary.propertyImplementations)} / {formatNumber(data.summary.propertyTotal)}</span></div>
+            <div className="coverage-track"><i style={{ width: formatPercent(data.summary.propertyImplementations, data.summary.propertyTotal) }} /></div>
           </div>
           <div className="coverage-item coverage-theorems">
             <div><strong>Theorem rows represented</strong><span>{formatNumber(data.summary.theoremEntries)} / {formatNumber(data.summary.theoremTotal)}</span></div>
@@ -55,7 +56,11 @@ export default function DataPage({ data }: { data: DashboardData }) {
           </div>
         </div>
         <div className="trust-ledger data-trust-ledger">
-          <TrustBar label="Properties" values={data.trust.properties} />
+          <ImplementationBar
+            label="Properties"
+            implemented={data.summary.propertyImplementations}
+            total={data.summary.propertyTotal}
+          />
           <TrustBar label="Theorems" values={data.trust.theorems} />
           <TrustBar label="Spaces" values={data.trust.spaces} />
         </div>
