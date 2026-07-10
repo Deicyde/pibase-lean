@@ -5,13 +5,12 @@ import { loadDashboard, parseHash, routeTo } from "./lib";
 import Overview from "./pages/Overview";
 import type { DashboardBundle } from "./types";
 
-const Explorer = lazy(() => import("./pages/Explorer"));
 const Frontier = lazy(() => import("./pages/Frontier"));
 const Experiments = lazy(() => import("./pages/Experiments"));
 const Review = lazy(() => import("./pages/Review"));
 const DataPage = lazy(() => import("./pages/DataPage"));
 
-const ROUTES = new Set(["overview", "explorer", "frontier", "experiments", "review", "data"]);
+const ROUTES = new Set(["overview", "frontier", "experiments", "review", "data"]);
 
 export default function App() {
   const [bundle, setBundle] = useState<DashboardBundle | null>(null);
@@ -24,6 +23,13 @@ export default function App() {
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
+
+  useEffect(() => {
+    if (location.route !== "explorer") return;
+    const query = location.params.toString();
+    window.history.replaceState(null, "", `#/overview${query ? `?${query}` : ""}`);
+    setLocation({ route: "overview", params: location.params });
+  }, [location]);
 
   useEffect(() => {
     let active = true;
@@ -59,12 +65,11 @@ export default function App() {
   const route = ROUTES.has(location.route) ? location.route : "overview";
   let page;
   switch (route) {
-    case "explorer": page = <Explorer bundle={bundle} params={location.params} />; break;
     case "frontier": page = <Frontier bundle={bundle} params={location.params} />; break;
     case "experiments": page = <Experiments data={bundle.data} />; break;
     case "review": page = <Review data={bundle.data} params={location.params} />; break;
     case "data": page = <DataPage data={bundle.data} />; break;
-    default: page = <Overview bundle={bundle} />;
+    default: page = <Overview bundle={bundle} params={location.params} />;
   }
 
   return (

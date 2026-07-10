@@ -395,6 +395,59 @@ def build_graph(data: dict, independent_pairs: set[tuple[str, str]]) -> dict:
     }
 
 
+def build_formalized_graph(data: dict, statuses: dict[str, dict]) -> dict:
+    """Project canonical Lean pairwise theorem declarations onto the graph."""
+    nodes = [item["uid"] for item in data["properties"]]
+    node_set = set(nodes)
+    theorem_map = direct_theorem_map(data)
+    direct_edges: dict[str, set[str]] = defaultdict(set)
+    formal_theorems: dict[tuple[str, str], list[str]] = {}
+
+    for (source, target), theorem_ids in theorem_map.items():
+        implemented = []
+        for uid in theorem_ids:
+            status = statuses.get(uid, {})
+            if (
+                status.get("declarationPresent", False)
+                and status.get("localPlaceholders", 0) == 0
+                and status.get("localAxioms", 0) == 0
+            ):
+                implemented.append(uid)
+        if implemented and source in node_set and target in node_set:
+            direct_edges[source].add(target)
+            formal_theorems[(source, target)] = implemented
+
+    reach = transitive_closure(direct_edges, nodes)
+    outcomes = bytearray()
+    counts: Counter[str] = Counter()
+    for source in nodes:
+        for target in nodes:
+            if source == target:
+                state = 0
+                counts["diagonal"] += 1
+            elif target in direct_edges.get(source, ()):
+                state = 1
+                counts["formalizedDirect"] += 1
+            elif target in reach[source]:
+                state = 2
+                counts["formalizedDerived"] += 1
+            else:
+                state = 5
+                counts["notFormalized"] += 1
+            outcomes.append(state)
+
+    direct = [
+        {
+            "source": source,
+            "target": target,
+            "theorems": formal_theorems[(source, target)],
+        }
+        for source in nodes
+        for target in sorted(direct_edges.get(source, ()))
+    ]
+    return {"outcomes": outcomes, "counts": dict(counts), "direct": direct}
+
+
 def recent_activity() -> tuple[list[dict], dict]:
     rows = git(
         "log", "-8", "--date=short", "--pretty=format:%H%x1f%h%x1f%cs%x1f%s",
@@ -566,6 +619,7 @@ def main() -> None:
     source_date = git("log", "-1", "--format=%cI")[:10]
     statuses, analyses = analyze_lean_tree()
     graph = build_graph(data, independent_pairs)
+    formalized_graph = build_formalized_graph(data, statuses)
     names = {item["uid"]: item["name"] for item in data["properties"]}
     recent, delta = recent_activity()
 
@@ -657,6 +711,11 @@ def main() -> None:
             },
             "direct": graph["direct"],
             "witnessCounts": graph["witnessCounts"],
+            "formalized": {
+                "counts": formalized_graph["counts"],
+                "outcomesPath": "data/formalized-outcomes.bin",
+                "direct": formalized_graph["direct"],
+            },
         },
         "properties": properties,
         "spaces": spaces,
@@ -677,6 +736,7 @@ def main() -> None:
         "downloads": [
             {"label": "Dashboard manifest", "path": "data/dashboard.json", "format": "JSON"},
             {"label": "Outcome matrix", "path": "data/outcomes.bin", "format": "Uint8"},
+            {"label": "Formalized outcome matrix", "path": "data/formalized-outcomes.bin", "format": "Uint8"},
             {"label": "Witness matrix", "path": "data/witnesses.bin", "format": "Uint16 LE"},
             {"label": "Open frontier", "path": "data/frontier.json", "format": "JSON"},
             {"label": "Review: spaces", "path": "data/review-spaces.json", "format": "JSON"},
@@ -693,6 +753,7 @@ def main() -> None:
         "frontier": graph["frontier"],
     })
     (OUT_DIR / "outcomes.bin").write_bytes(graph["outcomes"])
+    (OUT_DIR / "formalized-outcomes.bin").write_bytes(formalized_graph["outcomes"])
     (OUT_DIR / "witnesses.bin").write_bytes(
         b"".join(struct.pack("<H", value) for value in graph["witnesses"])
     )

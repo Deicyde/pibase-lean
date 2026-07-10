@@ -42,9 +42,11 @@ def main() -> None:
     manifest = load(DATA / "dashboard.json")
     size = manifest["graph"]["size"]
     outcomes = (DATA / "outcomes.bin").read_bytes()
+    formalized_outcomes = (DATA / "formalized-outcomes.bin").read_bytes()
     witness_bytes = (DATA / "witnesses.bin").read_bytes()
     require(len(manifest["properties"]) == size, "property list does not match graph size")
     require(len(outcomes) == size * size, "outcome matrix dimensions are invalid")
+    require(len(formalized_outcomes) == size * size, "formalized outcome matrix dimensions are invalid")
     require(len(witness_bytes) == size * size * 2, "witness matrix dimensions are invalid")
 
     histogram = Counter(outcomes)
@@ -53,6 +55,20 @@ def main() -> None:
     for code, key in ((1, "explicitTrue"), (2, "derivedTrue"), (3, "false"), (4, "independent"), (5, "open")):
         require(histogram[code] == expected.get(key, 0), f"{key} count disagrees with outcome matrix")
     require(sum(histogram.values()) == size * size, "outcome matrix contains invalid status bytes")
+
+    formalized_histogram = Counter(formalized_outcomes)
+    formalized_counts = manifest["graph"]["formalized"]["counts"]
+    require(set(formalized_histogram) <= {0, 1, 2, 5}, "formalized matrix contains invalid status bytes")
+    require(formalized_histogram[0] == size, "formalized diagonal cell count is invalid")
+    for code, key in ((1, "formalizedDirect"), (2, "formalizedDerived"), (5, "notFormalized")):
+        require(
+            formalized_histogram[code] == formalized_counts.get(key, 0),
+            f"{key} count disagrees with formalized outcome matrix",
+        )
+    require(
+        len(manifest["graph"]["formalized"]["direct"]) == formalized_counts.get("formalizedDirect", 0),
+        "formalized direct edge list disagrees with matrix",
+    )
 
     witnesses = [
         int.from_bytes(witness_bytes[index:index + 2], "little")

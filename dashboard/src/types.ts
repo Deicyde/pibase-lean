@@ -99,6 +99,11 @@ export interface DashboardData {
     statusCodes: Record<string, string>;
     direct: DirectEdge[];
     witnessCounts: Record<string, number>;
+    formalized: {
+      counts: Record<string, number>;
+      outcomesPath: string;
+      direct: DirectEdge[];
+    };
   };
   properties: PropertyNode[];
   spaces: SpaceNode[];
@@ -123,6 +128,7 @@ export interface DashboardData {
 export interface DashboardBundle {
   data: DashboardData;
   outcomes: Uint8Array;
+  formalizedOutcomes: Uint8Array;
   witnesses: Uint16Array;
 }
 

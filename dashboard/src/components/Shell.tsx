@@ -5,7 +5,6 @@ import {
   Database,
   GitFork,
   Github,
-  Grid3X3,
   ListTodo,
 } from "lucide-react";
 import type { ReactNode } from "react";
@@ -14,7 +13,6 @@ import { routeTo } from "../lib";
 
 const NAV = [
   { route: "overview", label: "Overview", icon: BarChart3 },
-  { route: "explorer", label: "Explorer", icon: Grid3X3 },
   { route: "frontier", label: "Frontier", icon: ListTodo },
   { route: "experiments", label: "Experiments", icon: Beaker },
   { route: "review", label: "Review", icon: BookOpenCheck },

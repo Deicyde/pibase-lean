@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { GRAPH_STATUS, graphIndex, type GraphStatusCode } from "../lib";
+import { FORMAL_GRAPH_STATUS, GRAPH_STATUS, graphIndex, type GraphStatusCode } from "../lib";
 import type { DashboardBundle } from "../types";
 
-const STATUS_CLASS: Record<number, string> = {
+const PIBASE_STATUS_CLASS: Record<number, string> = {
   0: "diagonal",
   1: "explicit-true",
   2: "derived-true",
@@ -12,6 +12,16 @@ const STATUS_CLASS: Record<number, string> = {
 };
 
 export type MatrixMode = "all" | "open" | "proofs";
+export type MatrixView = "formalized" | "pibase";
+
+function statusClass(view: MatrixView, state: GraphStatusCode): string {
+  if (view === "formalized") {
+    if (state === 1) return "formal-direct";
+    if (state === 2) return "formal-derived";
+    if (state === 5) return "unformalized";
+  }
+  return PIBASE_STATUS_CLASS[state];
+}
 
 interface MatrixSelection {
   sourceIndex: number;
@@ -23,6 +33,8 @@ export default function Matrix({
   selectedSource,
   selectedTarget,
   onSelect,
+  outcomes,
+  view,
   mode = "all",
   compact = false,
 }: {
@@ -30,6 +42,8 @@ export default function Matrix({
   selectedSource: string;
   selectedTarget: string;
   onSelect: (source: string, target: string) => void;
+  outcomes: Uint8Array;
+  view: MatrixView;
   mode?: MatrixMode;
   compact?: boolean;
 }) {
@@ -67,11 +81,11 @@ export default function Matrix({
     const styles = getComputedStyle(document.documentElement);
     const colors: Record<number, string> = {
       0: styles.getPropertyValue("--graph-diagonal").trim(),
-      1: styles.getPropertyValue("--graph-explicit").trim(),
-      2: styles.getPropertyValue("--graph-derived").trim(),
+      1: styles.getPropertyValue(view === "formalized" ? "--graph-formal-direct" : "--graph-explicit").trim(),
+      2: styles.getPropertyValue(view === "formalized" ? "--graph-formal-derived" : "--graph-derived").trim(),
       3: styles.getPropertyValue("--graph-false").trim(),
       4: styles.getPropertyValue("--graph-independent").trim(),
-      5: styles.getPropertyValue("--graph-open").trim(),
+      5: styles.getPropertyValue(view === "formalized" ? "--graph-unformalized" : "--graph-open").trim(),
     };
     const muted = styles.getPropertyValue("--graph-muted").trim();
     const cell = side / size;
@@ -79,7 +93,7 @@ export default function Matrix({
     context.fillRect(0, 0, side, side);
     for (let row = 0; row < size; row += 1) {
       for (let column = 0; column < size; column += 1) {
-        const state = bundle.outcomes[graphIndex(size, row, column)];
+        const state = outcomes[graphIndex(size, row, column)];
         const visible = mode === "all"
           || (mode === "open" && (state === 5 || state === 0))
           || (mode === "proofs" && (state === 1 || state === 2 || state === 0));
@@ -100,18 +114,21 @@ export default function Matrix({
       context.stroke();
       context.globalAlpha = 1;
     }
-  }, [bundle, mode, side, size, sourceIndex, targetIndex]);
+  }, [mode, outcomes, side, size, sourceIndex, targetIndex, view]);
 
   const active = hover ?? (sourceIndex >= 0 && targetIndex >= 0 ? { sourceIndex, targetIndex } : null);
   const activeSummary = useMemo(() => {
     if (!active) return null;
-    const state = bundle.outcomes[graphIndex(size, active.sourceIndex, active.targetIndex)] as GraphStatusCode;
+    const state = outcomes[graphIndex(size, active.sourceIndex, active.targetIndex)] as GraphStatusCode;
     return {
       source: properties[active.sourceIndex],
       target: properties[active.targetIndex],
       state,
     };
-  }, [active, bundle.outcomes, properties, size]);
+  }, [active, outcomes, properties, size]);
+
+  const statusLabels = view === "formalized" ? FORMAL_GRAPH_STATUS : GRAPH_STATUS;
+  const legendCodes: GraphStatusCode[] = view === "formalized" ? [1, 2, 5] : [1, 2, 3, 4, 5];
 
   function pointerSelection(event: React.MouseEvent<HTMLCanvasElement>): MatrixSelection {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -134,25 +151,25 @@ export default function Matrix({
           onSelect(properties[next.sourceIndex].id, properties[next.targetIndex].id);
         }}
         role="img"
-        aria-label={`Implication matrix with ${size} properties. Rows are hypotheses and columns are conclusions.`}
+        aria-label={`${view === "formalized" ? "Formalized implication" : "pi-Base implication"} matrix with ${size} properties. Rows are hypotheses and columns are conclusions.`}
       />
       <div className="matrix-axis matrix-axis-x">Conclusion →</div>
       <div className="matrix-readout" aria-live="polite">
         {activeSummary && (
           <>
-            <span className={`matrix-swatch graph-${STATUS_CLASS[activeSummary.state]}`} aria-hidden="true" />
+            <span className={`matrix-swatch graph-${statusClass(view, activeSummary.state)}`} aria-hidden="true" />
             <strong>{activeSummary.source.shortId}</strong>
             <span>⇒</span>
             <strong>{activeSummary.target.shortId}</strong>
-            <span>{GRAPH_STATUS[activeSummary.state].label}</span>
+            <span>{statusLabels[activeSummary.state].label}</span>
           </>
         )}
       </div>
       <div className="matrix-legend" aria-label="Matrix legend">
-        {[1, 2, 3, 4, 5].map((code) => (
+        {legendCodes.map((code) => (
           <span key={code}>
-            <i className={`matrix-swatch graph-${STATUS_CLASS[code]}`} aria-hidden="true" />
-            {GRAPH_STATUS[code as GraphStatusCode].label}
+            <i className={`matrix-swatch graph-${statusClass(view, code)}`} aria-hidden="true" />
+            {statusLabels[code].label}
           </span>
         ))}
       </div>

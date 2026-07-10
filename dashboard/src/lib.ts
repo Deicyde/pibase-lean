@@ -1,4 +1,4 @@
-import type { DashboardBundle, DashboardData, ImportedRun } from "./types";
+import type { DashboardBundle, DashboardData, DirectEdge, ImportedRun } from "./types";
 
 export const GRAPH_STATUS = {
   0: { key: "diagonal", label: "Diagonal" },
@@ -7,6 +7,15 @@ export const GRAPH_STATUS = {
   3: { key: "false", label: "Counterexample" },
   4: { key: "independent", label: "Independent" },
   5: { key: "open", label: "Open" },
+} as const;
+
+export const FORMAL_GRAPH_STATUS = {
+  0: { key: "diagonal", label: "Diagonal" },
+  1: { key: "formal-direct", label: "Lean theorem" },
+  2: { key: "formal-derived", label: "By formal closure" },
+  3: { key: "unformalized", label: "Not yet formalized" },
+  4: { key: "unformalized", label: "Not yet formalized" },
+  5: { key: "unformalized", label: "Not yet formalized" },
 } as const;
 
 export type GraphStatusCode = keyof typeof GRAPH_STATUS;
@@ -19,21 +28,23 @@ export async function loadDashboard(): Promise<DashboardBundle> {
   const response = await fetch(assetUrl("data/dashboard.json"));
   if (!response.ok) throw new Error(`Dashboard data returned ${response.status}`);
   const data = (await response.json()) as DashboardData;
-  const [outcomesResponse, witnessesResponse] = await Promise.all([
+  const [outcomesResponse, formalizedResponse, witnessesResponse] = await Promise.all([
     fetch(assetUrl(data.graph.outcomesPath)),
+    fetch(assetUrl(data.graph.formalized.outcomesPath)),
     fetch(assetUrl(data.graph.witnessesPath)),
   ]);
-  if (!outcomesResponse.ok || !witnessesResponse.ok) {
+  if (!outcomesResponse.ok || !formalizedResponse.ok || !witnessesResponse.ok) {
     throw new Error("Graph artifacts could not be loaded");
   }
   const outcomes = new Uint8Array(await outcomesResponse.arrayBuffer());
+  const formalizedOutcomes = new Uint8Array(await formalizedResponse.arrayBuffer());
   const witnessBytes = await witnessesResponse.arrayBuffer();
   const witnessView = new DataView(witnessBytes);
   const witnesses = new Uint16Array(witnessBytes.byteLength / 2);
   for (let index = 0; index < witnesses.length; index += 1) {
     witnesses[index] = witnessView.getUint16(index * 2, true);
   }
-  return { data, outcomes, witnesses };
+  return { data, outcomes, formalizedOutcomes, witnesses };
 }
 
 export function formatNumber(value: number): string {
@@ -121,10 +132,15 @@ export function extractVerdict(text: string): boolean | null {
   return null;
 }
 
-export function findProofPath(data: DashboardData, source: string, target: string): string[] {
+export function findProofPath(
+  data: DashboardData,
+  source: string,
+  target: string,
+  edges: DirectEdge[] = data.graph.direct,
+): string[] {
   if (source === target) return [source];
   const adjacency = new Map<string, string[]>();
-  data.graph.direct.forEach((edge) => {
+  edges.forEach((edge) => {
     adjacency.set(edge.source, [...(adjacency.get(edge.source) ?? []), edge.target]);
   });
   const queue = [source];

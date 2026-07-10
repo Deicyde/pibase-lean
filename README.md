@@ -12,9 +12,10 @@ As of writing, this project is still in its infancy, so the structure of the rep
 ## Project dashboard
 
 The [project dashboard](https://deicyde.github.io/pibase-lean/) combines the Lean checkout with a pinned
-pi-Base data snapshot. It includes an implication-matrix explorer, a ranked open frontier, dependency-aware
-formalization status, a lazy human-review workspace, versioned data downloads, and a local experiment lab for
-equational-theories-style prompt evaluation.
+pi-Base data snapshot. Its overview includes an implication explorer that defaults to the pairwise Lean theorem
+graph and can switch to the informal pi-Base classifications. The dashboard also provides a ranked open frontier,
+dependency-aware formalization status, a lazy human-review workspace, versioned data downloads, and a local
+experiment lab for equational-theories-style prompt evaluation.
 
 Dashboard trust states are deliberately stricter than directory counts:
 

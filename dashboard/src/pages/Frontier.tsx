@@ -95,7 +95,7 @@ export default function Frontier({ bundle, params }: { bundle: DashboardBundle; 
           <span>Set-theory frontier</span>
         </label>
         {first && (
-          <a className="button button-primary" href={routeTo("explorer", { source: first.source, target: first.target })}>
+          <a className="button button-primary" href={routeTo("overview", { source: first.source, target: first.target })}>
             <Sparkles size={16} aria-hidden="true" /> Highest leverage
           </a>
         )}
@@ -123,7 +123,7 @@ export default function Frontier({ bundle, params }: { bundle: DashboardBundle; 
               return (
                 <tr key={key} className={watched.has(key) ? "is-watched" : undefined}>
                   <td>
-                    <a className="pair-cell" href={routeTo("explorer", { source: item.source, target: item.target })}>
+                    <a className="pair-cell" href={routeTo("overview", { source: item.source, target: item.target })}>
                       <code>{source.shortId}</code><span>⇒?</span><code>{target.shortId}</code>
                       {item.setTheory && <span className="table-tag">Set theory</span>}
                     </a>
@@ -143,7 +143,7 @@ export default function Frontier({ bundle, params }: { bundle: DashboardBundle; 
                       data-tooltip={watched.has(key) ? "Remove saved pair" : "Save pair"}
                       onClick={() => watch(item)}
                     ><Bookmark size={16} fill={watched.has(key) ? "currentColor" : "none"} /></button>
-                    <a className="icon-link" href={routeTo("explorer", { source: item.source, target: item.target })} aria-label={`Inspect ${source.shortId} implies ${target.shortId}`} data-tooltip="Inspect pair"><ArrowRight size={17} /></a>
+                    <a className="icon-link" href={routeTo("overview", { source: item.source, target: item.target })} aria-label={`Inspect ${source.shortId} implies ${target.shortId}`} data-tooltip="Inspect pair"><ArrowRight size={17} /></a>
                   </td>
                 </tr>
               );
