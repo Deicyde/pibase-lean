@@ -9,6 +9,32 @@ To contribute please open an issue and then a PR. Note we are strictly using the
 
 As of writing, this project is still in its infancy, so the structure of the repo etc. might and probably will change later.
 
+## Project dashboard
+
+The [project dashboard](https://deicyde.github.io/pibase-lean/) combines the Lean checkout with a pinned
+pi-Base data snapshot. It includes an implication-matrix explorer, a ranked open frontier, dependency-aware
+formalization status, a lazy human-review workspace, versioned data downloads, and a local experiment lab for
+equational-theories-style prompt evaluation.
+
+Dashboard trust states are deliberately stricter than directory counts:
+
+- **Dependency-clean** means the canonical declaration is present and neither it nor its project import closure
+  contains an active `sorry`, `admit`, or explicit project axiom.
+- **Dependency debt** means the declaration itself has no local placeholder but imports project code that does.
+- **Local debt** means the entity's own Lean files contain an active placeholder or explicit axiom.
+- **Missing declaration** means the expected bundled declaration is absent from the primary Lean file.
+
+Build the dashboard locally with:
+
+```sh
+npm ci
+npm run dashboard:check
+npm run dashboard:build
+npm run dashboard:verify
+```
+
+For an interactive local server, run `npm run dashboard:dev`.
+
 ---
 
 <p align="center">

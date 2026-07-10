@@ -451,7 +451,7 @@ definition/proof. Review marks are saved in your browser.</p>
 <button id="hint-show" class="hidden" title="keyboard shortcuts (?)">⌨</button>
 <div id="sec-spaces"><div class="sec-title">Spaces — {n_spaces} formalized (carrier + topology; trait tables from the deduction closure)</div>{space_cards}</div>
 <div id="sec-props" class="hidden"><div class="sec-title">Properties — {n_props} formalized</div>{prop_cards}</div>
-<div id="sec-thms" class="hidden"><div class="sec-title">Theorems — {n_thms} formalized (implications, all proven)</div>{thm_cards}</div>
+<div id="sec-thms" class="hidden"><div class="sec-title">Theorems — {n_thms} represented (see the project dashboard for dependency-aware trust status)</div>{thm_cards}</div>
 <script id="traitdata" type="application/json">{traits_json}</script>
 <!--MAINJS-->
 </body></html>'''

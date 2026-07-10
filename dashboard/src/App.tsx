@@ -1,0 +1,77 @@
+import { AlertTriangle, RefreshCw } from "lucide-react";
+import { lazy, Suspense, useEffect, useState } from "react";
+import Shell from "./components/Shell";
+import { loadDashboard, parseHash, routeTo } from "./lib";
+import Overview from "./pages/Overview";
+import type { DashboardBundle } from "./types";
+
+const Explorer = lazy(() => import("./pages/Explorer"));
+const Frontier = lazy(() => import("./pages/Frontier"));
+const Experiments = lazy(() => import("./pages/Experiments"));
+const Review = lazy(() => import("./pages/Review"));
+const DataPage = lazy(() => import("./pages/DataPage"));
+
+const ROUTES = new Set(["overview", "explorer", "frontier", "experiments", "review", "data"]);
+
+export default function App() {
+  const [bundle, setBundle] = useState<DashboardBundle | null>(null);
+  const [error, setError] = useState("");
+  const [location, setLocation] = useState(parseHash);
+
+  useEffect(() => {
+    if (!window.location.hash) window.history.replaceState(null, "", routeTo("overview"));
+    const onHashChange = () => setLocation(parseHash());
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    loadDashboard()
+      .then((next) => { if (active) { setBundle(next); setError(""); } })
+      .catch((reason: unknown) => {
+        if (active) setError(reason instanceof Error ? reason.message : "Dashboard data could not be loaded");
+      });
+    return () => { active = false; };
+  }, []);
+
+  if (error) {
+    return (
+      <main className="fatal-state">
+        <AlertTriangle size={28} aria-hidden="true" />
+        <h1>Dashboard unavailable</h1>
+        <p>{error}</p>
+        <button type="button" className="button" onClick={() => window.location.reload()}><RefreshCw size={16} /> Reload</button>
+      </main>
+    );
+  }
+
+  if (!bundle) {
+    return (
+      <main className="app-loading" aria-live="polite">
+        <div className="loading-mark" aria-hidden="true" />
+        <strong>pibase-lean</strong>
+        <span>Loading research data…</span>
+      </main>
+    );
+  }
+
+  const route = ROUTES.has(location.route) ? location.route : "overview";
+  let page;
+  switch (route) {
+    case "explorer": page = <Explorer bundle={bundle} params={location.params} />; break;
+    case "frontier": page = <Frontier bundle={bundle} params={location.params} />; break;
+    case "experiments": page = <Experiments data={bundle.data} />; break;
+    case "review": page = <Review data={bundle.data} params={location.params} />; break;
+    case "data": page = <DataPage data={bundle.data} />; break;
+    default: page = <Overview bundle={bundle} />;
+  }
+
+  return (
+    <Shell data={bundle.data} route={route}>
+      <Suspense fallback={<div className="route-loading">Loading workspace…</div>}>
+        {page}
+      </Suspense>
+    </Shell>
+  );
+}

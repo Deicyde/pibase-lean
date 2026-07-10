@@ -1,0 +1,150 @@
+import type { DashboardBundle, DashboardData, ImportedRun } from "./types";
+
+export const GRAPH_STATUS = {
+  0: { key: "diagonal", label: "Diagonal" },
+  1: { key: "explicit-true", label: "Explicit pi-Base edge" },
+  2: { key: "derived-true", label: "By graph closure" },
+  3: { key: "false", label: "Counterexample" },
+  4: { key: "independent", label: "Independent" },
+  5: { key: "open", label: "Open" },
+} as const;
+
+export type GraphStatusCode = keyof typeof GRAPH_STATUS;
+
+function assetUrl(path: string): URL {
+  return new URL(path, document.baseURI);
+}
+
+export async function loadDashboard(): Promise<DashboardBundle> {
+  const response = await fetch(assetUrl("data/dashboard.json"));
+  if (!response.ok) throw new Error(`Dashboard data returned ${response.status}`);
+  const data = (await response.json()) as DashboardData;
+  const [outcomesResponse, witnessesResponse] = await Promise.all([
+    fetch(assetUrl(data.graph.outcomesPath)),
+    fetch(assetUrl(data.graph.witnessesPath)),
+  ]);
+  if (!outcomesResponse.ok || !witnessesResponse.ok) {
+    throw new Error("Graph artifacts could not be loaded");
+  }
+  const outcomes = new Uint8Array(await outcomesResponse.arrayBuffer());
+  const witnessBytes = await witnessesResponse.arrayBuffer();
+  const witnessView = new DataView(witnessBytes);
+  const witnesses = new Uint16Array(witnessBytes.byteLength / 2);
+  for (let index = 0; index < witnesses.length; index += 1) {
+    witnesses[index] = witnessView.getUint16(index * 2, true);
+  }
+  return { data, outcomes, witnesses };
+}
+
+export function formatNumber(value: number): string {
+  return new Intl.NumberFormat("en-GB").format(value);
+}
+
+export function formatPercent(value: number, total: number, digits = 1): string {
+  if (!total) return "0%";
+  return `${((value / total) * 100).toFixed(digits)}%`;
+}
+
+export function plainMathLabel(value: string): string {
+  return value
+    .replace(/\\frac\{1\}\{2\}/g, "½")
+    .replace(/\\leq/g, "≤")
+    .replace(/\\geq/g, "≥")
+    .replace(/\\lt/g, "<")
+    .replace(/\\gt/g, ">")
+    .replace(/\\sigma/g, "σ")
+    .replace(/\\omega/g, "ω")
+    .replace(/\\alpha/g, "α")
+    .replace(/\\delta/g, "δ")
+    .replace(/\\aleph/g, "ℵ")
+    .replace(/\\mathbb\s*\{?R\}?/g, "ℝ")
+    .replace(/\\mathfrak\s*\{?c\}?/g, "c")
+    .replace(/\\(?:mathrm|text)\s*\{([^}]*)\}/g, "$1")
+    .replace(/[${}]/g, "")
+    .replace(/\\/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function graphIndex(size: number, sourceIndex: number, targetIndex: number): number {
+  return sourceIndex * size + targetIndex;
+}
+
+export function statusAt(bundle: DashboardBundle, sourceIndex: number, targetIndex: number): GraphStatusCode {
+  return bundle.outcomes[graphIndex(bundle.data.graph.size, sourceIndex, targetIndex)] as GraphStatusCode;
+}
+
+export function routeTo(route: string, params?: Record<string, string | number | undefined>): string {
+  const query = new URLSearchParams();
+  Object.entries(params ?? {}).forEach(([key, value]) => {
+    if (value !== undefined && value !== "") query.set(key, String(value));
+  });
+  return `#/${route}${query.size ? `?${query}` : ""}`;
+}
+
+export function parseHash(): { route: string; params: URLSearchParams } {
+  const raw = window.location.hash.replace(/^#\/?/, "");
+  const [route = "overview", query = ""] = raw.split("?", 2);
+  return { route: route || "overview", params: new URLSearchParams(query) };
+}
+
+export function downloadText(filename: string, content: string, type = "application/json"): void {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
+export function parseImportedRuns(text: string): ImportedRun[] {
+  const trimmed = text.trim();
+  if (!trimmed) return [];
+  if (trimmed.startsWith("[")) return JSON.parse(trimmed) as ImportedRun[];
+  return trimmed
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map((line) => JSON.parse(line) as ImportedRun)
+    .filter((row) => !Object.prototype.hasOwnProperty.call(row, "summary"));
+}
+
+export function extractVerdict(text: string): boolean | null {
+  const boxed = [...text.matchAll(/\\boxed\s*\{\s*(TRUE|FALSE)\s*\}/gi)];
+  if (boxed.length) return boxed[boxed.length - 1][1].toUpperCase() === "TRUE";
+  const labelled = [...text.matchAll(/(?:VERDICT|ANSWER|FINAL)\s*[:=-]\s*(TRUE|FALSE)/gi)];
+  if (labelled.length) return labelled[labelled.length - 1][1].toUpperCase() === "TRUE";
+  const lines = text.trim().split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  for (const line of [lines.at(-1), lines[0]]) {
+    if (/^(TRUE|FALSE)[.!]?$/i.test(line ?? "")) return /^TRUE/i.test(line ?? "");
+  }
+  return null;
+}
+
+export function findProofPath(data: DashboardData, source: string, target: string): string[] {
+  if (source === target) return [source];
+  const adjacency = new Map<string, string[]>();
+  data.graph.direct.forEach((edge) => {
+    adjacency.set(edge.source, [...(adjacency.get(edge.source) ?? []), edge.target]);
+  });
+  const queue = [source];
+  const previous = new Map<string, string | null>([[source, null]]);
+  while (queue.length) {
+    const current = queue.shift()!;
+    for (const next of adjacency.get(current) ?? []) {
+      if (previous.has(next)) continue;
+      previous.set(next, current);
+      if (next === target) {
+        const path = [target];
+        let cursor: string | null = current;
+        while (cursor) {
+          path.push(cursor);
+          cursor = previous.get(cursor) ?? null;
+        }
+        return path.reverse();
+      }
+      queue.push(next);
+    }
+  }
+  return [];
+}

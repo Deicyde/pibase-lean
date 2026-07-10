@@ -1,0 +1,718 @@
+#!/usr/bin/env python3
+"""Build the versioned data artifacts consumed by the dashboard application."""
+
+from __future__ import annotations
+
+import json
+import os
+import re
+import shutil
+import struct
+import subprocess
+import sys
+from collections import Counter, defaultdict
+from datetime import datetime, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+SCRIPTS = ROOT / "scripts"
+sys.path.insert(0, str(SCRIPTS))
+
+from graph import full_trait_matrix, known_true_edges, transitive_closure  # noqa: E402
+from build_project_page import build_blueprint_page  # noqa: E402
+
+DATA_DIR = ROOT / "data"
+PUBLIC_DIR = ROOT / "dashboard" / "public"
+OUT_DIR = PUBLIC_DIR / "data"
+PIBASE_URL = "https://topology.pi-base.org"
+REPO_URL = "https://github.com/Deicyde/pibase-lean"
+UPSTREAM_URL = "https://github.com/felixpernegger/pibase-lean"
+SET_THEORY_FRONTIER = {"P000164"}
+
+
+def load_json(path: Path):
+    with path.open(encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def dump_json(path: Path, payload) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as handle:
+        json.dump(payload, handle, ensure_ascii=False, separators=(",", ":"))
+
+
+def git(*args: str) -> str:
+    try:
+        return subprocess.check_output(
+            ["git", "-C", str(ROOT), *args],
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+    except (OSError, subprocess.CalledProcessError):
+        return ""
+
+
+def short_id(uid: str) -> str:
+    return f"{uid[0]}{int(uid[1:])}"
+
+
+def clean_informal(text: str) -> str:
+    if not text:
+        return ""
+    text = text.split("----", 1)[0].strip()
+    text = re.sub(r"\{\{[^}]*\}\}", "[reference]", text)
+    text = re.sub(r"\{([PST])0*(\d+)(?:\|P0*\d+)?\}", lambda m: f"{m[1]}{int(m[2])}", text)
+    return text
+
+
+def strip_lean_comments_and_strings(source: str) -> str:
+    """Remove nested comments and strings while preserving line boundaries."""
+    out: list[str] = []
+    i = 0
+    depth = 0
+    in_string = False
+    while i < len(source):
+        pair = source[i:i + 2]
+        char = source[i]
+        if depth:
+            if pair == "/-":
+                depth += 1
+                out.extend("  ")
+                i += 2
+            elif pair == "-/":
+                depth -= 1
+                out.extend("  ")
+                i += 2
+            else:
+                out.append("\n" if char == "\n" else " ")
+                i += 1
+            continue
+        if in_string:
+            if char == "\\" and i + 1 < len(source):
+                out.extend("  ")
+                i += 2
+            elif char == '"':
+                in_string = False
+                out.append(" ")
+                i += 1
+            else:
+                out.append("\n" if char == "\n" else " ")
+                i += 1
+            continue
+        if pair == "/-":
+            depth = 1
+            out.extend("  ")
+            i += 2
+        elif pair == "--":
+            end = source.find("\n", i)
+            if end == -1:
+                out.extend(" " * (len(source) - i))
+                break
+            out.extend(" " * (end - i))
+            out.append("\n")
+            i = end + 1
+        elif char == '"':
+            in_string = True
+            out.append(" ")
+            i += 1
+        else:
+            out.append(char)
+            i += 1
+    return "".join(out)
+
+
+def focused_lean(path: Path) -> str:
+    if not path.exists():
+        return ""
+    boilerplate = re.compile(
+        r"^\s*(module\b|public\s+import\b|import\b|@\[expose\]\s*public\s+section\b)"
+    )
+    lines = [
+        line for line in path.read_text(encoding="utf-8", errors="ignore").splitlines()
+        if not boilerplate.match(line)
+    ]
+    return re.sub(r"\n{3,}", "\n\n", "\n".join(lines)).strip()
+
+
+def load_authors() -> dict[str, str]:
+    aliases = {
+        "jack.mccarthy.1@stonybrook.edu": "Jack McCarthy",
+        "s59fpern@uni-bonn.de": "Felix Pernegger",
+    }
+    command = [
+        "log", "--reverse", "--no-renames", "--diff-filter=A",
+        "--format=%x00%an%x09%ae", "--name-only", "--", "PiBaseLean",
+    ]
+    raw = git(*command)
+    authors: dict[str, str] = {}
+    current_name = ""
+    current_email = ""
+    for line in raw.splitlines():
+        if line.startswith("\x00"):
+            bits = line[1:].split("\t", 1)
+            current_name = bits[0]
+            current_email = bits[1] if len(bits) > 1 else ""
+        elif line.strip() and line not in authors:
+            authors[line] = aliases.get(current_email, current_name)
+    return authors
+
+
+def analyze_lean_tree() -> tuple[dict[str, dict], dict[Path, dict]]:
+    lean_paths = sorted((ROOT / "PiBaseLean").rglob("*.lean"))
+    lean_paths.append(ROOT / "PiBaseLean.lean")
+    module_paths: dict[str, Path] = {}
+    analyses: dict[Path, dict] = {}
+
+    for path in lean_paths:
+        if not path.exists():
+            continue
+        rel = path.relative_to(ROOT)
+        module_paths[str(rel.with_suffix("" )).replace(os.sep, ".")] = path
+        source = path.read_text(encoding="utf-8", errors="ignore")
+        code = strip_lean_comments_and_strings(source)
+        imports = re.findall(
+            r"^\s*(?:public\s+)?import\s+([A-Za-z0-9_'.]+)", source, re.MULTILINE
+        )
+        analyses[path] = {
+            "relative": str(rel),
+            "placeholders": len(re.findall(r"\b(?:sorry|admit)\b", code)),
+            "axioms": len(re.findall(r"^\s*axiom\b", code, re.MULTILINE)),
+            "imports": imports,
+            "code": code,
+        }
+
+    dependency_cache: dict[Path, set[Path]] = {}
+
+    def dependencies(path: Path, active: set[Path] | None = None) -> set[Path]:
+        if path in dependency_cache:
+            return dependency_cache[path]
+        active = set(active or ())
+        if path in active:
+            return set()
+        active.add(path)
+        found: set[Path] = set()
+        for module in analyses.get(path, {}).get("imports", []):
+            dep = module_paths.get(module)
+            if dep is None:
+                continue
+            found.add(dep)
+            found.update(dependencies(dep, active))
+        dependency_cache[path] = found
+        return found
+
+    def entity_status(kind: str, number: int, primary_name: str) -> dict:
+        folder = ROOT / "PiBaseLean" / kind / f"{kind[0]}{number}"
+        files = sorted(folder.glob("*.lean")) if folder.exists() else []
+        primary = folder / primary_name
+        local_placeholders = sum(analyses.get(path, {}).get("placeholders", 0) for path in files)
+        local_axioms = sum(analyses.get(path, {}).get("axioms", 0) for path in files)
+        dependency_files: set[Path] = set()
+        for path in files:
+            dependency_files.update(dependencies(path))
+        dependency_files.difference_update(files)
+        dependency_placeholders = sum(
+            analyses.get(path, {}).get("placeholders", 0) for path in dependency_files
+        )
+        dependency_axioms = sum(
+            analyses.get(path, {}).get("axioms", 0) for path in dependency_files
+        )
+        declaration = True
+        if kind == "Theorems":
+            declaration = bool(
+                primary.exists()
+                and re.search(rf"\btheorem\s+T{number}\b", analyses[primary]["code"])
+            )
+        dependency_clean = (
+            declaration
+            and local_placeholders == 0
+            and dependency_placeholders == 0
+            and local_axioms == 0
+            and dependency_axioms == 0
+        )
+        if not declaration:
+            status = "missing-declaration"
+        elif local_placeholders or local_axioms:
+            status = "local-debt"
+        elif dependency_placeholders or dependency_axioms:
+            status = "dependency-debt"
+        else:
+            status = "dependency-clean"
+        return {
+            "represented": folder.exists(),
+            "declarationPresent": declaration,
+            "dependencyClean": dependency_clean,
+            "status": status,
+            "files": len(files),
+            "localPlaceholders": local_placeholders,
+            "dependencyPlaceholders": dependency_placeholders,
+            "localAxioms": local_axioms,
+            "dependencyAxioms": dependency_axioms,
+            "sourcePath": str(primary.relative_to(ROOT)) if primary.exists() else "",
+        }
+
+    statuses: dict[str, dict] = {}
+    for kind, primary in (("Properties", "Defs.lean"), ("Theorems", "Theorem.lean"), ("Spaces", "Defs.lean")):
+        prefix = kind[0]
+        parent = ROOT / "PiBaseLean" / kind
+        for folder in parent.glob(f"{prefix}*"):
+            match = re.fullmatch(rf"{prefix}(\d+)", folder.name)
+            if match:
+                number = int(match.group(1))
+                statuses[f"{prefix}{number:06d}"] = entity_status(kind, number, primary)
+    return statuses, analyses
+
+
+def formula_text(formula: dict, names: dict[str, str]) -> str:
+    if formula["kind"] == "atom":
+        uid = formula["property"]
+        atom = f"{short_id(uid)} · {names.get(uid, uid)}"
+        return atom if formula["value"] else f"not ({atom})"
+    separator = " and " if formula["kind"] == "and" else " or "
+    return separator.join(formula_text(item, names) for item in formula["subs"])
+
+
+def direct_theorem_map(data: dict) -> dict[tuple[str, str], list[str]]:
+    result: dict[tuple[str, str], list[str]] = defaultdict(list)
+    for theorem in data["theorems"]:
+        before, after = theorem["when"], theorem["then"]
+        if (
+            before["kind"] == "atom"
+            and after["kind"] == "atom"
+            and before["value"]
+            and after["value"]
+        ):
+            result[(before["property"], after["property"])].append(theorem["uid"])
+    return result
+
+
+def build_graph(data: dict, independent_pairs: set[tuple[str, str]]) -> dict:
+    nodes = [item["uid"] for item in data["properties"]]
+    index = {uid: i for i, uid in enumerate(nodes)}
+    direct_edges = known_true_edges(data)
+    reach = transitive_closure(direct_edges, nodes)
+    traits = full_trait_matrix(data)
+    spaces = [item["uid"] for item in data["spaces"]]
+    theorem_map = direct_theorem_map(data)
+    outcomes = bytearray()
+    witnesses: list[int] = []
+    witness_counts: Counter[str] = Counter()
+    counts: Counter[str] = Counter()
+    open_pairs: list[tuple[str, str]] = []
+
+    for source in nodes:
+        for target in nodes:
+            witness_index = 0
+            if source == target:
+                state = 0
+                counts["diagonal"] += 1
+            elif target in direct_edges.get(source, ()):
+                state = 1
+                counts["explicitTrue"] += 1
+            elif target in reach[source]:
+                state = 2
+                counts["derivedTrue"] += 1
+            else:
+                witness = next(
+                    (
+                        space for space in spaces
+                        if traits[space].get(source) is True
+                        and traits[space].get(target) is False
+                    ),
+                    None,
+                )
+                if witness:
+                    state = 3
+                    witness_index = spaces.index(witness) + 1
+                    witness_counts[witness] += 1
+                    counts["false"] += 1
+                elif (source, target) in independent_pairs:
+                    state = 4
+                    counts["independent"] += 1
+                else:
+                    state = 5
+                    counts["open"] += 1
+                    open_pairs.append((source, target))
+            outcomes.append(state)
+            witnesses.append(witness_index)
+
+    ancestors = {uid: {uid} for uid in nodes}
+    for source in nodes:
+        for target in reach[source]:
+            ancestors[target].add(source)
+
+    frontier = []
+    for source, target in open_pairs:
+        sources = ancestors[source]
+        targets = set(reach[target]) | {target}
+        closure_gain = sum(
+            1
+            for left in sources
+            for right in targets
+            if left != right and right not in reach[left]
+        )
+        frontier.append({
+            "source": source,
+            "target": target,
+            "closureGain": closure_gain,
+            "sourceAncestors": len(sources) - 1,
+            "targetDescendants": len(targets) - 1,
+            "setTheory": source in SET_THEORY_FRONTIER or target in SET_THEORY_FRONTIER,
+        })
+    frontier.sort(
+        key=lambda item: (
+            -item["closureGain"],
+            item["setTheory"],
+            item["source"],
+            item["target"],
+        )
+    )
+
+    direct = [
+        {
+            "source": source,
+            "target": target,
+            "theorems": theorem_map.get((source, target), []),
+        }
+        for source in nodes
+        for target in sorted(direct_edges.get(source, ()))
+        if target in index
+    ]
+    return {
+        "nodes": nodes,
+        "outcomes": outcomes,
+        "witnesses": witnesses,
+        "spaces": spaces,
+        "counts": dict(counts),
+        "direct": direct,
+        "frontier": frontier,
+        "witnessCounts": dict(witness_counts),
+        "reach": reach,
+    }
+
+
+def recent_activity() -> tuple[list[dict], dict]:
+    rows = git(
+        "log", "-8", "--date=short", "--pretty=format:%H%x1f%h%x1f%cs%x1f%s",
+        "--", "PiBaseLean", "data",
+    )
+    commits = []
+    for row in rows.splitlines():
+        bits = row.split("\x1f", 3)
+        if len(bits) == 4:
+            commits.append({"sha": bits[0], "short": bits[1], "date": bits[2], "subject": bits[3]})
+    changes = Counter()
+    for row in git("diff", "--name-status", "HEAD^", "HEAD", "--", "PiBaseLean", "data").splitlines():
+        if not row:
+            continue
+        status, path = (row.split("\t", 1) + [""])[:2]
+        changes[{"A": "added", "M": "modified", "D": "deleted"}.get(status[0], "other")] += 1
+        if "/Properties/" in path:
+            changes["propertyFiles"] += 1
+        elif "/Theorems/" in path:
+            changes["theoremFiles"] += 1
+        elif "/Spaces/" in path:
+            changes["spaceFiles"] += 1
+    return commits, dict(changes)
+
+
+def source_url(branch: str, path: str) -> str:
+    return f"{REPO_URL}/blob/{branch}/{path}"
+
+
+def build_review_payloads(
+    data: dict,
+    statuses: dict[str, dict],
+    branch: str,
+    commit: str,
+    generated_at: str,
+) -> None:
+    authors = load_authors()
+    properties = {item["uid"]: item for item in data["properties"]}
+    spaces = {item["uid"]: item for item in data["spaces"]}
+    theorems = {item["uid"]: item for item in data["theorems"]}
+    names = {uid: item["name"] for uid, item in properties.items()}
+    traits = load_json(DATA_DIR / "traits.json") if (DATA_DIR / "traits.json").exists() else {}
+
+    payloads: dict[str, list[dict]] = {"spaces": [], "properties": [], "theorems": []}
+
+    for uid in sorted((key for key in statuses if key.startswith("S")), key=lambda key: int(key[1:])):
+        number = int(uid[1:])
+        rel = f"PiBaseLean/Spaces/S{number}/Defs.lean"
+        extra = ROOT / "PiBaseLean" / "Spaces" / f"S{number}" / "Lemmas.lean"
+        item = spaces.get(uid, {})
+        trait_rows = traits.get(uid, {}).get("traits", [])
+        payloads["spaces"].append({
+            "id": uid,
+            "shortId": short_id(uid),
+            "name": item.get("name", short_id(uid)),
+            "aliases": item.get("aliases", []),
+            "description": clean_informal(item.get("description", "")),
+            "author": authors.get(rel, ""),
+            "sourcePath": rel,
+            "sourceUrl": source_url(branch, rel),
+            "referenceUrl": f"{PIBASE_URL}/spaces/{uid}",
+            "code": focused_lean(ROOT / rel),
+            "extraCode": focused_lean(extra),
+            "leanStatus": statuses[uid],
+            "traits": trait_rows,
+            "traitSummary": dict(Counter(row.get("status", "unknown") for row in trait_rows)),
+        })
+
+    for uid in sorted((key for key in statuses if key.startswith("P")), key=lambda key: int(key[1:])):
+        number = int(uid[1:])
+        rel = f"PiBaseLean/Properties/P{number}/Defs.lean"
+        extra = ROOT / "PiBaseLean" / "Properties" / f"P{number}" / "Lemmas.lean"
+        item = properties.get(uid, {})
+        payloads["properties"].append({
+            "id": uid,
+            "shortId": short_id(uid),
+            "name": item.get("name", short_id(uid)),
+            "aliases": item.get("aliases", []),
+            "description": clean_informal(item.get("description", "")),
+            "author": authors.get(rel, ""),
+            "sourcePath": rel,
+            "sourceUrl": source_url(branch, rel),
+            "referenceUrl": f"{PIBASE_URL}/properties/{uid}",
+            "code": focused_lean(ROOT / rel),
+            "extraCode": focused_lean(extra),
+            "leanStatus": statuses[uid],
+        })
+
+    for uid in sorted((key for key in statuses if key.startswith("T")), key=lambda key: int(key[1:])):
+        number = int(uid[1:])
+        rel = f"PiBaseLean/Theorems/T{number}/Theorem.lean"
+        extra = ROOT / "PiBaseLean" / "Theorems" / f"T{number}" / "Lemmas.lean"
+        item = theorems.get(uid, {})
+        statement = "Statement unavailable"
+        if item:
+            statement = f"{formula_text(item['when'], names)}  ⇒  {formula_text(item['then'], names)}"
+        payloads["theorems"].append({
+            "id": uid,
+            "shortId": short_id(uid),
+            "name": statement,
+            "aliases": [],
+            "description": clean_informal(item.get("description", "")),
+            "author": authors.get(rel, ""),
+            "sourcePath": rel,
+            "sourceUrl": source_url(branch, rel),
+            "referenceUrl": f"{PIBASE_URL}/theorems/{uid}",
+            "code": focused_lean(ROOT / rel),
+            "extraCode": focused_lean(extra),
+            "leanStatus": statuses[uid],
+        })
+
+    chunk_size = 24
+    for kind, entries in payloads.items():
+        chunks = []
+        index_entries = []
+        for chunk_index, start in enumerate(range(0, len(entries), chunk_size)):
+            chunk_entries = entries[start:start + chunk_size]
+            chunk_path = f"data/review-{kind}-{chunk_index:03d}.json"
+            chunks.append(chunk_path)
+            dump_json(OUT_DIR / f"review-{kind}-{chunk_index:03d}.json", {
+                "schemaVersion": 1,
+                "kind": kind,
+                "chunk": chunk_index,
+                "sourceCommit": commit,
+                "entries": chunk_entries,
+            })
+            for entry in chunk_entries:
+                index_entries.append({
+                    "id": entry["id"],
+                    "shortId": entry["shortId"],
+                    "name": entry["name"],
+                    "aliases": entry["aliases"],
+                    "author": entry["author"],
+                    "sourceUrl": entry["sourceUrl"],
+                    "referenceUrl": entry["referenceUrl"],
+                    "leanStatus": entry["leanStatus"],
+                    "chunk": chunk_index,
+                })
+        dump_json(OUT_DIR / f"review-{kind}.json", {
+            "schemaVersion": 1,
+            "kind": kind,
+            "sourceCommit": commit,
+            "generatedAt": generated_at,
+            "chunkSize": chunk_size,
+            "chunks": chunks,
+            "entries": index_entries,
+        })
+
+
+def main() -> None:
+    if OUT_DIR.exists():
+        shutil.rmtree(OUT_DIR)
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    data = load_json(DATA_DIR / "pibase.json")
+    coverage = load_json(DATA_DIR / "coverage.json")
+    questions = load_json(DATA_DIR / "questions.json")
+    registry = load_json(DATA_DIR / "registry.json")
+    independence = load_json(DATA_DIR / "independence.json")
+    independent_pairs = {
+        (item["hypothesis"], item["conclusion"])
+        for item in independence.get("pairs", [])
+        if item.get("hypothesis") and item.get("conclusion")
+    }
+
+    generated_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    commit = git("rev-parse", "HEAD")
+    commit_short = commit[:8]
+    branch = os.environ.get("GITHUB_REF_NAME") or git("branch", "--show-current") or "main"
+    source_date = git("log", "-1", "--format=%cI")[:10]
+    statuses, analyses = analyze_lean_tree()
+    graph = build_graph(data, independent_pairs)
+    names = {item["uid"]: item["name"] for item in data["properties"]}
+    recent, delta = recent_activity()
+
+    properties = []
+    for item in data["properties"]:
+        uid = item["uid"]
+        properties.append({
+            "id": uid,
+            "shortId": short_id(uid),
+            "name": item["name"],
+            "aliases": item.get("aliases", []),
+            "description": clean_informal(item.get("description", "")),
+            "lean": statuses.get(uid),
+            "registry": registry.get("properties", {}).get(uid),
+            "referenceUrl": f"{PIBASE_URL}/properties/{uid}",
+        })
+
+    spaces = [
+        {
+            "id": item["uid"],
+            "shortId": short_id(item["uid"]),
+            "name": item["name"],
+            "referenceUrl": f"{PIBASE_URL}/spaces/{item['uid']}",
+            "lean": statuses.get(item["uid"]),
+        }
+        for item in data["spaces"]
+    ]
+
+    theorem_statuses = [value for key, value in statuses.items() if key.startswith("T")]
+    property_statuses = [value for key, value in statuses.items() if key.startswith("P")]
+    space_statuses = [value for key, value in statuses.items() if key.startswith("S")]
+    trust = {
+        "properties": dict(Counter(item["status"] for item in property_statuses)),
+        "theorems": dict(Counter(item["status"] for item in theorem_statuses)),
+        "spaces": dict(Counter(item["status"] for item in space_statuses)),
+        "projectPlaceholders": sum(item["placeholders"] for item in analyses.values()),
+        "projectAxioms": sum(item["axioms"] for item in analyses.values()),
+    }
+
+    counts = graph["counts"]
+    total_pairs = len(graph["nodes"]) * (len(graph["nodes"]) - 1)
+    resolved = counts.get("explicitTrue", 0) + counts.get("derivedTrue", 0) + counts.get("false", 0) + counts.get("independent", 0)
+    dashboard = {
+        "schemaVersion": 1,
+        "project": {
+            "id": "pibase-lean",
+            "name": "pibase-lean",
+            "domain": "Topological property implications",
+            "repoUrl": REPO_URL,
+            "upstreamUrl": UPSTREAM_URL,
+            "referenceUrl": PIBASE_URL,
+        },
+        "source": {
+            "commit": commit,
+            "commitShort": commit_short,
+            "branch": branch,
+            "sourceDate": source_date,
+            "generatedAt": generated_at,
+            "dataSha": data.get("version", {}).get("sha", coverage.get("pin_sha", "")),
+        },
+        "summary": {
+            "propertyEntries": len(property_statuses),
+            "propertyTotal": len(data["properties"]),
+            "mappedProperties": len(registry.get("properties", {})),
+            "theoremEntries": len(theorem_statuses),
+            "theoremTotal": len(data["theorems"]),
+            "theoremDeclarations": sum(item["declarationPresent"] for item in theorem_statuses),
+            "dependencyCleanTheorems": sum(item["dependencyClean"] for item in theorem_statuses),
+            "spaceEntries": len(space_statuses),
+            "spaceTotal": len(data["spaces"]),
+            "resolvedPairs": resolved,
+            "totalPairs": total_pairs,
+            "openPairs": counts.get("open", 0),
+        },
+        "trust": trust,
+        "graph": {
+            "size": len(graph["nodes"]),
+            "counts": counts,
+            "outcomesPath": "data/outcomes.bin",
+            "witnessesPath": "data/witnesses.bin",
+            "statusCodes": {
+                "0": "diagonal",
+                "1": "explicit-true",
+                "2": "derived-true",
+                "3": "false",
+                "4": "independent",
+                "5": "open",
+            },
+            "direct": graph["direct"],
+            "witnessCounts": graph["witnessCounts"],
+        },
+        "properties": properties,
+        "spaces": spaces,
+        "frontier": graph["frontier"],
+        "recentActivity": recent,
+        "latestDelta": delta,
+        "experiments": {
+            "promptByteLimit": 10240,
+            "tokenCaps": [8192, 16384],
+            "models": [
+                "openai/gpt-oss-120b",
+                "meta-llama/llama-3.3-70b-instruct",
+                "google/gemma-4-31b-it",
+            ],
+            "datasets": ["normal", "hard1", "hard2", "hard3", "order5", "extra-hard"],
+            "requiredPlaceholders": ["equation1", "equation2"],
+        },
+        "downloads": [
+            {"label": "Dashboard manifest", "path": "data/dashboard.json", "format": "JSON"},
+            {"label": "Outcome matrix", "path": "data/outcomes.bin", "format": "Uint8"},
+            {"label": "Witness matrix", "path": "data/witnesses.bin", "format": "Uint16 LE"},
+            {"label": "Open frontier", "path": "data/frontier.json", "format": "JSON"},
+            {"label": "Review: spaces", "path": "data/review-spaces.json", "format": "JSON"},
+            {"label": "Review: properties", "path": "data/review-properties.json", "format": "JSON"},
+            {"label": "Review: theorems", "path": "data/review-theorems.json", "format": "JSON"},
+        ],
+    }
+
+    dump_json(OUT_DIR / "dashboard.json", dashboard)
+    dump_json(OUT_DIR / "frontier.json", {
+        "schemaVersion": 1,
+        "sourceCommit": commit,
+        "properties": {uid: names[uid] for uid in graph["nodes"]},
+        "frontier": graph["frontier"],
+    })
+    (OUT_DIR / "outcomes.bin").write_bytes(graph["outcomes"])
+    (OUT_DIR / "witnesses.bin").write_bytes(
+        b"".join(struct.pack("<H", value) for value in graph["witnesses"])
+    )
+    build_review_payloads(data, statuses, branch, commit, generated_at)
+
+    legacy_summary = {
+        "total": total_pairs,
+        "true": counts.get("explicitTrue", 0) + counts.get("derivedTrue", 0),
+        "explicitly_true": counts.get("explicitTrue", 0),
+        "implicitly_true": counts.get("derivedTrue", 0),
+        "false": counts.get("false", 0),
+        "independent": counts.get("independent", 0),
+        "open": counts.get("open", 0),
+        "witness_count": graph["witnessCounts"],
+    }
+    (PUBLIC_DIR / "blueprint.html").write_text(
+        build_blueprint_page(data, coverage, questions, legacy_summary),
+        encoding="utf-8",
+    )
+
+    print(
+        "dashboard data: "
+        f"{len(properties)} properties, {len(graph['frontier'])} open pairs, "
+        f"{sum(item['dependencyClean'] for item in theorem_statuses)} dependency-clean theorems"
+    )
+
+
+if __name__ == "__main__":
+    main()

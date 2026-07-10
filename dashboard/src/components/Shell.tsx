@@ -1,0 +1,66 @@
+import {
+  BarChart3,
+  Beaker,
+  BookOpenCheck,
+  Database,
+  GitFork,
+  Github,
+  Grid3X3,
+  ListTodo,
+} from "lucide-react";
+import type { ReactNode } from "react";
+import type { DashboardData } from "../types";
+import { routeTo } from "../lib";
+
+const NAV = [
+  { route: "overview", label: "Overview", icon: BarChart3 },
+  { route: "explorer", label: "Explorer", icon: Grid3X3 },
+  { route: "frontier", label: "Frontier", icon: ListTodo },
+  { route: "experiments", label: "Experiments", icon: Beaker },
+  { route: "review", label: "Review", icon: BookOpenCheck },
+  { route: "data", label: "Data", icon: Database },
+];
+
+export default function Shell({ data, route, children }: { data: DashboardData; route: string; children: ReactNode }) {
+  return (
+    <div className="app-shell">
+      <header className="topbar">
+        <div className="topbar-inner">
+          <a className="brand" href={routeTo("overview")} aria-label="pibase-lean overview">
+            <span className="brand-mark" aria-hidden="true"><GitFork size={18} /></span>
+            <span>
+              <strong>{data.project.name}</strong>
+              <small>{data.project.domain}</small>
+            </span>
+          </a>
+          <nav className="primary-nav" aria-label="Dashboard sections">
+            {NAV.map(({ route: itemRoute, label, icon: Icon }) => (
+              <a
+                key={itemRoute}
+                href={routeTo(itemRoute)}
+                aria-current={route === itemRoute ? "page" : undefined}
+              >
+                <Icon size={16} aria-hidden="true" />
+                <span>{label}</span>
+              </a>
+            ))}
+          </nav>
+          <div className="topbar-source">
+            <a href={`${data.project.repoUrl}/commit/${data.source.commit}`} className="commit-link">
+              <code>{data.source.commitShort}</code>
+            </a>
+            <a className="icon-link" href={data.project.repoUrl} aria-label="Open GitHub repository" data-tooltip="GitHub repository">
+              <Github size={18} aria-hidden="true" />
+            </a>
+          </div>
+        </div>
+      </header>
+      <main className="main-content">{children}</main>
+      <footer className="site-footer">
+        <span>Lean source <code>{data.source.commitShort}</code></span>
+        <span>pi-Base data <code>{data.source.dataSha.slice(0, 12)}</code></span>
+        <span>Generated {new Date(data.source.generatedAt).toLocaleString()}</span>
+      </footer>
+    </div>
+  );
+}
