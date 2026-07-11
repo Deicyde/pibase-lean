@@ -14,6 +14,9 @@ export interface LeanStatus {
   dependencyPlaceholders: number;
   localAxioms: number;
   dependencyAxioms: number;
+  wellDefinedPlaceholders: number;
+  dependencyWellDefinedPlaceholders: number;
+  dependencyNonWellDefinedPlaceholders: number;
   sourcePath: string;
 }
 

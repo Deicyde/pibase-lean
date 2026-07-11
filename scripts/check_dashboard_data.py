@@ -27,6 +27,11 @@ def check_review(kind: str, expected: int) -> None:
     entries = index["entries"]
     require(len(entries) == expected, f"{kind} review index has {len(entries)} entries, expected {expected}")
     require(len({entry["id"] for entry in entries}) == expected, f"{kind} review index has duplicate IDs")
+    if kind == "properties":
+        require(
+            all("wellDefinedPlaceholders" in entry["leanStatus"] for entry in entries),
+            "property review index is missing well-definedness audit data",
+        )
     chunk_ids: set[str] = set()
     for chunk_number, relative in enumerate(index["chunks"]):
         path = PUBLIC / relative
@@ -106,6 +111,24 @@ def main() -> None:
     check_review("spaces", summary["spaceEntries"])
     check_review("properties", summary["propertyEntries"])
     check_review("theorems", summary["theoremEntries"])
+
+    theorem_index = load(DATA / "review-theorems.json")
+    theorem_status = {entry["id"]: entry["leanStatus"] for entry in theorem_index["entries"]}
+    formal_theorem_ids = {
+        theorem_id
+        for edge in manifest["graph"]["formalized"]["direct"]
+        for theorem_id in edge["theorems"]
+    }
+    require(
+        all(
+            theorem_id in theorem_status
+            and theorem_status[theorem_id]["declarationPresent"]
+            and theorem_status[theorem_id]["localPlaceholders"] == 0
+            and theorem_status[theorem_id]["localAxioms"] == 0
+            for theorem_id in formal_theorem_ids
+        ),
+        "formalized graph includes a theorem with local proof debt",
+    )
 
     for artifact in manifest["downloads"]:
         require((PUBLIC / artifact["path"]).exists(), f"download is missing: {artifact['path']}")

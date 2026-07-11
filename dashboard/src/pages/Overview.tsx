@@ -12,6 +12,8 @@ import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import ImplementationBar from "../components/ImplementationBar";
 import Matrix, { type MatrixMode, type MatrixView } from "../components/Matrix";
 import Metric from "../components/Metric";
+import PropertyCombobox from "../components/PropertyCombobox";
+import TheoremTrace, { TheoremLinks } from "../components/TheoremTrace";
 import TrustBar from "../components/TrustBar";
 import {
   FORMAL_GRAPH_STATUS,
@@ -20,7 +22,6 @@ import {
   formatNumber,
   formatPercent,
   graphIndex,
-  plainMathLabel,
   routeTo,
   type GraphStatusCode,
 } from "../lib";
@@ -71,8 +72,8 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
   const pibaseState = bundle.outcomes[graphIndex(data.graph.size, sourceIndex, targetIndex)] as GraphStatusCode;
   const statusLabels = matrixView === "formalized" ? FORMAL_GRAPH_STATUS : GRAPH_STATUS;
   const direct = activeDirect.find((edge) => edge.source === source && edge.target === target);
+  const formalEdge = data.graph.formalized.direct.find((edge) => edge.source === source && edge.target === target);
   const path = state === 2 ? findProofPath(data, source, target, activeDirect) : [];
-  const proofPath = path.map((id) => propertyNames.get(id)!);
   const witnessValue = bundle.witnesses[graphIndex(data.graph.size, sourceIndex, targetIndex)];
   const witness = witnessValue ? data.spaces[witnessValue - 1] : null;
   const frontier = pibaseState === 5 ? data.frontier.find((item) => item.source === source && item.target === target) : null;
@@ -130,9 +131,9 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
 
       <section className="metric-grid" aria-label="Project status">
         <Metric
-          label="Lean implication graph"
+          label="Lean-resolved pairs"
           value={formatNumber(formalPairCount)}
-          detail={`${formatNumber(formalDirectCount)} direct · ${formatNumber(formalDerivedCount)} by closure`}
+          detail={`${formatNumber(formalDirectCount)} proved directly · ${formatNumber(formalDerivedCount)} by transitivity`}
           tone="clean"
           icon={<ShieldCheck size={18} aria-hidden="true" />}
         />
@@ -186,12 +187,13 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
         </div>
 
         <div className="pair-controls" aria-label="Selected implication">
-          <label htmlFor="source-property">
-            <span>Hypothesis</span>
-            <select id="source-property" data-testid="source-property" value={source} onChange={(event) => selectPair(event.target.value, target)}>
-              {data.properties.map((item) => <option key={item.id} value={item.id}>{item.shortId} · {plainMathLabel(item.name)}</option>)}
-            </select>
-          </label>
+          <PropertyCombobox
+            id="source-property"
+            label="Hypothesis"
+            value={source}
+            properties={data.properties}
+            onChange={(nextSource) => selectPair(nextSource, target)}
+          />
           <button
             type="button"
             className="icon-button swap-button"
@@ -201,12 +203,13 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
           >
             <Repeat2 size={18} aria-hidden="true" />
           </button>
-          <label htmlFor="target-property">
-            <span>Conclusion</span>
-            <select id="target-property" data-testid="target-property" value={target} onChange={(event) => selectPair(source, event.target.value)}>
-              {data.properties.map((item) => <option key={item.id} value={item.id}>{item.shortId} · {plainMathLabel(item.name)}</option>)}
-            </select>
-          </label>
+          <PropertyCombobox
+            id="target-property"
+            label="Conclusion"
+            value={target}
+            properties={data.properties}
+            onChange={(nextTarget) => selectPair(source, nextTarget)}
+          />
         </div>
 
         <div className="explorer-layout">
@@ -214,7 +217,7 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
             <div className="matrix-toolbar">
               <span>
                 {matrixView === "formalized"
-                  ? `${formatNumber(formalDirectCount)} direct · ${formatNumber(formalDerivedCount)} by closure`
+                  ? `${formatNumber(formalDirectCount)} proved directly · ${formatNumber(formalDerivedCount)} by transitivity`
                   : `${formatNumber(data.graph.counts.explicitTrue)} direct · ${formatNumber(data.graph.counts.derivedTrue)} by closure`}
               </span>
               <div className="segmented" aria-label="Matrix display mode">
@@ -275,25 +278,14 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                   {state === 0 && <p>The hypothesis and conclusion are the same property.</p>}
                   {state === 1 && (
                     <div>
-                      <p>Recorded by a canonical Lean theorem declaration for this ordered pair.</p>
-                      <div className="evidence-links">
-                        {(direct?.theorems ?? []).map((id) => (
-                          <a key={id} href={routeTo("review", { kind: "theorems", q: id.replace(/^T0+/, "T") })}><code>{id.replace(/^T0+/, "T")}</code></a>
-                        ))}
-                      </div>
+                      <p>Proved by a canonical Lean theorem with no local <code>sorry</code>, <code>admit</code>, or explicit axiom.</p>
+                      <TheoremLinks data={data} theoremIds={direct?.theorems ?? []} view="formalized" />
                     </div>
                   )}
                   {state === 2 && (
                     <div>
-                      <p>Derived from {Math.max(0, proofPath.length - 1)} formalized pairwise theorem edges.</p>
-                      <ol className="proof-path">
-                        {proofPath.map((node, index) => (
-                          <li key={node.id}>
-                            <code>{node.shortId}</code><span>{node.name}</span>
-                            {index < proofPath.length - 1 && <ArrowRight size={14} aria-hidden="true" />}
-                          </li>
-                        ))}
-                      </ol>
+                      <p>Derived by transitivity across {Math.max(0, path.length - 1)} Lean-proved edges.</p>
+                      <TheoremTrace data={data} path={path} directEdges={activeDirect} view="formalized" />
                     </div>
                   )}
                   {state === 5 && (
@@ -311,24 +303,19 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                   {state === 1 && (
                     <div>
                       <p>Recorded as a direct pi-Base theorem edge.</p>
-                      <div className="evidence-links">
-                        {(direct?.theorems ?? []).map((id) => (
-                          <a key={id} href={`${data.project.referenceUrl}/theorems/${id}`}><code>{id.replace(/^T0+/, "T")}</code></a>
-                        ))}
-                      </div>
+                      <TheoremLinks data={data} theoremIds={direct?.theorems ?? []} view="pibase" />
+                      {formalEdge && (
+                        <div className="lean-implementation-links">
+                          <span>Lean implementation</span>
+                          <TheoremLinks data={data} theoremIds={formalEdge.theorems} view="formalized" />
+                        </div>
+                      )}
                     </div>
                   )}
                   {state === 2 && (
                     <div>
-                      <p>Derived from {Math.max(0, proofPath.length - 1)} explicit pi-Base theorem edges.</p>
-                      <ol className="proof-path">
-                        {proofPath.map((node, index) => (
-                          <li key={node.id}>
-                            <code>{node.shortId}</code><span>{node.name}</span>
-                            {index < proofPath.length - 1 && <ArrowRight size={14} aria-hidden="true" />}
-                          </li>
-                        ))}
-                      </ol>
+                      <p>Derived from {Math.max(0, path.length - 1)} explicit pi-Base theorem edges.</p>
+                      <TheoremTrace data={data} path={path} directEdges={activeDirect} view="pibase" />
                     </div>
                   )}
                   {state === 3 && witness && (

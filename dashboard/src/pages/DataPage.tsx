@@ -86,7 +86,8 @@ export default function DataPage({ data }: { data: DashboardData }) {
           <div className="section-heading"><div><p className="eyebrow">Contract</p><h2>Status semantics</h2></div></div>
           <table className="data-table schema-table">
             <tbody>
-              <tr><th scope="row">Formalized graph edge</th><td>A positive property-to-property implication with a canonical Lean theorem and no local placeholder or explicit axiom. Imported dependency debt does not hide the implementation.</td></tr>
+              <tr><th scope="row">Formalized graph edge</th><td>A positive property-to-property implication with a canonical Lean theorem and no placeholder or explicit axiom in its own theorem files. Conservative import-closure debt is reported separately.</td></tr>
+              <tr><th scope="row">Formal closure cell</th><td>An implication obtained by composing formalized graph edges. It is a resolved pair, not an additional Lean theorem declaration.</td></tr>
               <tr><th scope="row">Dependency-clean</th><td>Canonical declaration, no local placeholders or explicit axioms, and none in the project import closure.</td></tr>
               <tr><th scope="row">Dependency debt</th><td>Canonical declaration with no local placeholder, but at least one imported project declaration still contains proof debt.</td></tr>
               <tr><th scope="row">Local debt</th><td>The entity's own Lean files contain an active <code>sorry</code> or <code>admit</code>.</td></tr>

@@ -1,4 +1,4 @@
-import { Check, Download, ExternalLink, FileUp, Flag, Search } from "lucide-react";
+import { AlertTriangle, Check, Download, ExternalLink, FileUp, Flag, Search } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import MathText from "../components/MathText";
 import StatusBadge from "../components/StatusBadge";
@@ -11,6 +11,15 @@ type StatusFilter = "all" | LeanStatusName;
 
 const cache = new Map<ReviewKind, ReviewPayload>();
 const chunkCache = new Map<string, ReviewEntry[]>();
+
+function statusLabel(kind: ReviewKind, entry: { leanStatus: ReviewEntry["leanStatus"] }): string | undefined {
+  if (
+    kind === "properties"
+    && entry.leanStatus.status === "local-debt"
+    && entry.leanStatus.wellDefinedPlaceholders > 0
+  ) return "Well-definedness debt";
+  return undefined;
+}
 
 function readMarks(key: string): MarkMap {
   try { return JSON.parse(localStorage.getItem(key) ?? "{}") as MarkMap; }
@@ -194,7 +203,7 @@ export default function Review({ data, params }: { data: DashboardData; params: 
             <option value="all">All trust states</option>
             <option value="dependency-clean">Dependency-clean</option>
             <option value="dependency-debt">Dependency debt</option>
-            <option value="local-debt">Local proof debt</option>
+            <option value="local-debt">Local debt</option>
             <option value="missing-declaration">Missing declaration</option>
           </select>
         </label>
@@ -223,7 +232,7 @@ export default function Review({ data, params }: { data: DashboardData; params: 
                 <header className="review-entry-head">
                   <a className="entry-id" href={summary.referenceUrl}><code>{summary.shortId}</code></a>
                   <div className="entry-title"><MathText text={summary.name} inline /></div>
-                  <StatusBadge status={summary.leanStatus.status} />
+                  <StatusBadge status={summary.leanStatus.status} label={statusLabel(kind, summary)} />
                 </header>
                 <div className="review-source-loading">Loading Lean source…</div>
               </article>
@@ -235,7 +244,7 @@ export default function Review({ data, params }: { data: DashboardData; params: 
               <a className="entry-id" href={entry.referenceUrl}><code>{entry.shortId}</code></a>
               <div className="entry-title"><MathText text={entry.name} inline /></div>
               {entry.author && <span className="author-name">{entry.author}</span>}
-              <StatusBadge status={entry.leanStatus.status} />
+              <StatusBadge status={entry.leanStatus.status} label={statusLabel(kind, entry)} />
               <div className="entry-links">
                 <a className="icon-link" href={entry.referenceUrl} aria-label={`Open ${entry.shortId} on pi-Base`} data-tooltip="pi-Base"><ExternalLink size={15} /></a>
                 <a className="icon-link" href={entry.sourceUrl} aria-label={`Open ${entry.shortId} Lean source`} data-tooltip="Lean source"><code>λ</code></a>
@@ -247,10 +256,51 @@ export default function Review({ data, params }: { data: DashboardData; params: 
             </header>
             <div className="review-panes">
               <div className="informal-pane">
+                {kind === "properties" && entry.leanStatus.wellDefinedPlaceholders > 0 && (
+                  <div className="audit-warning" role="note">
+                    <AlertTriangle size={17} aria-hidden="true" />
+                    <div>
+                      <strong>Well-definedness proof incomplete</strong>
+                      <span>
+                        This property definition is counted as implemented, but {formatNumber(entry.leanStatus.wellDefinedPlaceholders)} <code>WellDefined</code> obligation{entry.leanStatus.wellDefinedPlaceholders === 1 ? "" : "s"} still {entry.leanStatus.wellDefinedPlaceholders === 1 ? "contains" : "contain"} an active <code>sorry</code> or <code>admit</code>.
+                      </span>
+                    </div>
+                  </div>
+                )}
+                {kind === "properties" && entry.leanStatus.localPlaceholders > entry.leanStatus.wellDefinedPlaceholders && (
+                  <div className="audit-warning" role="note">
+                    <AlertTriangle size={17} aria-hidden="true" />
+                    <div>
+                      <strong>Additional local proof debt</strong>
+                      <span>{formatNumber(entry.leanStatus.localPlaceholders - entry.leanStatus.wellDefinedPlaceholders)} local placeholder{entry.leanStatus.localPlaceholders - entry.leanStatus.wellDefinedPlaceholders === 1 ? " is" : "s are"} outside the property's well-definedness obligations.</span>
+                    </div>
+                  </div>
+                )}
+                {kind === "theorems" && (entry.leanStatus.localPlaceholders > 0 || entry.leanStatus.localAxioms > 0) && (
+                  <div className="audit-warning" role="note">
+                    <AlertTriangle size={17} aria-hidden="true" />
+                    <div>
+                      <strong>Excluded from the formal implication graph</strong>
+                      <span>The theorem's own Lean files contain an active placeholder or explicit axiom.</span>
+                    </div>
+                  </div>
+                )}
+                {kind === "theorems" && entry.leanStatus.dependencyNonWellDefinedPlaceholders > 0 && (
+                  <div className="audit-warning" role="note">
+                    <AlertTriangle size={17} aria-hidden="true" />
+                    <div>
+                      <strong>Imported proof debt requires audit</strong>
+                      <span>The import closure contains a placeholder unrelated to a property <code>WellDefined</code> obligation. This file-level audit does not establish that the theorem uses it.</span>
+                    </div>
+                  </div>
+                )}
                 {entry.description ? <MathText text={entry.description} /> : <p className="muted-copy">No informal description recorded.</p>}
                 <dl className="entry-ledger">
                   <div><dt>Local placeholders</dt><dd>{entry.leanStatus.localPlaceholders}</dd></div>
                   <div><dt>Dependency placeholders</dt><dd>{entry.leanStatus.dependencyPlaceholders}</dd></div>
+                  {kind === "properties" && <div><dt>Well-definedness placeholders</dt><dd>{entry.leanStatus.wellDefinedPlaceholders}</dd></div>}
+                  {kind === "theorems" && <div><dt>Imported well-definedness debt</dt><dd>{entry.leanStatus.dependencyWellDefinedPlaceholders}</dd></div>}
+                  {kind === "theorems" && <div><dt>Other imported placeholders</dt><dd>{entry.leanStatus.dependencyNonWellDefinedPlaceholders}</dd></div>}
                   <div><dt>Declaration</dt><dd>{entry.leanStatus.declarationPresent ? "Present" : "Missing"}</dd></div>
                 </dl>
                 {entry.traits && entry.traits.length > 0 && (

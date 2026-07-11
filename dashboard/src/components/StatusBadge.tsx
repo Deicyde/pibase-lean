@@ -8,7 +8,7 @@ const LABELS: Record<LeanStatusName, string> = {
   "missing-declaration": "Missing declaration",
 };
 
-export default function StatusBadge({ status }: { status: LeanStatusName }) {
+export default function StatusBadge({ status, label }: { status: LeanStatusName; label?: string }) {
   const Icon = status === "dependency-clean"
     ? ShieldCheck
     : status === "missing-declaration"
@@ -19,7 +19,7 @@ export default function StatusBadge({ status }: { status: LeanStatusName }) {
   return (
     <span className={`status-badge status-${status}`}>
       <Icon size={14} aria-hidden="true" />
-      {LABELS[status]}
+      {label ?? LABELS[status]}
     </span>
   );
 }

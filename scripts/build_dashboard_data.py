@@ -121,6 +121,39 @@ def strip_lean_comments_and_strings(source: str) -> str:
     return "".join(out)
 
 
+DECLARATION_HEADER = re.compile(
+    r"^\s*(?:(?:private|protected|noncomputable)\s+)*(?:theorem|lemma|def|abbrev|instance)\s+([^\s(:]+)",
+    re.MULTILINE,
+)
+
+
+def declaration_placeholders(code: str, name_prefix: str) -> int:
+    """Count active placeholders inside declarations with the requested name prefix."""
+    headers = list(DECLARATION_HEADER.finditer(code))
+    count = 0
+    for index, header in enumerate(headers):
+        if not header.group(1).startswith(name_prefix):
+            continue
+        end = headers[index + 1].start() if index + 1 < len(headers) else len(code)
+        count += len(re.findall(r"\b(?:sorry|admit)\b", code[header.start():end]))
+    return count
+
+
+def property_field_placeholders(code: str) -> int:
+    """Count placeholders in canonical property `well_defined` fields."""
+    headers = list(DECLARATION_HEADER.finditer(code))
+    count = 0
+    for index, header in enumerate(headers):
+        if not re.fullmatch(r"P\d+", header.group(1)):
+            continue
+        end = headers[index + 1].start() if index + 1 < len(headers) else len(code)
+        declaration = code[header.start():end]
+        field = re.search(r"\bwell_defined\b", declaration)
+        if field:
+            count += len(re.findall(r"\b(?:sorry|admit)\b", declaration[field.start():]))
+    return count
+
+
 def focused_lean(path: Path) -> str:
     if not path.exists():
         return ""
@@ -179,6 +212,10 @@ def analyze_lean_tree() -> tuple[dict[str, dict], dict[Path, dict]]:
             "axioms": len(re.findall(r"^\s*axiom\b", code, re.MULTILINE)),
             "imports": imports,
             "code": code,
+            "wellDefinedPlaceholders": (
+                declaration_placeholders(code, "WellDefined.")
+                + property_field_placeholders(code)
+            ),
         }
 
     dependency_cache: dict[Path, set[Path]] = {}
@@ -206,6 +243,11 @@ def analyze_lean_tree() -> tuple[dict[str, dict], dict[Path, dict]]:
         primary = folder / primary_name
         local_placeholders = sum(analyses.get(path, {}).get("placeholders", 0) for path in files)
         local_axioms = sum(analyses.get(path, {}).get("axioms", 0) for path in files)
+        well_defined_placeholders = (
+            sum(analyses.get(path, {}).get("wellDefinedPlaceholders", 0) for path in files)
+            if kind == "Properties"
+            else 0
+        )
         dependency_files: set[Path] = set()
         for path in files:
             dependency_files.update(dependencies(path))
@@ -215,6 +257,12 @@ def analyze_lean_tree() -> tuple[dict[str, dict], dict[Path, dict]]:
         )
         dependency_axioms = sum(
             analyses.get(path, {}).get("axioms", 0) for path in dependency_files
+        )
+        dependency_well_defined_placeholders = sum(
+            analyses.get(path, {}).get("wellDefinedPlaceholders", 0) for path in dependency_files
+        )
+        dependency_non_well_defined_placeholders = max(
+            0, dependency_placeholders - dependency_well_defined_placeholders
         )
         declaration = True
         if kind == "Properties":
@@ -252,6 +300,9 @@ def analyze_lean_tree() -> tuple[dict[str, dict], dict[Path, dict]]:
             "dependencyPlaceholders": dependency_placeholders,
             "localAxioms": local_axioms,
             "dependencyAxioms": dependency_axioms,
+            "wellDefinedPlaceholders": well_defined_placeholders,
+            "dependencyWellDefinedPlaceholders": dependency_well_defined_placeholders,
+            "dependencyNonWellDefinedPlaceholders": dependency_non_well_defined_placeholders,
             "sourcePath": str(primary.relative_to(ROOT)) if primary.exists() else "",
         }
 
@@ -396,7 +447,7 @@ def build_graph(data: dict, independent_pairs: set[tuple[str, str]]) -> dict:
 
 
 def build_formalized_graph(data: dict, statuses: dict[str, dict]) -> dict:
-    """Project canonical Lean pairwise theorem declarations onto the graph."""
+    """Project locally placeholder-free Lean pairwise theorem declarations onto the graph."""
     nodes = [item["uid"] for item in data["properties"]]
     node_set = set(nodes)
     theorem_map = direct_theorem_map(data)
