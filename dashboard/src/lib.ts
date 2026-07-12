@@ -12,7 +12,7 @@ export const GRAPH_STATUS = {
 export const FORMAL_GRAPH_STATUS = {
   0: { key: "diagonal", label: "Diagonal" },
   1: { key: "formal-direct", label: "Lean theorem" },
-  2: { key: "formal-derived", label: "By formal closure" },
+  2: { key: "formal-derived", label: "By transitive closure" },
   3: { key: "unformalized", label: "Not yet formalized" },
   4: { key: "unformalized", label: "Not yet formalized" },
   5: { key: "unformalized", label: "Not yet formalized" },
