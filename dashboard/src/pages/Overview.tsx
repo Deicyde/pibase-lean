@@ -118,8 +118,7 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
           <p className="eyebrow">Lean 4 · Mathlib · topology</p>
           <h1>pibase-lean</h1>
           <p className="page-lede">
-            A Lean-checked research view of topological properties, implication proofs,
-            separating spaces, and the remaining formal frontier.
+            Formalizing the implication graph of π-Base.
           </p>
         </div>
         <dl className="source-ledger">
