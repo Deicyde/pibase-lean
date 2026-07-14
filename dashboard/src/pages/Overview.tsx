@@ -1,7 +1,6 @@
 import {
   ArrowRight,
   CheckCircle2,
-  CircleDotDashed,
   ExternalLink,
   GitBranch,
   GitCommitHorizontal,
@@ -58,7 +57,6 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
   const [source, setSource] = useState(validIds.has(params.get("source") ?? "") ? params.get("source")! : lead.source);
   const [target, setTarget] = useState(validIds.has(params.get("target") ?? "") ? params.get("target")! : lead.target);
   const propertyNames = new Map(data.properties.map((item) => [item.id, item]));
-  const resolved = data.summary.resolvedPairs;
   const formalDirectCount = data.graph.formalized.counts.formalizedDirect ?? 0;
   const formalDerivedCount = data.graph.formalized.counts.formalizedDerived ?? 0;
   const formalPairCount = formalDirectCount + formalDerivedCount;
@@ -132,30 +130,30 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
         <Metric
           label="Lean-resolved pairs"
           value={formatNumber(formalPairCount)}
-          detail={`${formatNumber(formalDirectCount)} proved directly · ${formatNumber(formalDerivedCount)} by transitivity`}
+          detail={`${formatPercent(formalPairCount, data.summary.totalPairs, 2)} of ${formatNumber(data.summary.totalPairs)} ordered pairs`}
           tone="clean"
           icon={<ShieldCheck size={18} aria-hidden="true" />}
+        />
+        <Metric
+          label="Direct Lean proofs"
+          value={formatNumber(formalDirectCount)}
+          detail="Canonical theorem declarations"
+          tone="represented"
+          icon={<GitCommitHorizontal size={18} aria-hidden="true" />}
+        />
+        <Metric
+          label="By transitive closure"
+          value={formatNumber(formalDerivedCount)}
+          detail="Composed from direct Lean proofs"
+          tone="graph"
+          icon={<GitBranch size={18} aria-hidden="true" />}
         />
         <Metric
           label="Properties implemented"
           value={formatPercent(data.summary.propertyImplementations, data.summary.propertyTotal)}
           detail={`${formatNumber(data.summary.propertyImplementations)} definitions · ${formatNumber(data.summary.propertyTotal - data.summary.propertyImplementations)} remaining`}
-          tone="represented"
-          icon={<CheckCircle2 size={18} aria-hidden="true" />}
-        />
-        <Metric
-          label="pi-Base classified"
-          value={formatPercent(resolved, data.summary.totalPairs, 2)}
-          detail={`${formatNumber(resolved)} of ${formatNumber(data.summary.totalPairs)} ordered pairs`}
-          tone="graph"
-          icon={<CircleDotDashed size={18} aria-hidden="true" />}
-        />
-        <Metric
-          label="pi-Base open pairs"
-          value={formatNumber(data.summary.openPairs)}
-          detail={`${formatPercent(data.summary.openPairs, data.summary.totalPairs)} of the graph`}
           tone="open"
-          icon={<ArrowRight size={18} aria-hidden="true" />}
+          icon={<CheckCircle2 size={18} aria-hidden="true" />}
         />
       </section>
 
