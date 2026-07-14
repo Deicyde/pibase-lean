@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import ImplementationBar from "../components/ImplementationBar";
-import Matrix, { type MatrixMode, type MatrixView } from "../components/Matrix";
+import Matrix, { type MatrixView } from "../components/Matrix";
 import Metric from "../components/Metric";
 import PropertyCombobox from "../components/PropertyCombobox";
 import TheoremTrace, { TheoremLinks } from "../components/TheoremTrace";
@@ -48,7 +48,6 @@ function statusClass(view: MatrixView, state: GraphStatusCode): string {
 
 export default function Overview({ bundle, params }: { bundle: DashboardBundle; params: URLSearchParams }) {
   const { data } = bundle;
-  const [matrixMode, setMatrixMode] = useState<MatrixMode>("all");
   const [matrixView, setMatrixView] = useState<MatrixView>(params.get("view") === "pibase" ? "pibase" : "formalized");
   const lead = data.graph.formalized.direct[0]
     ?? data.frontier[0]
@@ -217,22 +216,6 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                   ? `${formatNumber(formalDirectCount)} proved directly · ${formatNumber(formalDerivedCount)} by transitivity`
                   : `${formatNumber(data.graph.counts.explicitTrue)} direct · ${formatNumber(data.graph.counts.derivedTrue)} by closure`}
               </span>
-              <div className="segmented" aria-label="Matrix display mode">
-                {(["all", "open", "proofs"] as MatrixMode[]).map((mode) => (
-                  <button
-                    key={mode}
-                    type="button"
-                    aria-pressed={matrixMode === mode}
-                    onClick={() => setMatrixMode(mode)}
-                  >
-                    {mode === "all"
-                      ? "All"
-                      : mode === "open"
-                        ? matrixView === "formalized" ? "Remaining" : "Open"
-                        : matrixView === "formalized" ? "Proofs" : "True"}
-                  </button>
-                ))}
-              </div>
             </div>
             <Matrix
               bundle={bundle}
@@ -241,7 +224,6 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
               onSelect={selectPair}
               outcomes={activeOutcomes}
               view={matrixView}
-              mode={matrixMode}
             />
           </div>
 

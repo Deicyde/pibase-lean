@@ -11,7 +11,6 @@ const PIBASE_STATUS_CLASS: Record<number, string> = {
   5: "open",
 };
 
-export type MatrixMode = "all" | "open" | "proofs";
 export type MatrixView = "formalized" | "pibase";
 
 function statusClass(view: MatrixView, state: GraphStatusCode): string {
@@ -35,7 +34,6 @@ export default function Matrix({
   onSelect,
   outcomes,
   view,
-  mode = "all",
   compact = false,
 }: {
   bundle: DashboardBundle;
@@ -44,7 +42,6 @@ export default function Matrix({
   onSelect: (source: string, target: string) => void;
   outcomes: Uint8Array;
   view: MatrixView;
-  mode?: MatrixMode;
   compact?: boolean;
 }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -87,17 +84,13 @@ export default function Matrix({
       4: styles.getPropertyValue("--graph-independent").trim(),
       5: styles.getPropertyValue(view === "formalized" ? "--graph-unformalized" : "--graph-open").trim(),
     };
-    const muted = styles.getPropertyValue("--graph-muted").trim();
     const cell = side / size;
     context.fillStyle = styles.getPropertyValue("--surface").trim();
     context.fillRect(0, 0, side, side);
     for (let row = 0; row < size; row += 1) {
       for (let column = 0; column < size; column += 1) {
         const state = outcomes[graphIndex(size, row, column)];
-        const visible = mode === "all"
-          || (mode === "open" && (state === 5 || state === 0))
-          || (mode === "proofs" && (state === 1 || state === 2 || state === 0));
-        context.fillStyle = visible ? colors[state] : muted;
+        context.fillStyle = colors[state];
         context.fillRect(column * cell, row * cell, Math.ceil(cell), Math.ceil(cell));
       }
     }
@@ -114,7 +107,7 @@ export default function Matrix({
       context.stroke();
       context.globalAlpha = 1;
     }
-  }, [mode, outcomes, side, size, sourceIndex, targetIndex, view]);
+  }, [outcomes, side, size, sourceIndex, targetIndex, view]);
 
   const active = hover ?? (sourceIndex >= 0 && targetIndex >= 0 ? { sourceIndex, targetIndex } : null);
   const activeSummary = useMemo(() => {
