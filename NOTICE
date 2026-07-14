@@ -1,5 +1,5 @@
-pi-base-lean
-Copyright (c) 2026 Jack McCarthy — MIT License (see LICENSE).
+Dashboard and data tooling originally developed in Deicyde/pi-base-lean
+Copyright (c) 2026 Jack McCarthy — MIT License (see LICENSE-PI-BASE-LEAN).
 
 This product includes data from π-Base (the pi-Base community database of
 topological spaces), vendored at data/pibase.json.
