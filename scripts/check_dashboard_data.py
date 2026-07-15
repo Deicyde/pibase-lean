@@ -55,7 +55,7 @@ def check_review(kind: str, expected: int, source_prefix: str) -> None:
 def main() -> None:
     manifest = load(DATA / "dashboard.json")
     canonical_repo = "https://github.com/felixpernegger/pibase-lean"
-    require(manifest["schemaVersion"] == 2, "unexpected dashboard schema version")
+    require(manifest["schemaVersion"] == 3, "unexpected dashboard schema version")
     require(manifest["project"]["repoUrl"] == canonical_repo, "project repository is not Felix's repository")
     require(
         manifest["project"]["repositoryLabel"] == "felixpernegger/pibase-lean",
@@ -82,9 +82,11 @@ def main() -> None:
     histogram = Counter(outcomes)
     expected = manifest["graph"]["counts"]
     require(histogram[0] == size, "diagonal cell count is invalid")
-    for code, key in ((1, "explicitTrue"), (2, "derivedTrue"), (3, "false"), (4, "independent"), (5, "open")):
+    for code, key in ((1, "explicitTrue"), (2, "derivedTrue"), (3, "false"), (4, "axiomDependent"), (5, "unclassified")):
         require(histogram[code] == expected.get(key, 0), f"{key} count disagrees with outcome matrix")
     require(sum(histogram.values()) == size * size, "outcome matrix contains invalid status bytes")
+    require(manifest["graph"]["statusCodes"].get("4") == "axiom-dependent", "status code 4 is not axiom-dependent")
+    require(manifest["graph"]["statusCodes"].get("5") == "unclassified", "status code 5 is not unclassified")
 
     formalized_histogram = Counter(formalized_outcomes)
     formalized_counts = manifest["graph"]["formalized"]["counts"]
@@ -109,13 +111,61 @@ def main() -> None:
         all((value > 0) == (state == 3) for value, state in zip(witnesses, outcomes, strict=True)),
         "witness matrix does not align with false outcomes",
     )
+    spaces = manifest["spaces"]
+    require(
+        all(not spaces[value - 1].get("assumptions") for value in witnesses if value),
+        "an axiom-conditional space is being used as an unconditional counterexample",
+    )
+
+    node_index = {item["id"]: index for index, item in enumerate(manifest["properties"])}
+    axiom_dependencies = manifest["graph"]["axiomDependencies"]
+    require(
+        len(axiom_dependencies) == expected.get("axiomDependent", 0),
+        "axiom dependency records disagree with the outcome count",
+    )
+    dependency_pairs = {(item["source"], item["target"]) for item in axiom_dependencies}
+    require(len(dependency_pairs) == len(axiom_dependencies), "axiom dependency records contain duplicate pairs")
+    require(
+        all(
+            item.get("baseTheory")
+            and item.get("axioms")
+            and outcomes[node_index[item["source"]] * size + node_index[item["target"]]] == 4
+            for item in axiom_dependencies
+        ),
+        "axiom dependency metadata is incomplete or points to a non-dependent cell",
+    )
+
+    conditional_evidence = manifest["graph"]["conditionalEvidence"]
+    evidence_pairs = {(item["source"], item["target"]): item for item in conditional_evidence}
+    require(len(evidence_pairs) == len(conditional_evidence), "conditional evidence contains duplicate pairs")
+    space_map = {item["id"]: item for item in spaces}
+    require(
+        all(
+            witness["space"] in space_map
+            and space_map[witness["space"]].get("assumptions")
+            and witness.get("assumptions")
+            for item in conditional_evidence
+            for witness in item["witnesses"]
+        ),
+        "conditional evidence contains an unconditional or unknown space",
+    )
 
     frontier = manifest["frontier"]
-    require(len(frontier) == expected.get("open", 0), "frontier size disagrees with open count")
-    node_index = {item["id"]: index for index, item in enumerate(manifest["properties"])}
+    require(
+        len(frontier) == expected.get("unclassified", 0),
+        "frontier size disagrees with unclassified count",
+    )
     require(
         all(outcomes[node_index[item["source"]] * size + node_index[item["target"]]] == 5 for item in frontier),
         "frontier contains a non-open pair",
+    )
+    require(
+        all(
+            item.get("conditionalEvidence", False)
+            == ((item["source"], item["target"]) in evidence_pairs)
+            for item in frontier
+        ),
+        "frontier conditional-evidence flags disagree with their records",
     )
 
     summary = manifest["summary"]
@@ -167,6 +217,12 @@ def main() -> None:
 
     for artifact in manifest["downloads"]:
         require((PUBLIC / artifact["path"]).exists(), f"download is missing: {artifact['path']}")
+    dependency_artifact = load(DATA / "axiom-dependencies.json")
+    require(
+        dependency_artifact["pairs"] == axiom_dependencies
+        and dependency_artifact["conditionalEvidence"] == conditional_evidence,
+        "axiom dependency artifact disagrees with the manifest",
+    )
     for page in ("blueprint.html", "review.html", "data.html"):
         require((PUBLIC / page).exists(), f"public page is missing: {page}")
     blueprint = (PUBLIC / "blueprint.html").read_text(encoding="utf-8")

@@ -20,6 +20,7 @@ import {
   formatNumber,
   formatPercent,
   graphIndex,
+  graphStatusLabel,
   routeTo,
   type GraphStatusCode,
 } from "../lib";
@@ -32,8 +33,8 @@ const PIBASE_STATUS_CLASS: Record<number, string> = {
   1: "explicit-true",
   2: "derived-true",
   3: "false",
-  4: "independent",
-  5: "open",
+  4: "axiom-dependent",
+  5: "unclassified",
 };
 
 function statusClass(view: MatrixView, state: GraphStatusCode): string {
@@ -73,6 +74,15 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
   const witnessValue = bundle.witnesses[graphIndex(data.graph.size, sourceIndex, targetIndex)];
   const witness = witnessValue ? data.spaces[witnessValue - 1] : null;
   const frontier = pibaseState === 5 ? data.frontier.find((item) => item.source === source && item.target === target) : null;
+  const axiomDependency = data.graph.axiomDependencies.find(
+    (item) => item.source === source && item.target === target,
+  );
+  const conditionalEvidence = data.graph.conditionalEvidence.find(
+    (item) => item.source === source && item.target === target,
+  );
+  const outcomeLabel = matrixView === "formalized"
+    ? statusLabels[state].label
+    : graphStatusLabel(data, state, source, target);
   const paramKey = params.toString();
 
   useEffect(() => {
@@ -176,7 +186,7 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
             </div>
             <div className={`outcome-chip graph-${statusClass(matrixView, state)}`}>
               <i className={`matrix-swatch graph-${statusClass(matrixView, state)}`} aria-hidden="true" />
-              {statusLabels[state].label}
+              {outcomeLabel}
             </div>
           </div>
         </div>
@@ -270,7 +280,7 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                     <div>
                       <p>No canonical pairwise Lean theorem path is currently recorded for this implication.</p>
                       <dl className="frontier-evidence">
-                        <div><dt>pi-Base classification</dt><dd>{GRAPH_STATUS[pibaseState].label}</dd></div>
+                        <div><dt>pi-Base classification</dt><dd>{graphStatusLabel(data, pibaseState, source, target)}</dd></div>
                       </dl>
                     </div>
                   )}
@@ -298,21 +308,49 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                   )}
                   {state === 3 && witness && (
                     <div className="witness-evidence">
-                      <p>A separating space satisfies the hypothesis and refutes the conclusion.</p>
+                      <p>An unconditional separating space satisfies the hypothesis and refutes the conclusion.</p>
                       <a href={witness.referenceUrl}><code>{witness.shortId}</code><strong>{witness.name}</strong><ExternalLink size={14} aria-hidden="true" /></a>
                     </div>
                   )}
-                  {state === 4 && <p>An independence certificate is recorded for this ordered pair.</p>}
+                  {state === 4 && axiomDependency && (
+                    <div className="axiom-evidence">
+                      <p>{axiomDependency.summary}</p>
+                      <dl className="frontier-evidence">
+                        <div><dt>Base theory</dt><dd>{axiomDependency.baseTheory}</dd></div>
+                        {axiomDependency.trueWhen && <div><dt>True when</dt><dd>{axiomDependency.trueWhen}</dd></div>}
+                        {axiomDependency.falseWhen && <div><dt>False when</dt><dd>{axiomDependency.falseWhen}</dd></div>}
+                      </dl>
+                      <TheoremLinks data={data} theoremIds={axiomDependency.theorems} view="pibase" />
+                    </div>
+                  )}
                   {state === 5 && frontier && (
                     <div>
-                      <p>No theorem path, separating space, or independence certificate is currently recorded.</p>
+                      <p>No unconditional theorem path, unconditional separating space, or axiom-dependence certificate is currently recorded.</p>
+                      {conditionalEvidence && (
+                        <div className="conditional-evidence">
+                          <span>Conditional evidence</span>
+                          {conditionalEvidence.witnesses.map((item) => {
+                            const conditionalWitness = data.spaces.find((space) => space.id === item.space);
+                            if (!conditionalWitness) return null;
+                            return (
+                              <a key={item.space} href={item.referenceUrl}>
+                                <code>{conditionalWitness.shortId}</code>
+                                <strong>{conditionalWitness.name}</strong>
+                                <small>Counterexample under {item.condition || item.assumptions.join(" + ")}</small>
+                                <ExternalLink size={14} aria-hidden="true" />
+                              </a>
+                            );
+                          })}
+                          <p>This conditional witness does not determine the implication without the stated assumption.</p>
+                        </div>
+                      )}
                       <dl className="frontier-evidence">
                         <div><dt>Potential closure gain</dt><dd>{formatNumber(frontier.closureGain)}</dd></div>
                         <div><dt>Known ancestors</dt><dd>{formatNumber(frontier.sourceAncestors)}</dd></div>
                         <div><dt>Known descendants</dt><dd>{formatNumber(frontier.targetDescendants)}</dd></div>
                       </dl>
                       <a className="text-link" href={routeTo("frontier", { q: `${sourceNode.shortId} ${targetNode.shortId}` })}>
-                        Open in frontier <ArrowRight size={15} aria-hidden="true" />
+                        View in frontier <ArrowRight size={15} aria-hidden="true" />
                       </a>
                     </div>
                   )}
@@ -360,8 +398,8 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
         <div>
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Highest leverage</p>
-              <h2>Open frontier</h2>
+              <p className="eyebrow">Unclassified frontier</p>
+              <h2>Largest potential gain</h2>
             </div>
             <a className="text-link" href={routeTo("frontier")}>View all <ArrowRight size={15} aria-hidden="true" /></a>
           </div>
@@ -371,10 +409,10 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
               const target = propertyNames.get(item.target)!;
               return (
                 <li key={`${item.source}-${item.target}`}>
-                  <a href={routeTo("overview", { source: item.source, target: item.target })}>
+                  <a href={routeTo("overview", { source: item.source, target: item.target, view: "pibase" })}>
                     <span className="pair-label"><code>{source.shortId}</code> <span>⇒?</span> <code>{target.shortId}</code></span>
                     <span className="pair-names">{source.name} → {target.name}</span>
-                    <span className="gain">+{formatNumber(item.closureGain)} cells</span>
+                    <span className="gain">+{formatNumber(item.closureGain)} cells if true</span>
                   </a>
                 </li>
               );

@@ -30,7 +30,6 @@ LEAN_ROOT = Path(
 PIBASE_URL = "https://topology.pi-base.org"
 REPO_SLUG = "felixpernegger/pibase-lean"
 REPO_URL = f"https://github.com/{REPO_SLUG}"
-SET_THEORY_FRONTIER = {"P000164"}
 
 
 def load_json(path: Path):
@@ -365,19 +364,45 @@ def direct_theorem_map(data: dict) -> dict[tuple[str, str], list[str]]:
     return result
 
 
-def build_graph(data: dict, independent_pairs: set[tuple[str, str]]) -> dict:
+def build_graph(
+    data: dict,
+    axiom_dependencies: dict[tuple[str, str], dict],
+    conditional_spaces: dict[str, dict],
+) -> dict:
     nodes = [item["uid"] for item in data["properties"]]
     index = {uid: i for i, uid in enumerate(nodes)}
     direct_edges = known_true_edges(data)
     reach = transitive_closure(direct_edges, nodes)
     traits = full_trait_matrix(data)
     spaces = [item["uid"] for item in data["spaces"]]
+    unknown_conditional_spaces = set(conditional_spaces) - set(spaces)
+    if unknown_conditional_spaces:
+        raise SystemExit(
+            "unknown conditional spaces: " + ", ".join(sorted(unknown_conditional_spaces))
+        )
+    for space, condition in conditional_spaces.items():
+        if not condition.get("assumptions"):
+            raise SystemExit(f"conditional space has no named assumption: {space}")
+    unconditional_spaces = [space for space in spaces if space not in conditional_spaces]
     theorem_map = direct_theorem_map(data)
     outcomes = bytearray()
     witnesses: list[int] = []
     witness_counts: Counter[str] = Counter()
     counts: Counter[str] = Counter()
-    open_pairs: list[tuple[str, str]] = []
+    unclassified_pairs: list[tuple[str, str]] = []
+    conditional_evidence: dict[tuple[str, str], list[dict]] = {}
+
+    for (source, target), dependency in axiom_dependencies.items():
+        if source not in index or target not in index or source == target:
+            raise SystemExit(f"invalid axiom-dependent implication: {source} -> {target}")
+        if target in reach[source]:
+            raise SystemExit(f"axiom-dependent implication is already unconditionally true: {source} -> {target}")
+        if not dependency.get("axioms"):
+            raise SystemExit(f"axiom-dependent implication has no named axiom: {source} -> {target}")
+        if not dependency.get("trueWhen") or not dependency.get("falseWhen"):
+            raise SystemExit(
+                f"axiom-dependent implication lacks truth conditions: {source} -> {target}"
+            )
 
     for source in nodes:
         for target in nodes:
@@ -394,24 +419,47 @@ def build_graph(data: dict, independent_pairs: set[tuple[str, str]]) -> dict:
             else:
                 witness = next(
                     (
-                        space for space in spaces
+                        space for space in unconditional_spaces
                         if traits[space].get(source) is True
                         and traits[space].get(target) is False
                     ),
                     None,
                 )
                 if witness:
+                    if (source, target) in axiom_dependencies:
+                        raise SystemExit(
+                            "axiom-dependent implication has an unconditional counterexample: "
+                            f"{source} -> {target} via {witness}"
+                        )
                     state = 3
                     witness_index = spaces.index(witness) + 1
                     witness_counts[witness] += 1
                     counts["false"] += 1
-                elif (source, target) in independent_pairs:
+                elif (source, target) in axiom_dependencies:
                     state = 4
-                    counts["independent"] += 1
+                    counts["axiomDependent"] += 1
                 else:
                     state = 5
-                    counts["open"] += 1
-                    open_pairs.append((source, target))
+                    counts["unclassified"] += 1
+                    unclassified_pairs.append((source, target))
+
+                if witness is None:
+                    conditional_witnesses = [
+                        {
+                            "space": space,
+                            "assumptions": conditional_spaces[space].get("assumptions", []),
+                            "condition": conditional_spaces[space].get("condition", ""),
+                            "summary": conditional_spaces[space].get("summary", ""),
+                            "referenceUrl": conditional_spaces[space].get(
+                                "referenceUrl", f"{PIBASE_URL}/spaces/{space}"
+                            ),
+                        }
+                        for space in conditional_spaces
+                        if traits[space].get(source) is True
+                        and traits[space].get(target) is False
+                    ]
+                    if conditional_witnesses:
+                        conditional_evidence[(source, target)] = conditional_witnesses
             outcomes.append(state)
             witnesses.append(witness_index)
 
@@ -421,7 +469,7 @@ def build_graph(data: dict, independent_pairs: set[tuple[str, str]]) -> dict:
             ancestors[target].add(source)
 
     frontier = []
-    for source, target in open_pairs:
+    for source, target in unclassified_pairs:
         sources = ancestors[source]
         targets = set(reach[target]) | {target}
         closure_gain = sum(
@@ -436,12 +484,16 @@ def build_graph(data: dict, independent_pairs: set[tuple[str, str]]) -> dict:
             "closureGain": closure_gain,
             "sourceAncestors": len(sources) - 1,
             "targetDescendants": len(targets) - 1,
-            "setTheory": source in SET_THEORY_FRONTIER or target in SET_THEORY_FRONTIER,
+            "conditionalEvidence": bool(conditional_evidence.get((source, target))),
+            "axioms": sorted({
+                axiom
+                for witness in conditional_evidence.get((source, target), [])
+                for axiom in witness["assumptions"]
+            }),
         })
     frontier.sort(
         key=lambda item: (
             -item["closureGain"],
-            item["setTheory"],
             item["source"],
             item["target"],
         )
@@ -466,6 +518,14 @@ def build_graph(data: dict, independent_pairs: set[tuple[str, str]]) -> dict:
         "direct": direct,
         "frontier": frontier,
         "witnessCounts": dict(witness_counts),
+        "axiomDependencies": sorted(
+            axiom_dependencies.values(),
+            key=lambda item: (item["source"], item["target"]),
+        ),
+        "conditionalEvidence": [
+            {"source": source, "target": target, "witnesses": evidence}
+            for (source, target), evidence in sorted(conditional_evidence.items())
+        ],
         "reach": reach,
     }
 
@@ -690,19 +750,43 @@ def main() -> None:
     coverage = load_json(DATA_DIR / "coverage.json")
     questions = load_json(DATA_DIR / "questions.json")
     registry = load_json(DATA_DIR / "registry.json")
-    independence = load_json(DATA_DIR / "independence.json")
-    independent_pairs = {
-        (item["hypothesis"], item["conclusion"])
-        for item in independence.get("pairs", [])
+    foundations = load_json(DATA_DIR / "independence.json")
+    base_theory = foundations.get("baseTheory", "ZFC")
+    axiom_dependency_records = [
+        {
+            "source": item["hypothesis"],
+            "target": item["conclusion"],
+            "baseTheory": item.get("baseTheory", base_theory),
+            "axioms": item.get("axioms", []),
+            "trueWhen": item.get("trueWhen", ""),
+            "falseWhen": item.get("falseWhen", ""),
+            "summary": item.get("summary", ""),
+            "theorems": item.get("theorems", []),
+            "referenceUrl": item.get("referenceUrl", ""),
+        }
+        for item in foundations.get("pairs", [])
         if item.get("hypothesis") and item.get("conclusion")
+    ]
+    axiom_dependencies = {
+        (item["source"], item["target"]): item
+        for item in axiom_dependency_records
     }
+    if len(axiom_dependencies) != len(axiom_dependency_records):
+        raise SystemExit("duplicate axiom-dependent implication records")
+    conditional_spaces = {
+        item["space"]: item
+        for item in foundations.get("conditionalSpaces", [])
+        if item.get("space")
+    }
+    if len(conditional_spaces) != len(foundations.get("conditionalSpaces", [])):
+        raise SystemExit("duplicate or incomplete conditional-space records")
 
     generated_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     commit_short = commit[:8]
     branch = git("branch", "--show-current") or "master"
     source_date = git("log", "-1", "--format=%cI")[:10]
     statuses, analyses = analyze_lean_tree()
-    graph = build_graph(data, independent_pairs)
+    graph = build_graph(data, axiom_dependencies, conditional_spaces)
     formalized_graph = build_formalized_graph(data, statuses)
     names = {item["uid"]: item["name"] for item in data["properties"]}
     recent, delta = recent_activity()
@@ -728,6 +812,7 @@ def main() -> None:
             "name": item["name"],
             "referenceUrl": f"{PIBASE_URL}/spaces/{item['uid']}",
             "lean": statuses.get(item["uid"]),
+            "assumptions": conditional_spaces.get(item["uid"], {}).get("assumptions", []),
         }
         for item in data["spaces"]
     ]
@@ -751,9 +836,14 @@ def main() -> None:
 
     counts = graph["counts"]
     total_pairs = len(graph["nodes"]) * (len(graph["nodes"]) - 1)
-    resolved = counts.get("explicitTrue", 0) + counts.get("derivedTrue", 0) + counts.get("false", 0) + counts.get("independent", 0)
+    resolved = (
+        counts.get("explicitTrue", 0)
+        + counts.get("derivedTrue", 0)
+        + counts.get("false", 0)
+        + counts.get("axiomDependent", 0)
+    )
     dashboard = {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "project": {
             "id": "pibase-lean",
             "name": "pibase-lean",
@@ -784,7 +874,7 @@ def main() -> None:
             "spaceTotal": len(data["spaces"]),
             "resolvedPairs": resolved,
             "totalPairs": total_pairs,
-            "openPairs": counts.get("open", 0),
+            "unclassifiedPairs": counts.get("unclassified", 0),
         },
         "trust": trust,
         "graph": {
@@ -797,11 +887,13 @@ def main() -> None:
                 "1": "explicit-true",
                 "2": "derived-true",
                 "3": "false",
-                "4": "independent",
-                "5": "open",
+                "4": "axiom-dependent",
+                "5": "unclassified",
             },
             "direct": graph["direct"],
             "witnessCounts": graph["witnessCounts"],
+            "axiomDependencies": graph["axiomDependencies"],
+            "conditionalEvidence": graph["conditionalEvidence"],
             "formalized": {
                 "counts": formalized_graph["counts"],
                 "outcomesPath": "data/formalized-outcomes.bin",
@@ -829,7 +921,8 @@ def main() -> None:
             {"label": "Outcome matrix", "path": "data/outcomes.bin", "format": "Uint8"},
             {"label": "Formalized outcome matrix", "path": "data/formalized-outcomes.bin", "format": "Uint8"},
             {"label": "Witness matrix", "path": "data/witnesses.bin", "format": "Uint16 LE"},
-            {"label": "Open frontier", "path": "data/frontier.json", "format": "JSON"},
+            {"label": "Axiom dependencies", "path": "data/axiom-dependencies.json", "format": "JSON"},
+            {"label": "Unclassified frontier", "path": "data/frontier.json", "format": "JSON"},
             {"label": "Review: spaces", "path": "data/review-spaces.json", "format": "JSON"},
             {"label": "Review: properties", "path": "data/review-properties.json", "format": "JSON"},
             {"label": "Review: theorems", "path": "data/review-theorems.json", "format": "JSON"},
@@ -842,6 +935,13 @@ def main() -> None:
         "sourceCommit": commit,
         "properties": {uid: names[uid] for uid in graph["nodes"]},
         "frontier": graph["frontier"],
+    })
+    dump_json(OUT_DIR / "axiom-dependencies.json", {
+        "schemaVersion": 1,
+        "sourceCommit": commit,
+        "baseTheory": base_theory,
+        "pairs": graph["axiomDependencies"],
+        "conditionalEvidence": graph["conditionalEvidence"],
     })
     (OUT_DIR / "outcomes.bin").write_bytes(graph["outcomes"])
     (OUT_DIR / "formalized-outcomes.bin").write_bytes(formalized_graph["outcomes"])
@@ -856,8 +956,9 @@ def main() -> None:
         "explicitly_true": counts.get("explicitTrue", 0),
         "implicitly_true": counts.get("derivedTrue", 0),
         "false": counts.get("false", 0),
-        "independent": counts.get("independent", 0),
-        "open": counts.get("open", 0),
+        "independent": counts.get("axiomDependent", 0),
+        "axiom_dependent": counts.get("axiomDependent", 0),
+        "open": counts.get("unclassified", 0),
         "witness_count": graph["witnessCounts"],
     }
     (PUBLIC_DIR / "blueprint.html").write_text(
@@ -867,7 +968,7 @@ def main() -> None:
 
     print(
         "dashboard data: "
-        f"{len(properties)} properties, {len(graph['frontier'])} open pairs, "
+        f"{len(properties)} properties, {len(graph['frontier'])} unclassified pairs, "
         f"{theorem_implementations} implemented theorem rows from {commit_short}"
     )
 

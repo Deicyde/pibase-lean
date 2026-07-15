@@ -1,9 +1,12 @@
 import { Download, ExternalLink, FileCode2, GitCommitHorizontal } from "lucide-react";
 import TrustBar from "../components/TrustBar";
-import { formatNumber, formatPercent } from "../lib";
+import { formatNumber, formatPercent, plainMathLabel, routeTo } from "../lib";
 import type { DashboardData } from "../types";
 
 export default function DataPage({ data }: { data: DashboardData }) {
+  const propertyMap = new Map(data.properties.map((item) => [item.id, item]));
+  const conditionalSpaces = data.spaces.filter((item) => item.assumptions.length);
+
   return (
     <div className="page data-page">
       <header className="page-intro compact-intro">
@@ -34,6 +37,57 @@ export default function DataPage({ data }: { data: DashboardData }) {
           <p>Generated {new Date(data.source.generatedAt).toLocaleString()}</p>
           <a href="data/dashboard.json">Manifest <ExternalLink size={13} /></a>
         </article>
+      </section>
+
+      <section className="dashboard-section">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Foundational status</p>
+            <h2>Axiom dependencies</h2>
+          </div>
+          <span className="frontier-total"><strong>{formatNumber(data.graph.axiomDependencies.length)}</strong><span>certified pairs</span></span>
+        </div>
+        <div className="foundations-grid">
+          <div>
+            <h3>Implications</h3>
+            <table className="data-table foundations-table">
+              <thead><tr><th scope="col">Implication</th><th scope="col">Depends on</th><th scope="col">Truth conditions</th><th scope="col">Evidence</th></tr></thead>
+              <tbody>
+                {data.graph.axiomDependencies.map((item) => {
+                  const source = propertyMap.get(item.source)!;
+                  const target = propertyMap.get(item.target)!;
+                  return (
+                    <tr key={`${item.source}-${item.target}`}>
+                      <td>
+                        <a className="pair-cell" href={routeTo("overview", { source: item.source, target: item.target, view: "pibase" })}>
+                          <span><code>{source.shortId}</code> ⇒ <code>{target.shortId}</code></span>
+                          <small>{plainMathLabel(source.name)} → {plainMathLabel(target.name)}</small>
+                        </a>
+                      </td>
+                      <td><strong>{item.axioms.join(" + ")}</strong><span className="cell-detail">over {item.baseTheory}</span></td>
+                      <td><span>{item.trueWhen}: true</span><span className="cell-detail">{item.falseWhen}: false</span></td>
+                      <td><a className="text-link" href={item.referenceUrl}>{item.theorems.map((id) => id.replace(/^T0+/, "T")).join(", ")} <ExternalLink size={13} /></a></td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <h3>Conditional constructions</h3>
+            <table className="data-table foundations-table">
+              <thead><tr><th scope="col">Space</th><th scope="col">Available under</th></tr></thead>
+              <tbody>
+                {conditionalSpaces.map((space) => (
+                  <tr key={space.id}>
+                    <td><a className="pair-cell" href={space.referenceUrl}><code>{space.shortId}</code><small>{plainMathLabel(space.name)}</small></a></td>
+                    <td><strong>{space.assumptions.join(" + ")}</strong><span className="cell-detail">Conditional evidence only</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       <section className="dashboard-section">
@@ -93,6 +147,10 @@ export default function DataPage({ data }: { data: DashboardData }) {
               <tr><th scope="row">Formalized theorem record</th><td>The π-Base theorem record has a canonical Lean declaration whose own theorem files contain no active <code>sorry</code>, <code>admit</code>, or explicit axiom.</td></tr>
               <tr><th scope="row">Formalized graph edge</th><td>A positive property-to-property implication with a canonical Lean theorem and no placeholder or explicit axiom in its own theorem files. Conservative import-closure debt is reported separately.</td></tr>
               <tr><th scope="row">Transitive closure cell</th><td>An implication obtained by composing formalized graph edges. It is a resolved pair, not an additional Lean theorem declaration.</td></tr>
+              <tr><th scope="row">Unconditional counterexample</th><td>A separating π-Base space requiring no additional set-theoretic assumption satisfies the hypothesis and refutes the conclusion.</td></tr>
+              <tr><th scope="row">Axiom-dependent</th><td>A certificate records that the implication's truth value changes under named assumptions such as CH or MA. The pair is neither unconditionally true nor unconditionally false over the stated base theory.</td></tr>
+              <tr><th scope="row">Conditional evidence</th><td>A theorem or separating space is available under an additional assumption. This evidence is displayed, but it does not classify the unconditional implication by itself.</td></tr>
+              <tr><th scope="row">Unclassified</th><td>No unconditional theorem path, unconditional witness, or axiom-dependence certificate is currently recorded.</td></tr>
               <tr><th scope="row">Dependency-clean</th><td>Canonical declaration, no local placeholders or explicit axioms, and none in the project import closure.</td></tr>
               <tr><th scope="row">Dependency debt</th><td>Canonical declaration with no local placeholder, but at least one imported project file contains proof debt. This conservative file-level audit does not mean the declaration uses that debt.</td></tr>
               <tr><th scope="row">Local debt</th><td>The entity's own Lean files contain an active <code>sorry</code> or <code>admit</code>.</td></tr>
@@ -105,7 +163,7 @@ export default function DataPage({ data }: { data: DashboardData }) {
           <ol className="pipeline-list">
             <li><GitCommitHorizontal size={16} /><span><strong>Lean checkout</strong><small>Repository tree and import closure</small></span></li>
             <li><span className="pipeline-index">2</span><span><strong>pi-Base snapshot</strong><small>Properties, theorem rules, spaces, and traits</small></span></li>
-            <li><span className="pipeline-index">3</span><span><strong>Graph classification</strong><small>Explicit, derived, refuted, independent, and open</small></span></li>
+            <li><span className="pipeline-index">3</span><span><strong>Graph classification</strong><small>True, false, axiom-dependent, and unclassified</small></span></li>
             <li><span className="pipeline-index">4</span><span><strong>Static application</strong><small>Versioned JSON and packed matrix artifacts</small></span></li>
           </ol>
         </div>

@@ -2,11 +2,11 @@ import type { DashboardBundle, DashboardData, DirectEdge, ImportedRun } from "./
 
 export const GRAPH_STATUS = {
   0: { key: "diagonal", label: "Diagonal" },
-  1: { key: "explicit-true", label: "Explicit pi-Base edge" },
-  2: { key: "derived-true", label: "By graph closure" },
-  3: { key: "false", label: "Counterexample" },
-  4: { key: "independent", label: "Independent" },
-  5: { key: "open", label: "Open" },
+  1: { key: "explicit-true", label: "True · pi-Base theorem" },
+  2: { key: "derived-true", label: "True · transitive closure" },
+  3: { key: "false", label: "False · unconditional witness" },
+  4: { key: "axiom-dependent", label: "Axiom-dependent" },
+  5: { key: "unclassified", label: "Unclassified" },
 } as const;
 
 export const FORMAL_GRAPH_STATUS = {
@@ -83,6 +83,21 @@ export function graphIndex(size: number, sourceIndex: number, targetIndex: numbe
 
 export function statusAt(bundle: DashboardBundle, sourceIndex: number, targetIndex: number): GraphStatusCode {
   return bundle.outcomes[graphIndex(bundle.data.graph.size, sourceIndex, targetIndex)] as GraphStatusCode;
+}
+
+export function graphStatusLabel(
+  data: DashboardData,
+  state: GraphStatusCode,
+  source?: string,
+  target?: string,
+): string {
+  if (state !== 4 || !source || !target) return GRAPH_STATUS[state].label;
+  const dependency = data.graph.axiomDependencies.find(
+    (item) => item.source === source && item.target === target,
+  );
+  return dependency?.axioms.length
+    ? `Dependent on ${dependency.axioms.join(" + ")}`
+    : GRAPH_STATUS[state].label;
 }
 
 export function routeTo(route: string, params?: Record<string, string | number | undefined>): string {

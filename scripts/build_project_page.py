@@ -176,9 +176,14 @@ def formal_status(coverage):
 
 def independence_status(questions):
     pairs = []
+    payload = {}
     if os.path.exists(INDEPENDENCE):
         payload = json.load(open(INDEPENDENCE))
-        pairs = payload.get("pairs", payload if isinstance(payload, list) else [])
+        if isinstance(payload, list):
+            pairs = payload
+            payload = {}
+        else:
+            pairs = payload.get("pairs", [])
     proven = {
         (item["hypothesis"], item["conclusion"])
         for item in pairs
@@ -193,12 +198,17 @@ def independence_status(questions):
         "pairs": pairs,
         "proven_pairs": proven,
         "proven_count": len(proven),
+        "conditional_space_ids": {
+            item["space"]
+            for item in payload.get("conditionalSpaces", [])
+            if item.get("space")
+        },
         "candidate_count": len(candidates),
         "candidates": candidates,
     }
 
 
-def graph_status(data, independent_pairs=None):
+def graph_status(data, independent_pairs=None, conditional_spaces=None):
     """Return implication-grid statistics and a dense status matrix.
 
     Matrix values:
@@ -206,9 +216,10 @@ def graph_status(data, independent_pairs=None):
       1 true by theorem/transitive closure
       2 false by separating space
       3 open
-      4 independent of ZFC
+      4 dependent on named additional axioms
     """
     independent_pairs = independent_pairs or set()
+    conditional_spaces = conditional_spaces or set()
     nodes = [p["uid"] for p in data["properties"]]
     matrix = full_trait_matrix(data)
     direct_edges = known_true_edges(data)
@@ -239,6 +250,8 @@ def graph_status(data, independent_pairs=None):
                 continue
             witness = None
             for s, known in matrix.items():
+                if s in conditional_spaces:
+                    continue
                 if known.get(p) is True and known.get(q) is False:
                     witness = s
                     break
@@ -537,14 +550,14 @@ Separates X P Q := P X and not Q X</code></pre>
             <p>
               The remaining {comma(summary["open"])} implication cells are neither
               proved by the theorem closure, refuted by a known separating space,
-              nor marked independent of ZFC.  These are exported to
+              nor certified as dependent on additional axioms. These are exported to
               <code>data/questions.json</code> as a machine-readable worklist.
             </p>
             <p>
-              Proven independence from ZFC is a separate outcome category.  The current
-              site data records {comma(summary["independent"])} proven-independent
-              implication pairs; set-theoretic candidates remain open until an
-              independence certificate is added.
+              Dependence on a named axiom is a separate outcome category. The current
+              site data records {comma(summary["independent"])} axiom-dependent
+              implication pairs; set-theoretic candidates remain unclassified until a
+              dependency certificate is added.
             </p>
             <ol class="questions">
               {sample_questions}
@@ -783,9 +796,9 @@ def build_page(data, coverage, questions, summary, formal):
                   f"{comma(summary['explicitly_true'])} explicit; {comma(summary['implicitly_true'])} by closure", "true"),
         stat_card(comma(summary["false"]), "false",
                   f"{pct(summary['false'], total)} refuted by known spaces", "false"),
-        stat_card(comma(summary["independent"]), "independent of ZFC",
-                  "certified independence pairs", "independent"),
-        stat_card(comma(summary["open"]), "open",
+        stat_card(comma(summary["independent"]), "axiom-dependent",
+                  "certified dependency pairs", "independent"),
+        stat_card(comma(summary["open"]), "unclassified",
                   f"{pct(summary['open'], total)} not yet classified", "open"),
     ])
 
@@ -1016,7 +1029,7 @@ section p {{ margin:0 0 14px; max-width:78ch; }}
         have corresponding Lean files, and how much visible proof debt remains in
         those files. Entry counts do not by themselves mean every definition and
         lemma is sorry-free. The implication outcome buckets are shown here too:
-        true, false, independent of ZFC, and open.
+        true, false, axiom-dependent, and unclassified.
       </p>
     </div>
     <aside class="source-card">
@@ -1060,24 +1073,24 @@ section p {{ margin:0 0 14px; max-width:78ch; }}
     <h2>Outcome Buckets</h2>
     <div>
       <p>
-        The true/false/independent/open counts classify the full
+        The true/false/axiom-dependent/unclassified counts classify the full
         {comma(total)}-cell pi-Base implication graph. They are graph-status
         counts, not counts of completed Lean proofs.
       </p>
       <p>
         True splits into {comma(summary["explicitly_true"])} explicit pi-Base theorem
         edges and {comma(summary["implicitly_true"])} additional implications obtained
-        by transitive closure. Independent of ZFC is reserved for pairs with an
-        explicit independence certificate in this site's data.
+        by transitive closure. Axiom-dependent is reserved for pairs whose changing
+        truth value is documented for named additional axioms.
       </p>
       <figure class="graph-figure">
-        <img src="assets/implication-map.png" width="788" height="788" alt="The current 244 by 244 implication grid colored by true, false, independent of ZFC, open, and diagonal cells.">
+        <img src="assets/implication-map.png" width="788" height="788" alt="The current 244 by 244 implication grid colored by true, false, axiom-dependent, unclassified, and diagonal cells.">
         <figcaption>Current 244-property implication grid generated from the pi-Base snapshot.</figcaption>
         <div class="legend" aria-label="Grid legend">
           <span style="--c:var(--green)">true</span>
           <span style="--c:var(--rust)">false</span>
-          <span style="--c:#7d5aa6">independent</span>
-          <span style="--c:var(--blue)">open</span>
+          <span style="--c:#7d5aa6">axiom-dependent</span>
+          <span style="--c:var(--blue)">unclassified</span>
         </div>
       </figure>
     </div>
@@ -1478,8 +1491,8 @@ pre {{
       <p>
         The landing page shows the outcome buckets for the whole
         {comma(total)}-cell implication graph: {comma(summary["true"])} true,
-        {comma(summary["false"])} false, {comma(summary["independent"])} independent
-        of ZFC, and {comma(summary["open"])} open.
+        {comma(summary["false"])} false, {comma(summary["independent"])} dependent
+        on named axioms, and {comma(summary["open"])} unclassified.
       </p>
       <p>
         There are {comma(independence["candidate_count"])} open set-theory candidates
@@ -1539,7 +1552,11 @@ def main():
     coverage = json.load(open(COVERAGE))
     questions = json.load(open(QUESTIONS))
     independence = independence_status(questions)
-    summary = graph_status(data, independence["proven_pairs"])
+    summary = graph_status(
+        data,
+        independence["proven_pairs"],
+        independence["conditional_space_ids"],
+    )
     formal = formal_status(coverage)
 
     os.makedirs(ASSETS, exist_ok=True)
@@ -1557,7 +1574,7 @@ def main():
     print(f"wrote {GRAPH_PNG}")
     print(
         f"  {summary['true']} true, {summary['false']} false, "
-        f"{summary['independent']} independent, {summary['open']} open "
+        f"{summary['independent']} axiom-dependent, {summary['open']} unclassified "
         f"over {summary['total']} ordered pairs"
     )
     print(

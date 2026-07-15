@@ -13,10 +13,12 @@ cell is one of:
   * TRUE   — there is a proof. We seed the known-true edges from pi-base's
              single-property theorems and take their transitive closure.
   * FALSE  — there is a *separating space*: a space S with S ⊨ P and S ⊭ Q. The
-             spaces are the refutation witnesses (ETP's finite magmas). We scan
-             the full trait closure of pi-base's space library for one.
-  * OPEN   — neither a proof nor a witness is known. These are the frontier: the
-             auto-generated new questions to prove or refute.
+             unconditional spaces are the refutation witnesses (ETP's finite
+             magmas). We scan the full trait closure of pi-base's space library.
+  * AXIOM-DEPENDENT — a certificate records that the truth value changes with a
+             named additional axiom such as CH.
+  * OPEN   — no unconditional proof, unconditional witness, or dependency
+             certificate is known. These are the auto-generated new questions.
 
 The point of the project is to *complete this graph* in Lean: formalize the
 properties (nodes) and enough spaces (witnesses) that every FALSE cell has a
@@ -40,6 +42,7 @@ from closure import atoms, close_space  # noqa: E402
 
 DATA = os.path.join(ROOT, "data", "pibase.json")
 REGISTRY = os.path.join(ROOT, "data", "registry.json")
+FOUNDATIONS = os.path.join(ROOT, "data", "independence.json")
 
 
 def full_trait_matrix(data):
@@ -88,8 +91,19 @@ def transitive_closure(edges, nodes):
 
 def main():
     data = json.load(open(DATA))
+    foundations = json.load(open(FOUNDATIONS))
     pname = {p["uid"]: p["name"] for p in data["properties"]}
     sname = {s["uid"]: s["name"] for s in data["spaces"]}
+    axiom_dependent = {
+        (item["hypothesis"], item["conclusion"])
+        for item in foundations.get("pairs", [])
+        if item.get("hypothesis") and item.get("conclusion")
+    }
+    conditional_spaces = {
+        item["space"]
+        for item in foundations.get("conditionalSpaces", [])
+        if item.get("space")
+    }
 
     nodes = [p["uid"] for p in data["properties"]]
     if "--mapped" in sys.argv:
@@ -100,7 +114,7 @@ def main():
     reach = transitive_closure(known_true_edges(data), nodes)
 
     nodeset = set(nodes)
-    true_pairs = refuted_pairs = open_pairs = 0
+    true_pairs = refuted_pairs = dependent_pairs = open_pairs = 0
     open_list = []
     witness_count = defaultdict(int)   # space -> #edges it refutes (within nodeset)
 
@@ -114,12 +128,16 @@ def main():
             # look for a separating space: S ⊨ P and S ⊭ Q
             witness = None
             for s, known in matrix.items():
+                if s in conditional_spaces:
+                    continue
                 if known.get(p) is True and known.get(q) is False:
                     witness = s
                     break
             if witness is not None:
                 refuted_pairs += 1
                 witness_count[witness] += 1
+            elif (p, q) in axiom_dependent:
+                dependent_pairs += 1
             else:
                 open_pairs += 1
                 open_list.append((p, q))
@@ -127,8 +145,9 @@ def main():
     total = len(nodes) * (len(nodes) - 1)
     print(f"implication grid over {len(nodes)} properties = {total} ordered pairs")
     print(f"  TRUE  (proof / transitive closure):     {true_pairs:6d}  ({100*true_pairs//total}%)")
-    print(f"  FALSE (a separating space exists):       {refuted_pairs:6d}  ({100*refuted_pairs//total}%)")
-    print(f"  OPEN  (no proof, no witness yet):        {open_pairs:6d}  ({100*open_pairs//total}%)")
+    print(f"  FALSE (unconditional separating space):  {refuted_pairs:6d}  ({100*refuted_pairs//total}%)")
+    print(f"  AXIOM-DEPENDENT (certified):              {dependent_pairs:6d}  ({100*dependent_pairs//total}%)")
+    print(f"  OPEN  (not yet classified):              {open_pairs:6d}  ({100*open_pairs//total}%)")
     print(f"  -> {len(witness_count)} distinct spaces witness all the refutations")
 
     if "--witnesses" in sys.argv:

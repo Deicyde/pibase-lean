@@ -1,6 +1,6 @@
 {
  "node_count": 244,
- "open_count": 2099,
+ "open_count": 2110,
  "questions": [
   {
    "hypothesis": "P000001",
@@ -2140,13 +2140,6 @@
   {
    "hypothesis": "P000058",
    "hypothesis_name": "Cardinality $\\lt\\mathfrak c$",
-   "conclusion": "P000057",
-   "conclusion_name": "Countable",
-   "lean": "Implies P000058 P000057"
-  },
-  {
-   "hypothesis": "P000058",
-   "hypothesis_name": "Cardinality $\\lt\\mathfrak c$",
    "conclusion": "P000061",
    "conclusion_name": "Cozero complemented",
    "lean": "Implies P000058 P000061"
@@ -2504,6 +2497,20 @@
   {
    "hypothesis": "P000066",
    "hypothesis_name": "Menger",
+   "conclusion": "P000069",
+   "conclusion_name": "Strategic Menger",
+   "lean": "Implies P000066 P000069"
+  },
+  {
+   "hypothesis": "P000066",
+   "hypothesis_name": "Menger",
+   "conclusion": "P000072",
+   "conclusion_name": "2-Markov Menger",
+   "lean": "Implies P000066 P000072"
+  },
+  {
+   "hypothesis": "P000066",
+   "hypothesis_name": "Menger",
    "conclusion": "P000128",
    "conclusion_name": "$k$-Lindelöf",
    "lean": "Implies P000066 P000128"
@@ -2658,6 +2665,20 @@
   {
    "hypothesis": "P000068",
    "hypothesis_name": "Rothberger",
+   "conclusion": "P000069",
+   "conclusion_name": "Strategic Menger",
+   "lean": "Implies P000068 P000069"
+  },
+  {
+   "hypothesis": "P000068",
+   "hypothesis_name": "Rothberger",
+   "conclusion": "P000072",
+   "conclusion_name": "2-Markov Menger",
+   "lean": "Implies P000068 P000072"
+  },
+  {
+   "hypothesis": "P000068",
+   "hypothesis_name": "Rothberger",
    "conclusion": "P000128",
    "conclusion_name": "$k$-Lindelöf",
    "lean": "Implies P000068 P000128"
@@ -2668,6 +2689,20 @@
    "conclusion": "P000149",
    "conclusion_name": "$\\omega$-Lindelöf",
    "lean": "Implies P000068 P000149"
+  },
+  {
+   "hypothesis": "P000068",
+   "hypothesis_name": "Rothberger",
+   "conclusion": "P000150",
+   "conclusion_name": "$\\omega$-Rothberger",
+   "lean": "Implies P000068 P000150"
+  },
+  {
+   "hypothesis": "P000068",
+   "hypothesis_name": "Rothberger",
+   "conclusion": "P000151",
+   "conclusion_name": "Strategically Rothberger",
+   "lean": "Implies P000068 P000151"
   },
   {
    "hypothesis": "P000068",
@@ -4887,6 +4922,13 @@
    "conclusion": "P000033",
    "conclusion_name": "Countably metacompact",
    "lean": "Implies P000114 P000033"
+  },
+  {
+   "hypothesis": "P000114",
+   "hypothesis_name": "Cardinality $=\\aleph_1$",
+   "conclusion": "P000058",
+   "conclusion_name": "Cardinality $\\lt\\mathfrak c$",
+   "lean": "Implies P000114 P000058"
   },
   {
    "hypothesis": "P000114",
@@ -8419,9 +8461,30 @@
   {
    "hypothesis": "P000150",
    "hypothesis_name": "$\\omega$-Rothberger",
+   "conclusion": "P000069",
+   "conclusion_name": "Strategic Menger",
+   "lean": "Implies P000150 P000069"
+  },
+  {
+   "hypothesis": "P000150",
+   "hypothesis_name": "$\\omega$-Rothberger",
+   "conclusion": "P000072",
+   "conclusion_name": "2-Markov Menger",
+   "lean": "Implies P000150 P000072"
+  },
+  {
+   "hypothesis": "P000150",
+   "hypothesis_name": "$\\omega$-Rothberger",
    "conclusion": "P000128",
    "conclusion_name": "$k$-Lindelöf",
    "lean": "Implies P000150 P000128"
+  },
+  {
+   "hypothesis": "P000150",
+   "hypothesis_name": "$\\omega$-Rothberger",
+   "conclusion": "P000151",
+   "conclusion_name": "Strategically Rothberger",
+   "lean": "Implies P000150 P000151"
   },
   {
    "hypothesis": "P000150",
@@ -8597,6 +8660,20 @@
    "conclusion": "P000059",
    "conclusion_name": "Cardinality $\\leq 2^{\\mathfrak c}$",
    "lean": "Implies P000153 P000059"
+  },
+  {
+   "hypothesis": "P000153",
+   "hypothesis_name": "$\\omega$-Menger",
+   "conclusion": "P000069",
+   "conclusion_name": "Strategic Menger",
+   "lean": "Implies P000153 P000069"
+  },
+  {
+   "hypothesis": "P000153",
+   "hypothesis_name": "$\\omega$-Menger",
+   "conclusion": "P000072",
+   "conclusion_name": "2-Markov Menger",
+   "lean": "Implies P000153 P000072"
   },
   {
    "hypothesis": "P000153",

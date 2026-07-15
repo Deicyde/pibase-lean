@@ -37,6 +37,7 @@ export interface SpaceNode {
   name: string;
   referenceUrl: string;
   lean: LeanStatus | null;
+  assumptions: string[];
 }
 
 export interface FrontierItem {
@@ -45,7 +46,34 @@ export interface FrontierItem {
   closureGain: number;
   sourceAncestors: number;
   targetDescendants: number;
-  setTheory: boolean;
+  conditionalEvidence: boolean;
+  axioms: string[];
+}
+
+export interface AxiomDependency {
+  source: string;
+  target: string;
+  baseTheory: string;
+  axioms: string[];
+  trueWhen: string;
+  falseWhen: string;
+  summary: string;
+  theorems: string[];
+  referenceUrl: string;
+}
+
+export interface ConditionalWitness {
+  space: string;
+  assumptions: string[];
+  condition: string;
+  summary: string;
+  referenceUrl: string;
+}
+
+export interface ConditionalEvidence {
+  source: string;
+  target: string;
+  witnesses: ConditionalWitness[];
 }
 
 export interface DirectEdge {
@@ -86,7 +114,7 @@ export interface DashboardData {
     spaceTotal: number;
     resolvedPairs: number;
     totalPairs: number;
-    openPairs: number;
+    unclassifiedPairs: number;
   };
   trust: {
     properties: Record<LeanStatusName, number>;
@@ -103,6 +131,8 @@ export interface DashboardData {
     statusCodes: Record<string, string>;
     direct: DirectEdge[];
     witnessCounts: Record<string, number>;
+    axiomDependencies: AxiomDependency[];
+    conditionalEvidence: ConditionalEvidence[];
     formalized: {
       counts: Record<string, number>;
       outcomesPath: string;

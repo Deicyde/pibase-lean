@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FORMAL_GRAPH_STATUS, GRAPH_STATUS, graphIndex, type GraphStatusCode } from "../lib";
+import { FORMAL_GRAPH_STATUS, GRAPH_STATUS, graphIndex, graphStatusLabel, type GraphStatusCode } from "../lib";
 import type { DashboardBundle } from "../types";
 
 const PIBASE_STATUS_CLASS: Record<number, string> = {
@@ -7,8 +7,8 @@ const PIBASE_STATUS_CLASS: Record<number, string> = {
   1: "explicit-true",
   2: "derived-true",
   3: "false",
-  4: "independent",
-  5: "open",
+  4: "axiom-dependent",
+  5: "unclassified",
 };
 
 export type MatrixView = "formalized" | "pibase";
@@ -81,8 +81,8 @@ export default function Matrix({
       1: styles.getPropertyValue(view === "formalized" ? "--graph-formal-direct" : "--graph-explicit").trim(),
       2: styles.getPropertyValue(view === "formalized" ? "--graph-formal-derived" : "--graph-derived").trim(),
       3: styles.getPropertyValue("--graph-false").trim(),
-      4: styles.getPropertyValue("--graph-independent").trim(),
-      5: styles.getPropertyValue(view === "formalized" ? "--graph-unformalized" : "--graph-open").trim(),
+      4: styles.getPropertyValue("--graph-axiom-dependent").trim(),
+      5: styles.getPropertyValue(view === "formalized" ? "--graph-unformalized" : "--graph-unclassified").trim(),
     };
     const cell = side / size;
     context.fillStyle = styles.getPropertyValue("--surface").trim();
@@ -154,7 +154,9 @@ export default function Matrix({
             <strong>{activeSummary.source.shortId}</strong>
             <span>⇒</span>
             <strong>{activeSummary.target.shortId}</strong>
-            <span>{statusLabels[activeSummary.state].label}</span>
+            <span>{view === "formalized"
+              ? statusLabels[activeSummary.state].label
+              : graphStatusLabel(bundle.data, activeSummary.state, activeSummary.source.id, activeSummary.target.id)}</span>
           </>
         )}
       </div>

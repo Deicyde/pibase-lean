@@ -9,7 +9,7 @@ type SortKey = "gain" | "source" | "target";
 export default function Frontier({ bundle, params }: { bundle: DashboardBundle; params: URLSearchParams }) {
   const { data } = bundle;
   const [query, setQuery] = useState(params.get("q") ?? "");
-  const [setTheoryOnly, setSetTheoryOnly] = useState(false);
+  const [conditionalOnly, setConditionalOnly] = useState(false);
   const [sort, setSort] = useState<SortKey>("gain");
   const [limit, setLimit] = useState(60);
   const propertyMap = useMemo(() => new Map(data.properties.map((item) => [item.id, item])), [data.properties]);
@@ -23,7 +23,7 @@ export default function Frontier({ bundle, params }: { bundle: DashboardBundle; 
     const term = query.trim().toLowerCase();
     const exactIds = term.split(/\s+/).map((value) => value.toUpperCase());
     const rows = data.frontier.filter((item) => {
-      if (setTheoryOnly && !item.setTheory) return false;
+      if (conditionalOnly && !item.conditionalEvidence) return false;
       if (!term) return true;
       const source = propertyMap.get(item.source)!;
       const target = propertyMap.get(item.target)!;
@@ -37,7 +37,7 @@ export default function Frontier({ bundle, params }: { bundle: DashboardBundle; 
       return right.closureGain - left.closureGain || left.source.localeCompare(right.source);
     });
     return rows;
-  }, [data.frontier, propertyMap, query, setTheoryOnly, sort]);
+  }, [conditionalOnly, data.frontier, propertyMap, query, sort]);
 
   function watch(item: FrontierItem) {
     const key = `${item.source}|${item.target}`;
@@ -49,19 +49,20 @@ export default function Frontier({ bundle, params }: { bundle: DashboardBundle; 
 
   function exportFrontier(format: "json" | "csv") {
     if (format === "json") {
-      downloadText("pibase-open-frontier.json", JSON.stringify(filtered, null, 2));
+      downloadText("pibase-unclassified-frontier.json", JSON.stringify(filtered, null, 2));
       return;
     }
-    const rows = ["source,target,closure_gain,source_ancestors,target_descendants,set_theory"];
+    const rows = ["source,target,closure_gain,source_ancestors,target_descendants,conditional_evidence,axioms"];
     filtered.forEach((item) => rows.push([
       item.source,
       item.target,
       item.closureGain,
       item.sourceAncestors,
       item.targetDescendants,
-      item.setTheory,
+      item.conditionalEvidence,
+      item.axioms.join("+"),
     ].join(",")));
-    downloadText("pibase-open-frontier.csv", rows.join("\n"), "text/csv");
+    downloadText("pibase-unclassified-frontier.csv", rows.join("\n"), "text/csv");
   }
 
   const first = filtered[0];
@@ -69,9 +70,9 @@ export default function Frontier({ bundle, params }: { bundle: DashboardBundle; 
     <div className="page frontier-page">
       <header className="page-intro compact-intro">
         <div>
-          <p className="eyebrow">Open graph</p>
+          <p className="eyebrow">Unclassified graph</p>
           <h1>Frontier</h1>
-          <p className="page-lede">Unclassified implications ranked by potential transitive-closure yield.</p>
+          <p className="page-lede">Potential transitive-closure gain, assuming the implication is true.</p>
         </div>
         <div className="frontier-total"><strong>{formatNumber(filtered.length)}</strong><span>matching pairs</span></div>
       </header>
@@ -91,12 +92,12 @@ export default function Frontier({ bundle, params }: { bundle: DashboardBundle; 
           </select>
         </label>
         <label className="check-field">
-          <input type="checkbox" checked={setTheoryOnly} onChange={(event) => setSetTheoryOnly(event.target.checked)} />
-          <span>Set-theory frontier</span>
+          <input type="checkbox" checked={conditionalOnly} onChange={(event) => setConditionalOnly(event.target.checked)} />
+          <span>Conditional evidence</span>
         </label>
         {first && (
-          <a className="button button-primary" href={routeTo("overview", { source: first.source, target: first.target })}>
-            <Sparkles size={16} aria-hidden="true" /> Highest leverage
+          <a className="button button-primary" href={routeTo("overview", { source: first.source, target: first.target, view: "pibase" })}>
+            <Sparkles size={16} aria-hidden="true" /> Largest potential gain
           </a>
         )}
         <div className="toolbar-spacer" />
@@ -123,9 +124,9 @@ export default function Frontier({ bundle, params }: { bundle: DashboardBundle; 
               return (
                 <tr key={key} className={watched.has(key) ? "is-watched" : undefined}>
                   <td>
-                    <a className="pair-cell" href={routeTo("overview", { source: item.source, target: item.target })}>
+                    <a className="pair-cell" href={routeTo("overview", { source: item.source, target: item.target, view: "pibase" })}>
                       <code>{source.shortId}</code><span>⇒?</span><code>{target.shortId}</code>
-                      {item.setTheory && <span className="table-tag">Set theory</span>}
+                      {item.conditionalEvidence && <span className="table-tag">{item.axioms.join(" + ")} counterexample</span>}
                     </a>
                   </td>
                   <td><MathText text={source.name} inline /></td>
@@ -143,14 +144,14 @@ export default function Frontier({ bundle, params }: { bundle: DashboardBundle; 
                       data-tooltip={watched.has(key) ? "Remove saved pair" : "Save pair"}
                       onClick={() => watch(item)}
                     ><Bookmark size={16} fill={watched.has(key) ? "currentColor" : "none"} /></button>
-                    <a className="icon-link" href={routeTo("overview", { source: item.source, target: item.target })} aria-label={`Inspect ${source.shortId} implies ${target.shortId}`} data-tooltip="Inspect pair"><ArrowRight size={17} /></a>
+                    <a className="icon-link" href={routeTo("overview", { source: item.source, target: item.target, view: "pibase" })} aria-label={`Inspect ${source.shortId} implies ${target.shortId}`} data-tooltip="Inspect pair"><ArrowRight size={17} /></a>
                   </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
-        {!filtered.length && <div className="empty-state">No open pairs match these filters.</div>}
+        {!filtered.length && <div className="empty-state">No unclassified pairs match these filters.</div>}
       </section>
 
       {limit < filtered.length && (
