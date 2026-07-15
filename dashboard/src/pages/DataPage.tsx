@@ -1,10 +1,12 @@
 import { Download, ExternalLink, FileCode2, GitCommitHorizontal } from "lucide-react";
-import ImplementationBar from "../components/ImplementationBar";
 import TrustBar from "../components/TrustBar";
 import { formatNumber, formatPercent } from "../lib";
 import type { DashboardData } from "../types";
 
 export default function DataPage({ data }: { data: DashboardData }) {
+  const formalPairCount = (data.graph.formalized.counts.formalizedDirect ?? 0)
+    + (data.graph.formalized.counts.formalizedDerived ?? 0);
+
   return (
     <div className="page data-page">
       <header className="page-intro compact-intro">
@@ -39,7 +41,7 @@ export default function DataPage({ data }: { data: DashboardData }) {
 
       <section className="dashboard-section">
         <div className="section-heading">
-          <div><p className="eyebrow">Coverage</p><h2>Implementation and trust</h2></div>
+          <div><p className="eyebrow">Coverage</p><h2>Implementation coverage</h2></div>
         </div>
         <div className="coverage-grid">
           <div className="coverage-item">
@@ -47,22 +49,26 @@ export default function DataPage({ data }: { data: DashboardData }) {
             <div className="coverage-track"><i style={{ width: formatPercent(data.summary.propertyImplementations, data.summary.propertyTotal) }} /></div>
           </div>
           <div className="coverage-item coverage-theorems">
-            <div><strong>Theorem rows represented</strong><span>{formatNumber(data.summary.theoremEntries)} / {formatNumber(data.summary.theoremTotal)}</span></div>
-            <div className="coverage-track"><i style={{ width: formatPercent(data.summary.theoremEntries, data.summary.theoremTotal) }} /></div>
+            <div><strong>Theorem rows implemented</strong><span>{formatNumber(data.summary.theoremImplementations)} / {formatNumber(data.summary.theoremTotal)}</span></div>
+            <div className="coverage-track"><i style={{ width: formatPercent(data.summary.theoremImplementations, data.summary.theoremTotal) }} /></div>
+          </div>
+          <div className="coverage-item coverage-spaces">
+            <div><strong>Spaces implemented</strong><span>{formatNumber(data.summary.spaceImplementations)} / {formatNumber(data.summary.spaceTotal)}</span></div>
+            <div className="coverage-track"><i style={{ width: formatPercent(data.summary.spaceImplementations, data.summary.spaceTotal) }} /></div>
           </div>
           <div className="coverage-item coverage-graph">
-            <div><strong>Graph resolved</strong><span>{formatNumber(data.summary.resolvedPairs)} / {formatNumber(data.summary.totalPairs)}</span></div>
-            <div className="coverage-track"><i style={{ width: formatPercent(data.summary.resolvedPairs, data.summary.totalPairs) }} /></div>
+            <div><strong>Lean-resolved pairs</strong><span>{formatNumber(formalPairCount)} / {formatNumber(data.summary.totalPairs)}</span></div>
+            <div className="coverage-track"><i style={{ width: formatPercent(formalPairCount, data.summary.totalPairs) }} /></div>
           </div>
         </div>
         <div className="trust-ledger data-trust-ledger">
-          <ImplementationBar
-            label="Properties"
-            implemented={data.summary.propertyImplementations}
-            total={data.summary.propertyTotal}
-          />
-          <TrustBar label="Theorems" values={data.trust.theorems} />
-          <TrustBar label="Spaces" values={data.trust.spaces} />
+          <div className="data-audit-heading">
+            <h3>Dependency audit</h3>
+            <p>Trust states classify only the Lean source entries found in Felix's checkout.</p>
+          </div>
+          <TrustBar label="Property source entries" values={data.trust.properties} />
+          <TrustBar label="Theorem source entries" values={data.trust.theorems} />
+          {data.summary.spaceEntries > 0 && <TrustBar label="Space source entries" values={data.trust.spaces} />}
         </div>
       </section>
 
@@ -86,10 +92,12 @@ export default function DataPage({ data }: { data: DashboardData }) {
           <div className="section-heading"><div><p className="eyebrow">Contract</p><h2>Status semantics</h2></div></div>
           <table className="data-table schema-table">
             <tbody>
+              <tr><th scope="row">Implemented property or space</th><td>The canonical bundled definition exists. A property still counts when only its separate well-definedness obligation contains a placeholder; Review flags those cases.</td></tr>
+              <tr><th scope="row">Implemented theorem row</th><td>The canonical theorem declaration exists and its own theorem files contain no active <code>sorry</code>, <code>admit</code>, or explicit axiom.</td></tr>
               <tr><th scope="row">Formalized graph edge</th><td>A positive property-to-property implication with a canonical Lean theorem and no placeholder or explicit axiom in its own theorem files. Conservative import-closure debt is reported separately.</td></tr>
-              <tr><th scope="row">Formal closure cell</th><td>An implication obtained by composing formalized graph edges. It is a resolved pair, not an additional Lean theorem declaration.</td></tr>
+              <tr><th scope="row">Transitive closure cell</th><td>An implication obtained by composing formalized graph edges. It is a resolved pair, not an additional Lean theorem declaration.</td></tr>
               <tr><th scope="row">Dependency-clean</th><td>Canonical declaration, no local placeholders or explicit axioms, and none in the project import closure.</td></tr>
-              <tr><th scope="row">Dependency debt</th><td>Canonical declaration with no local placeholder, but at least one imported project declaration still contains proof debt.</td></tr>
+              <tr><th scope="row">Dependency debt</th><td>Canonical declaration with no local placeholder, but at least one imported project file contains proof debt. This conservative file-level audit does not mean the declaration uses that debt.</td></tr>
               <tr><th scope="row">Local debt</th><td>The entity's own Lean files contain an active <code>sorry</code> or <code>admit</code>.</td></tr>
               <tr><th scope="row">Missing declaration</th><td>The expected canonical bundled declaration is absent from the entity's primary file.</td></tr>
             </tbody>

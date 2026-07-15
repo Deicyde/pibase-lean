@@ -22,8 +22,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0        # build_review.py reads git history for per-file authorship
+      - name: Check out Felix's Lean source
+        # Full history is used for per-file authorship in the review audit.
+        run: git clone --filter=blob:none --no-tags --branch master https://github.com/felixpernegger/pibase-lean.git "$RUNNER_TEMP/felix-pibase-lean"
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -37,6 +38,8 @@ jobs:
         run: npm run dashboard:check
       - name: Build the project dashboard
         run: npm run dashboard:build
+        env:
+          PIBASE_LEAN_SOURCE: ${{ runner.temp }}/felix-pibase-lean
       - name: Verify dashboard artifacts
         run: npm run dashboard:verify
       - uses: actions/configure-pages@v5

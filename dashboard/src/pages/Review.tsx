@@ -29,7 +29,7 @@ function readMarks(key: string): MarkMap {
 export default function Review({ data, params }: { data: DashboardData; params: URLSearchParams }) {
   const initialKind = (["spaces", "properties", "theorems"] as ReviewKind[]).includes(params.get("kind") as ReviewKind)
     ? params.get("kind") as ReviewKind
-    : "spaces";
+    : "properties";
   const [kind, setKind] = useState<ReviewKind>(initialKind);
   const [query, setQuery] = useState(params.get("q") ?? "");
   const [status, setStatus] = useState<StatusFilter>("all");

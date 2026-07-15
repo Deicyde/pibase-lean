@@ -24,8 +24,12 @@ from build_project_page import build_blueprint_page  # noqa: E402
 DATA_DIR = ROOT / "data"
 PUBLIC_DIR = ROOT / "dashboard" / "public"
 OUT_DIR = PUBLIC_DIR / "data"
+LEAN_ROOT = Path(
+    os.environ.get("PIBASE_LEAN_SOURCE", os.environ.get("FELIX_REPO_PATH", ROOT))
+).resolve()
 PIBASE_URL = "https://topology.pi-base.org"
-REPO_URL = "https://github.com/felixpernegger/pibase-lean"
+REPO_SLUG = "felixpernegger/pibase-lean"
+REPO_URL = f"https://github.com/{REPO_SLUG}"
 SET_THEORY_FRONTIER = {"P000164"}
 
 
@@ -43,12 +47,28 @@ def dump_json(path: Path, payload) -> None:
 def git(*args: str) -> str:
     try:
         return subprocess.check_output(
-            ["git", "-C", str(ROOT), *args],
+            ["git", "-C", str(LEAN_ROOT), *args],
             text=True,
             stderr=subprocess.DEVNULL,
         ).strip()
     except (OSError, subprocess.CalledProcessError):
         return ""
+
+
+def is_felix_commit() -> bool:
+    """Return whether HEAD is contained in a fetched ref from Felix's repository."""
+    for remote in git("remote").splitlines():
+        url = git("remote", "get-url", remote).lower().removesuffix(".git").replace(":", "/")
+        if not url.endswith(f"github.com/{REPO_SLUG}"):
+            continue
+        if git(
+            "for-each-ref",
+            "--format=%(refname)",
+            "--contains=HEAD",
+            f"refs/remotes/{remote}",
+        ):
+            return True
+    return False
 
 
 def short_id(uid: str) -> str:
@@ -190,15 +210,15 @@ def load_authors() -> dict[str, str]:
 
 
 def analyze_lean_tree() -> tuple[dict[str, dict], dict[Path, dict]]:
-    lean_paths = sorted((ROOT / "PiBaseLean").rglob("*.lean"))
-    lean_paths.append(ROOT / "PiBaseLean.lean")
+    lean_paths = sorted((LEAN_ROOT / "PiBaseLean").rglob("*.lean"))
+    lean_paths.append(LEAN_ROOT / "PiBaseLean.lean")
     module_paths: dict[str, Path] = {}
     analyses: dict[Path, dict] = {}
 
     for path in lean_paths:
         if not path.exists():
             continue
-        rel = path.relative_to(ROOT)
+        rel = path.relative_to(LEAN_ROOT)
         module_paths[str(rel.with_suffix("" )).replace(os.sep, ".")] = path
         source = path.read_text(encoding="utf-8", errors="ignore")
         code = strip_lean_comments_and_strings(source)
@@ -237,7 +257,7 @@ def analyze_lean_tree() -> tuple[dict[str, dict], dict[Path, dict]]:
         return found
 
     def entity_status(kind: str, number: int, primary_name: str) -> dict:
-        folder = ROOT / "PiBaseLean" / kind / f"{kind[0]}{number}"
+        folder = LEAN_ROOT / "PiBaseLean" / kind / f"{kind[0]}{number}"
         files = sorted(folder.glob("*.lean")) if folder.exists() else []
         primary = folder / primary_name
         local_placeholders = sum(analyses.get(path, {}).get("placeholders", 0) for path in files)
@@ -274,6 +294,11 @@ def analyze_lean_tree() -> tuple[dict[str, dict], dict[Path, dict]]:
                 primary.exists()
                 and re.search(rf"\btheorem\s+T{number}\b", analyses[primary]["code"])
             )
+        elif kind == "Spaces":
+            declaration = bool(
+                primary.exists()
+                and re.search(rf"\bdef\s+S{number}\b", analyses[primary]["code"])
+            )
         dependency_clean = (
             declaration
             and local_placeholders == 0
@@ -302,13 +327,13 @@ def analyze_lean_tree() -> tuple[dict[str, dict], dict[Path, dict]]:
             "wellDefinedPlaceholders": well_defined_placeholders,
             "dependencyWellDefinedPlaceholders": dependency_well_defined_placeholders,
             "dependencyNonWellDefinedPlaceholders": dependency_non_well_defined_placeholders,
-            "sourcePath": str(primary.relative_to(ROOT)) if primary.exists() else "",
+            "sourcePath": str(primary.relative_to(LEAN_ROOT)) if primary.exists() else "",
         }
 
     statuses: dict[str, dict] = {}
     for kind, primary in (("Properties", "Defs.lean"), ("Theorems", "Theorem.lean"), ("Spaces", "Defs.lean")):
         prefix = kind[0]
-        parent = ROOT / "PiBaseLean" / kind
+        parent = LEAN_ROOT / "PiBaseLean" / kind
         for folder in parent.glob(f"{prefix}*"):
             match = re.fullmatch(rf"{prefix}(\d+)", folder.name)
             if match:
@@ -545,7 +570,7 @@ def build_review_payloads(
     for uid in sorted((key for key in statuses if key.startswith("S")), key=lambda key: int(key[1:])):
         number = int(uid[1:])
         rel = f"PiBaseLean/Spaces/S{number}/Defs.lean"
-        extra = ROOT / "PiBaseLean" / "Spaces" / f"S{number}" / "Lemmas.lean"
+        extra = LEAN_ROOT / "PiBaseLean" / "Spaces" / f"S{number}" / "Lemmas.lean"
         item = spaces.get(uid, {})
         trait_rows = traits.get(uid, {}).get("traits", [])
         payloads["spaces"].append({
@@ -558,7 +583,7 @@ def build_review_payloads(
             "sourcePath": rel,
             "sourceUrl": source_url(commit, rel),
             "referenceUrl": f"{PIBASE_URL}/spaces/{uid}",
-            "code": focused_lean(ROOT / rel),
+            "code": focused_lean(LEAN_ROOT / rel),
             "extraCode": focused_lean(extra),
             "leanStatus": statuses[uid],
             "traits": trait_rows,
@@ -568,7 +593,7 @@ def build_review_payloads(
     for uid in sorted((key for key in statuses if key.startswith("P")), key=lambda key: int(key[1:])):
         number = int(uid[1:])
         rel = f"PiBaseLean/Properties/P{number}/Defs.lean"
-        extra = ROOT / "PiBaseLean" / "Properties" / f"P{number}" / "Lemmas.lean"
+        extra = LEAN_ROOT / "PiBaseLean" / "Properties" / f"P{number}" / "Lemmas.lean"
         item = properties.get(uid, {})
         payloads["properties"].append({
             "id": uid,
@@ -580,7 +605,7 @@ def build_review_payloads(
             "sourcePath": rel,
             "sourceUrl": source_url(commit, rel),
             "referenceUrl": f"{PIBASE_URL}/properties/{uid}",
-            "code": focused_lean(ROOT / rel),
+            "code": focused_lean(LEAN_ROOT / rel),
             "extraCode": focused_lean(extra),
             "leanStatus": statuses[uid],
         })
@@ -588,7 +613,7 @@ def build_review_payloads(
     for uid in sorted((key for key in statuses if key.startswith("T")), key=lambda key: int(key[1:])):
         number = int(uid[1:])
         rel = f"PiBaseLean/Theorems/T{number}/Theorem.lean"
-        extra = ROOT / "PiBaseLean" / "Theorems" / f"T{number}" / "Lemmas.lean"
+        extra = LEAN_ROOT / "PiBaseLean" / "Theorems" / f"T{number}" / "Lemmas.lean"
         item = theorems.get(uid, {})
         statement = "Statement unavailable"
         if item:
@@ -603,7 +628,7 @@ def build_review_payloads(
             "sourcePath": rel,
             "sourceUrl": source_url(commit, rel),
             "referenceUrl": f"{PIBASE_URL}/theorems/{uid}",
-            "code": focused_lean(ROOT / rel),
+            "code": focused_lean(LEAN_ROOT / rel),
             "extraCode": focused_lean(extra),
             "leanStatus": statuses[uid],
         })
@@ -647,6 +672,17 @@ def build_review_payloads(
 
 
 def main() -> None:
+    if not (LEAN_ROOT / "PiBaseLean").is_dir():
+        raise SystemExit(f"Lean source tree not found at {LEAN_ROOT}")
+    commit = git("rev-parse", "HEAD")
+    if not commit:
+        raise SystemExit(f"Lean source at {LEAN_ROOT} is not a Git checkout")
+    if git("status", "--porcelain", "--", "PiBaseLean", "PiBaseLean.lean"):
+        raise SystemExit(f"Lean source at {LEAN_ROOT} has uncommitted changes")
+    if not is_felix_commit():
+        raise SystemExit(
+            f"Lean source commit {commit[:8]} is not contained in a fetched {REPO_SLUG} ref"
+        )
     if OUT_DIR.exists():
         shutil.rmtree(OUT_DIR)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -662,9 +698,8 @@ def main() -> None:
     }
 
     generated_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
-    commit = git("rev-parse", "HEAD")
     commit_short = commit[:8]
-    branch = os.environ.get("GITHUB_REF_NAME") or git("branch", "--show-current") or "main"
+    branch = git("branch", "--show-current") or "master"
     source_date = git("log", "-1", "--format=%cI")[:10]
     statuses, analyses = analyze_lean_tree()
     graph = build_graph(data, independent_pairs)
@@ -700,6 +735,12 @@ def main() -> None:
     theorem_statuses = [value for key, value in statuses.items() if key.startswith("T")]
     property_statuses = [value for key, value in statuses.items() if key.startswith("P")]
     space_statuses = [value for key, value in statuses.items() if key.startswith("S")]
+    theorem_implementations = sum(
+        item["declarationPresent"]
+        and item["localPlaceholders"] == 0
+        and item["localAxioms"] == 0
+        for item in theorem_statuses
+    )
     trust = {
         "properties": dict(Counter(item["status"] for item in property_statuses)),
         "theorems": dict(Counter(item["status"] for item in theorem_statuses)),
@@ -712,7 +753,7 @@ def main() -> None:
     total_pairs = len(graph["nodes"]) * (len(graph["nodes"]) - 1)
     resolved = counts.get("explicitTrue", 0) + counts.get("derivedTrue", 0) + counts.get("false", 0) + counts.get("independent", 0)
     dashboard = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "project": {
             "id": "pibase-lean",
             "name": "pibase-lean",
@@ -736,9 +777,10 @@ def main() -> None:
             "mappedProperties": len(registry.get("properties", {})),
             "theoremEntries": len(theorem_statuses),
             "theoremTotal": len(data["theorems"]),
-            "theoremDeclarations": sum(item["declarationPresent"] for item in theorem_statuses),
+            "theoremImplementations": theorem_implementations,
             "dependencyCleanTheorems": sum(item["dependencyClean"] for item in theorem_statuses),
             "spaceEntries": len(space_statuses),
+            "spaceImplementations": sum(item["declarationPresent"] for item in space_statuses),
             "spaceTotal": len(data["spaces"]),
             "resolvedPairs": resolved,
             "totalPairs": total_pairs,
@@ -826,7 +868,7 @@ def main() -> None:
     print(
         "dashboard data: "
         f"{len(properties)} properties, {len(graph['frontier'])} open pairs, "
-        f"{sum(item['dependencyClean'] for item in theorem_statuses)} dependency-clean theorems"
+        f"{theorem_implementations} implemented theorem rows from {commit_short}"
     )
 
 

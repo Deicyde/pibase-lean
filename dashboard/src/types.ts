@@ -79,9 +79,10 @@ export interface DashboardData {
     mappedProperties: number;
     theoremEntries: number;
     theoremTotal: number;
-    theoremDeclarations: number;
+    theoremImplementations: number;
     dependencyCleanTheorems: number;
     spaceEntries: number;
+    spaceImplementations: number;
     spaceTotal: number;
     resolvedPairs: number;
     totalPairs: number;

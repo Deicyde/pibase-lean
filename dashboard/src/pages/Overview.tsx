@@ -13,7 +13,6 @@ import Matrix, { type MatrixView } from "../components/Matrix";
 import Metric from "../components/Metric";
 import PropertyCombobox from "../components/PropertyCombobox";
 import TheoremTrace, { TheoremLinks } from "../components/TheoremTrace";
-import TrustBar from "../components/TrustBar";
 import {
   FORMAL_GRAPH_STATUS,
   GRAPH_STATUS,
@@ -134,9 +133,9 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
           icon={<ShieldCheck size={18} aria-hidden="true" />}
         />
         <Metric
-          label="Direct Lean proofs"
+          label="Direct Lean edges"
           value={formatNumber(formalDirectCount)}
-          detail="Canonical theorem declarations"
+          detail="Positive single-property implications"
           tone="represented"
           icon={<GitCommitHorizontal size={18} aria-hidden="true" />}
         />
@@ -343,14 +342,16 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
             implemented={data.summary.propertyImplementations}
             total={data.summary.propertyTotal}
           />
-          <TrustBar label="Theorems" values={data.trust.theorems} />
-          <TrustBar label="Spaces" values={data.trust.spaces} />
-          <div className="trust-note">
-            <strong>{formatNumber(data.trust.projectPlaceholders)}</strong>
-            <span>active Lean placeholders</span>
-            <strong>{formatNumber(data.trust.projectAxioms)}</strong>
-            <span>explicit project axioms</span>
-          </div>
+          <ImplementationBar
+            label="Theorem rows"
+            implemented={data.summary.theoremImplementations}
+            total={data.summary.theoremTotal}
+          />
+          <ImplementationBar
+            label="Spaces"
+            implemented={data.summary.spaceImplementations}
+            total={data.summary.spaceTotal}
+          />
         </div>
       </section>
 

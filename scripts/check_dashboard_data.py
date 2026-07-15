@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import re
 from collections import Counter
 from pathlib import Path
 
@@ -54,6 +55,7 @@ def check_review(kind: str, expected: int, source_prefix: str) -> None:
 def main() -> None:
     manifest = load(DATA / "dashboard.json")
     canonical_repo = "https://github.com/felixpernegger/pibase-lean"
+    require(manifest["schemaVersion"] == 2, "unexpected dashboard schema version")
     require(manifest["project"]["repoUrl"] == canonical_repo, "project repository is not Felix's repository")
     require(
         manifest["project"]["repositoryLabel"] == "felixpernegger/pibase-lean",
@@ -64,6 +66,10 @@ def main() -> None:
         "dashboard manifest contains a fork source link",
     )
     source_prefix = f"{canonical_repo}/blob/{manifest['source']['commit']}/"
+    require(
+        re.fullmatch(r"[0-9a-f]{40}", manifest["source"]["commit"]) is not None,
+        "Lean source commit is not an exact Git revision",
+    )
     size = manifest["graph"]["size"]
     outcomes = (DATA / "outcomes.bin").read_bytes()
     formalized_outcomes = (DATA / "formalized-outcomes.bin").read_bytes()
@@ -122,10 +128,20 @@ def main() -> None:
     require(sum(manifest["trust"]["theorems"].values()) == summary["theoremEntries"], "theorem trust totals disagree")
     require(sum(manifest["trust"]["spaces"].values()) == summary["spaceEntries"], "space trust totals disagree")
     require(
-        summary["theoremDeclarations"]
-        == summary["theoremEntries"] - manifest["trust"]["theorems"].get("missing-declaration", 0),
-        "canonical theorem declaration count disagrees with trust ledger",
+        summary["theoremImplementations"]
+        == summary["theoremEntries"]
+        - manifest["trust"]["theorems"].get("missing-declaration", 0)
+        - manifest["trust"]["theorems"].get("local-debt", 0),
+        "implemented theorem count disagrees with trust ledger",
     )
+    require(
+        summary["spaceImplementations"]
+        == summary["spaceEntries"] - manifest["trust"]["spaces"].get("missing-declaration", 0),
+        "implemented space count disagrees with trust ledger",
+    )
+    require(summary["propertyImplementations"] <= summary["propertyTotal"], "property coverage exceeds pi-Base total")
+    require(summary["theoremImplementations"] <= summary["theoremTotal"], "theorem coverage exceeds pi-Base total")
+    require(summary["spaceImplementations"] <= summary["spaceTotal"], "space coverage exceeds pi-Base total")
 
     check_review("spaces", summary["spaceEntries"], source_prefix)
     check_review("properties", summary["propertyEntries"], source_prefix)

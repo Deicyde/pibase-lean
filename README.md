@@ -11,7 +11,7 @@ As of writing, this project is still in its infancy, so the structure of the rep
 
 ## Project dashboard
 
-The [project dashboard](https://deicyde.github.io/pibase-lean/) combines the Lean checkout with a pinned
+The [project dashboard](https://deicyde.github.io/pibase-lean/) combines Felix's current Lean checkout with a pinned
 pi-Base data snapshot. Its overview includes an implication explorer that defaults to the pairwise Lean theorem
 graph and can switch to the informal pi-Base classifications. The dashboard also provides a ranked open frontier,
 dependency-aware formalization status, a lazy human-review workspace, versioned data downloads, and a local
@@ -32,13 +32,18 @@ Dashboard trust states are deliberately stricter than directory counts:
 Build the dashboard locally with:
 
 ```sh
+git clone https://github.com/felixpernegger/pibase-lean.git ../felix-pibase-lean
 npm ci
 npm run dashboard:check
-npm run dashboard:build
+PIBASE_LEAN_SOURCE=../felix-pibase-lean npm run dashboard:build
 npm run dashboard:verify
 ```
 
-For an interactive local server, run `npm run dashboard:dev`.
+The Pages workflow always checks out Felix's `master` separately and records its exact commit in the generated
+dashboard. `PIBASE_LEAN_SOURCE` can point local builds at any Felix checkout for reproducible audits.
+
+For an interactive local server, run
+`PIBASE_LEAN_SOURCE=../felix-pibase-lean npm run dashboard:dev`.
 
 ---
 
