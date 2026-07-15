@@ -331,8 +331,9 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
       <section className="dashboard-section section-split">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Formalization status</p>
-            <h2>Lean implementation ledger</h2>
+            <p className="eyebrow">π-Base dataset</p>
+            <h2>Formalization coverage</h2>
+            <p className="section-summary">Each bar compares Felix's Lean formalizations with every record in the pinned π-Base dataset.</p>
           </div>
           <a className="text-link" href={routeTo("review")}>Open review <ArrowRight size={15} aria-hidden="true" /></a>
         </div>
@@ -343,7 +344,7 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
             total={data.summary.propertyTotal}
           />
           <ImplementationBar
-            label="Theorem rows"
+            label="Theorem records"
             implemented={data.summary.theoremImplementations}
             total={data.summary.theoremTotal}
           />
