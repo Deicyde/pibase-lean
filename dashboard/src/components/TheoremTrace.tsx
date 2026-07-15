@@ -7,9 +7,9 @@ function shortTheoremId(id: string): string {
   return id.replace(/^T0+/, "T");
 }
 
-function upstreamTheoremSourceUrl(data: DashboardData, id: string): string {
+function theoremSourceUrl(data: DashboardData, id: string): string {
   const folder = shortTheoremId(id);
-  return `${data.project.upstreamUrl}/blob/master/PiBaseLean/Theorems/${folder}/Theorem.lean`;
+  return `${data.project.repoUrl}/blob/${data.source.commit}/PiBaseLean/Theorems/${folder}/Theorem.lean`;
 }
 
 export function TheoremLinks({
@@ -27,7 +27,7 @@ export function TheoremLinks({
         <a
           key={id}
           href={view === "formalized"
-            ? upstreamTheoremSourceUrl(data, id)
+            ? theoremSourceUrl(data, id)
             : `${data.project.referenceUrl}/theorems/${id}`}
         >
           {view === "formalized" ? <FileCode2 size={13} aria-hidden="true" /> : <ExternalLink size={12} aria-hidden="true" />}

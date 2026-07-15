@@ -25,8 +25,7 @@ DATA_DIR = ROOT / "data"
 PUBLIC_DIR = ROOT / "dashboard" / "public"
 OUT_DIR = PUBLIC_DIR / "data"
 PIBASE_URL = "https://topology.pi-base.org"
-REPO_URL = "https://github.com/Deicyde/pibase-lean"
-UPSTREAM_URL = "https://github.com/felixpernegger/pibase-lean"
+REPO_URL = "https://github.com/felixpernegger/pibase-lean"
 SET_THEORY_FRONTIER = {"P000164"}
 
 
@@ -502,7 +501,7 @@ def build_formalized_graph(data: dict, statuses: dict[str, dict]) -> dict:
 def recent_activity() -> tuple[list[dict], dict]:
     rows = git(
         "log", "-8", "--date=short", "--pretty=format:%H%x1f%h%x1f%cs%x1f%s",
-        "--", "PiBaseLean", "data",
+        "--", "PiBaseLean",
     )
     commits = []
     for row in rows.splitlines():
@@ -510,7 +509,7 @@ def recent_activity() -> tuple[list[dict], dict]:
         if len(bits) == 4:
             commits.append({"sha": bits[0], "short": bits[1], "date": bits[2], "subject": bits[3]})
     changes = Counter()
-    for row in git("diff", "--name-status", "HEAD^", "HEAD", "--", "PiBaseLean", "data").splitlines():
+    for row in git("diff", "--name-status", "HEAD^", "HEAD", "--", "PiBaseLean").splitlines():
         if not row:
             continue
         status, path = (row.split("\t", 1) + [""])[:2]
@@ -524,14 +523,13 @@ def recent_activity() -> tuple[list[dict], dict]:
     return commits, dict(changes)
 
 
-def source_url(branch: str, path: str) -> str:
-    return f"{REPO_URL}/blob/{branch}/{path}"
+def source_url(commit: str, path: str) -> str:
+    return f"{REPO_URL}/blob/{commit}/{path}"
 
 
 def build_review_payloads(
     data: dict,
     statuses: dict[str, dict],
-    branch: str,
     commit: str,
     generated_at: str,
 ) -> None:
@@ -558,7 +556,7 @@ def build_review_payloads(
             "description": clean_informal(item.get("description", "")),
             "author": authors.get(rel, ""),
             "sourcePath": rel,
-            "sourceUrl": source_url(branch, rel),
+            "sourceUrl": source_url(commit, rel),
             "referenceUrl": f"{PIBASE_URL}/spaces/{uid}",
             "code": focused_lean(ROOT / rel),
             "extraCode": focused_lean(extra),
@@ -580,7 +578,7 @@ def build_review_payloads(
             "description": clean_informal(item.get("description", "")),
             "author": authors.get(rel, ""),
             "sourcePath": rel,
-            "sourceUrl": source_url(branch, rel),
+            "sourceUrl": source_url(commit, rel),
             "referenceUrl": f"{PIBASE_URL}/properties/{uid}",
             "code": focused_lean(ROOT / rel),
             "extraCode": focused_lean(extra),
@@ -603,7 +601,7 @@ def build_review_payloads(
             "description": clean_informal(item.get("description", "")),
             "author": authors.get(rel, ""),
             "sourcePath": rel,
-            "sourceUrl": source_url(branch, rel),
+            "sourceUrl": source_url(commit, rel),
             "referenceUrl": f"{PIBASE_URL}/theorems/{uid}",
             "code": focused_lean(ROOT / rel),
             "extraCode": focused_lean(extra),
@@ -720,7 +718,7 @@ def main() -> None:
             "name": "pibase-lean",
             "domain": "Topological property implications",
             "repoUrl": REPO_URL,
-            "upstreamUrl": UPSTREAM_URL,
+            "repositoryLabel": "felixpernegger/pibase-lean",
             "referenceUrl": PIBASE_URL,
         },
         "source": {
@@ -808,7 +806,7 @@ def main() -> None:
     (OUT_DIR / "witnesses.bin").write_bytes(
         b"".join(struct.pack("<H", value) for value in graph["witnesses"])
     )
-    build_review_payloads(data, statuses, branch, commit, generated_at)
+    build_review_payloads(data, statuses, commit, generated_at)
 
     legacy_summary = {
         "total": total_pairs,

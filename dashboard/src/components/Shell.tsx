@@ -3,9 +3,9 @@ import {
   Beaker,
   BookOpenCheck,
   Database,
-  GitFork,
   Github,
   ListTodo,
+  Network,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import type { DashboardData } from "../types";
@@ -25,7 +25,7 @@ export default function Shell({ data, route, children }: { data: DashboardData; 
       <header className="topbar">
         <div className="topbar-inner">
           <a className="brand" href={routeTo("overview")} aria-label="pibase-lean overview">
-            <span className="brand-mark" aria-hidden="true"><GitFork size={18} /></span>
+            <span className="brand-mark" aria-hidden="true"><Network size={18} /></span>
             <span>
               <strong>{data.project.name}</strong>
               <small>{data.project.domain}</small>
@@ -47,7 +47,12 @@ export default function Shell({ data, route, children }: { data: DashboardData; 
             <a href={`${data.project.repoUrl}/commit/${data.source.commit}`} className="commit-link">
               <code>{data.source.commitShort}</code>
             </a>
-            <a className="icon-link" href={data.project.repoUrl} aria-label="Open GitHub repository" data-tooltip="GitHub repository">
+            <a
+              className="icon-link"
+              href={data.project.repoUrl}
+              aria-label={`Open ${data.project.repositoryLabel} on GitHub`}
+              data-tooltip="Felix's repository"
+            >
               <Github size={18} aria-hidden="true" />
             </a>
           </div>

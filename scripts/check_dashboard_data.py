@@ -22,11 +22,15 @@ def require(condition: bool, message: str) -> None:
         raise SystemExit(f"dashboard integrity error: {message}")
 
 
-def check_review(kind: str, expected: int) -> None:
+def check_review(kind: str, expected: int, source_prefix: str) -> None:
     index = load(DATA / f"review-{kind}.json")
     entries = index["entries"]
     require(len(entries) == expected, f"{kind} review index has {len(entries)} entries, expected {expected}")
     require(len({entry["id"] for entry in entries}) == expected, f"{kind} review index has duplicate IDs")
+    require(
+        all(entry["sourceUrl"].startswith(source_prefix) for entry in entries),
+        f"{kind} review index contains a non-canonical source link",
+    )
     if kind == "properties":
         require(
             all("wellDefinedPlaceholders" in entry["leanStatus"] for entry in entries),
@@ -38,6 +42,10 @@ def check_review(kind: str, expected: int) -> None:
         require(path.exists(), f"missing review chunk {relative}")
         payload = load(path)
         require(payload["chunk"] == chunk_number, f"review chunk number mismatch in {relative}")
+        require(
+            all(entry["sourceUrl"].startswith(source_prefix) for entry in payload["entries"]),
+            f"{relative} contains a non-canonical source link",
+        )
         chunk_ids.update(entry["id"] for entry in payload["entries"])
     require(chunk_ids == {entry["id"] for entry in entries}, f"{kind} review chunks do not match their index")
     require(all(0 <= entry["chunk"] < len(index["chunks"]) for entry in entries), f"{kind} review entry has an invalid chunk")
@@ -45,6 +53,17 @@ def check_review(kind: str, expected: int) -> None:
 
 def main() -> None:
     manifest = load(DATA / "dashboard.json")
+    canonical_repo = "https://github.com/felixpernegger/pibase-lean"
+    require(manifest["project"]["repoUrl"] == canonical_repo, "project repository is not Felix's repository")
+    require(
+        manifest["project"]["repositoryLabel"] == "felixpernegger/pibase-lean",
+        "project repository label is not canonical",
+    )
+    require(
+        "github.com/Deicyde/pibase-lean" not in json.dumps(manifest),
+        "dashboard manifest contains a fork source link",
+    )
+    source_prefix = f"{canonical_repo}/blob/{manifest['source']['commit']}/"
     size = manifest["graph"]["size"]
     outcomes = (DATA / "outcomes.bin").read_bytes()
     formalized_outcomes = (DATA / "formalized-outcomes.bin").read_bytes()
@@ -108,9 +127,9 @@ def main() -> None:
         "canonical theorem declaration count disagrees with trust ledger",
     )
 
-    check_review("spaces", summary["spaceEntries"])
-    check_review("properties", summary["propertyEntries"])
-    check_review("theorems", summary["theoremEntries"])
+    check_review("spaces", summary["spaceEntries"], source_prefix)
+    check_review("properties", summary["propertyEntries"], source_prefix)
+    check_review("theorems", summary["theoremEntries"], source_prefix)
 
     theorem_index = load(DATA / "review-theorems.json")
     theorem_status = {entry["id"]: entry["leanStatus"] for entry in theorem_index["entries"]}
@@ -134,6 +153,9 @@ def main() -> None:
         require((PUBLIC / artifact["path"]).exists(), f"download is missing: {artifact['path']}")
     for page in ("blueprint.html", "review.html", "data.html"):
         require((PUBLIC / page).exists(), f"public page is missing: {page}")
+    blueprint = (PUBLIC / "blueprint.html").read_text(encoding="utf-8")
+    require(canonical_repo in blueprint, "blueprint does not link Felix's repository")
+    require("github.com/Deicyde/pibase-lean" not in blueprint, "blueprint contains a fork source link")
 
     print(
         "dashboard integrity: "

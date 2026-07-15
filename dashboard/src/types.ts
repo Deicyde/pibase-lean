@@ -61,7 +61,7 @@ export interface DashboardData {
     name: string;
     domain: string;
     repoUrl: string;
-    upstreamUrl: string;
+    repositoryLabel: string;
     referenceUrl: string;
   };
   source: {

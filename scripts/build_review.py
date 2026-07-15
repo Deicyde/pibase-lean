@@ -20,18 +20,18 @@ FELIX = os.environ.get("PIBASE_LEAN_SOURCE", os.path.dirname(HERE))  # repo root
 PIBASE_DATA = os.path.join(FELIX, "data", "pibase.json")
 OUT = os.path.join(FELIX, "site", "review.html")
 PIBASE = "https://topology.pi-base.org"
-BRANCH = (
-    os.environ.get("GITHUB_REF_NAME")
-    or subprocess.run(["git", "-C", FELIX, "branch", "--show-current"],
+SOURCE_REF = (
+    os.environ.get("PIBASE_LEAN_SOURCE_REF")
+    or subprocess.run(["git", "-C", FELIX, "rev-parse", "HEAD"],
                       capture_output=True, text=True).stdout.strip()
-    or "add-counterexample-spaces"
+    or "master"
 )
-GH = f"https://github.com/Deicyde/pibase-lean/blob/{BRANCH}"
+GH = f"https://github.com/felixpernegger/pibase-lean/blob/{SOURCE_REF}"
 
 # ---------- per-file authorship (who wrote this Lean file) ----------
 # Fold aliases so one person reads as one name. Several of Felix's commits are
 # authored as "Batixx"/"felixpernegger" but share his uni-bonn email; our spaces
-# are Jack's. Everyone else (upstream theorem contributors) shows their own name.
+# are Jack's. Everyone else (other theorem contributors) shows their own name.
 ME_EMAIL = "jack.mccarthy.1@stonybrook.edu"
 AUTHOR_ALIASES = {                       # email -> canonical display name
     ME_EMAIL: "Jack McCarthy",
@@ -410,8 +410,8 @@ label.chk{{font-size:.85rem;color:var(--muted);display:inline-flex;gap:.3rem;ali
 .hidden{{display:none}}
 </style></head><body>
 <h1>π-Base Lean — review</h1>
-<p class="lede">The <a href="https://github.com/Deicyde/pibase-lean" target="_blank" rel="noopener">Deicyde/pibase-lean</a>
-fork of Felix Pernegger's formalization, for human review. Each card shows the informal
+<p class="lede">The <a href="https://github.com/felixpernegger/pibase-lean" target="_blank" rel="noopener">felixpernegger/pibase-lean</a>
+formalization, presented for human review. Each card shows the informal
 <a href="https://topology.pi-base.org" target="_blank" rel="noopener">π-Base</a> statement beside the Lean
 definition/proof. Review marks are saved in your browser.</p>
 <div id="controls">

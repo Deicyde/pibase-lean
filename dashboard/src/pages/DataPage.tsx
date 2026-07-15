@@ -20,7 +20,7 @@ export default function DataPage({ data }: { data: DashboardData }) {
         <article>
           <span>Lean source</span>
           <strong><code>{data.source.commitShort}</code></strong>
-          <p>{data.source.branch} · {data.source.sourceDate}</p>
+          <p>{data.project.repositoryLabel} · {data.source.sourceDate}</p>
           <a href={`${data.project.repoUrl}/commit/${data.source.commit}`}>Commit <ExternalLink size={13} /></a>
         </article>
         <article>

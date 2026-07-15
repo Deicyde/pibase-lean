@@ -39,9 +39,8 @@ BLUEPRINT_OUT = os.path.join(SITE, "blueprint.html")
 DATA_OUT = os.path.join(SITE, "data.html")
 GRAPH_PNG = os.path.join(ASSETS, "implication-map.png")
 
-REPO = "https://github.com/Deicyde/pibase-lean"
-UPSTREAM_REPO = "https://github.com/felixpernegger/pibase-lean"
-SOURCE_REPO = os.environ.get("PIBASE_LEAN_SOURCE_REPO", REPO)
+REPO = "https://github.com/felixpernegger/pibase-lean"
+SOURCE_REPO = REPO
 PIBASE = "https://topology.pi-base.org"
 OPEN_APP = "https://felixpernegger.github.io/pibase-data/"
 ETP = "https://teorth.github.io/equational_theories/"
@@ -50,18 +49,18 @@ PIBASE_LEAN_SOURCE = os.environ.get(
     os.environ.get("FELIX_REPO_PATH", ROOT),
 )
 try:
-    BRANCH = (
-        os.environ.get("GITHUB_REF_NAME")
+    SOURCE_REF = (
+        os.environ.get("PIBASE_LEAN_SOURCE_REF")
         or subprocess.check_output(
-            ["git", "-C", ROOT, "branch", "--show-current"],
+            ["git", "-C", PIBASE_LEAN_SOURCE, "rev-parse", "HEAD"],
             text=True,
             stderr=subprocess.DEVNULL,
         ).strip()
-        or "add-counterexample-spaces"
+        or "master"
     )
 except Exception:
-    BRANCH = "add-counterexample-spaces"
-REPO_BLOB = f"{REPO}/blob/{BRANCH}"
+    SOURCE_REF = "master"
+REPO_BLOB = f"{SOURCE_REPO}/blob/{SOURCE_REF}"
 SET_THEORY_FRONTIER_PROPERTIES = {
     "P000164": "Cardinality less than every measurable cardinal",
 }
@@ -136,7 +135,7 @@ def formal_status(coverage):
         commit_date = git_value(source, "log", "-1", "--format=%cI")
         return {
             "source_path": str(source),
-            "source_label": "this fork's Lean tree",
+            "source_label": "felixpernegger/pibase-lean",
             "source_url": SOURCE_REPO,
             "commit": commit,
             "commit_short": commit[:8] if commit else "unknown",
@@ -480,8 +479,8 @@ Separates X P Q := P X and not Q X</code></pre>
             "Lean Entries And Data",
             f"""
             <p>
-              The site combines two views of the work: the checked Lean tree in this
-              fork, and the pinned pi-Base data snapshot under <code>data/</code>.
+              The site combines two views of the work: the checked Lean tree and the
+              pinned pi-Base data snapshot under <code>data/</code>.
               The data artifacts describe the full {comma(counts["properties"])}-property
               implication graph; the Lean tree records which entries have actually
               been represented and where proof debt remains.
@@ -500,7 +499,7 @@ Separates X P Q := P X and not Q X</code></pre>
             <p>
               There are {comma(summary["true"])} true implications in the current
               {comma(total)}-cell graph.  These are classifications from the pinned
-              pi-Base theorem data, not counts of Lean-proved theorems in this fork.
+              pi-Base theorem data, not counts of Lean-proved theorems.
               The distinction between explicit and implicit true implications mirrors
               the Equational Theories dashboard vocabulary.
             </p>
@@ -767,7 +766,7 @@ def build_page(data, coverage, questions, summary, formal):
         f'Read from <a href="{formal["source_url"]}">{html.escape(formal["source_label"])}</a>'
         f' at commit <code>{html.escape(formal["commit_short"])}</code>'
         if formal["uses_felix_tree"]
-        else "Read from this repository's local coverage artifact"
+        else "Read from the local coverage artifact"
     )
     lean_stats = "\n".join([
         stat_card(comma(formal["property_entries"]), "property entries",
@@ -796,7 +795,7 @@ def build_page(data, coverage, questions, summary, formal):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>pibase-lean | Lean formalization status</title>
-<meta name="description" content="Lean formalization status for the Deicyde/pibase-lean fork.">
+<meta name="description" content="Lean formalization status for Felix Pernegger's pibase-lean project.">
 <style>
 :root {{
   --paper:#fbfcf8;
@@ -1063,7 +1062,7 @@ section p {{ margin:0 0 14px; max-width:78ch; }}
       <p>
         The true/false/independent/open counts classify the full
         {comma(total)}-cell pi-Base implication graph. They are graph-status
-        counts, not counts of completed Lean proofs in this fork.
+        counts, not counts of completed Lean proofs.
       </p>
       <p>
         True splits into {comma(summary["explicitly_true"])} explicit pi-Base theorem
@@ -1088,15 +1087,14 @@ section p {{ margin:0 0 14px; max-width:78ch; }}
     <h2>Pages</h2>
     <ul class="tools">
       <li><b><a href="blueprint.html">Blueprint</a></b> The web blueprint for the formalization plan.</li>
-      <li><b><a href="data.html">Data comparison</a></b> How much of the current pi-Base snapshot is covered by this fork's Lean entries.</li>
-      <li><b><a href="review.html">Review UI</a></b> Side-by-side pi-Base statements and Lean definitions from this fork.</li>
-      <li><b><a href="{SOURCE_REPO}">GitHub</a></b> The forked Lean formalization repository used for the top-page counts.</li>
+      <li><b><a href="data.html">Data comparison</a></b> How much of the current pi-Base snapshot is represented in Lean.</li>
+      <li><b><a href="review.html">Review UI</a></b> Side-by-side pi-Base statements and Lean definitions.</li>
+      <li><b><a href="{SOURCE_REPO}">GitHub</a></b> Felix Pernegger's pibase-lean repository.</li>
     </ul>
   </section>
 
   <footer class="foot">
-    Formalization source: <a href="{SOURCE_REPO}">Deicyde/pibase-lean</a>, a fork of
-    <a href="{UPSTREAM_REPO}">felixpernegger/pibase-lean</a>.
+    Formalization source: <a href="{SOURCE_REPO}">felixpernegger/pibase-lean</a>.
     Full pi-Base comparison data is generated from this site's pinned pi-Base snapshot.
   </footer>
 </main>
@@ -1121,14 +1119,14 @@ def build_data_page(data, coverage, questions, summary, formal, independence):
             "pi-Base properties represented in Lean",
             property_covered,
             property_total,
-            "A covered property has a PiBaseLean/Properties/P* entry in this fork.",
+            "A covered property has a PiBaseLean/Properties/P* entry in the Lean repository.",
             "properties",
         ),
         coverage_row(
             "pi-Base theorem rows represented in Lean",
             theorem_covered,
             theorem_total,
-            "A covered theorem row has a PiBaseLean/Theorems/T* entry in this fork.",
+            "A covered theorem row has a PiBaseLean/Theorems/T* entry in the Lean repository.",
             "theorems",
         ),
     ])
@@ -1149,7 +1147,7 @@ def build_data_page(data, coverage, questions, summary, formal, independence):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>pibase-lean | Data comparison</title>
-<meta name="description" content="Compare this pibase-lean fork with the full pi-Base snapshot.">
+<meta name="description" content="Compare pibase-lean with the full pi-Base snapshot.">
 <style>
 :root {{
   --paper:#fbfcf8;
@@ -1406,7 +1404,7 @@ pre {{
     <div>
       <p class="kicker">Lean 4 / Mathlib / topology</p>
       <h1>Data Comparison</h1>
-      <p class="subtitle">How much of pi-Base has a corresponding entry in this fork's Lean tree.</p>
+      <p class="subtitle">How much of pi-Base has a corresponding entry in the Lean tree.</p>
       <nav class="link-row" aria-label="Project links">
         <a href="index.html">Home</a>
         <a href="blueprint.html">Blueprint</a>
@@ -1417,7 +1415,7 @@ pre {{
       </nav>
       <p class="lede">
         This page treats coverage as representation: a pi-Base property or theorem
-        row is covered when this fork has the matching <code>P*</code> or
+        row is covered when the repository has the matching <code>P*</code> or
         <code>T*</code> Lean entry. Coverage is not the same as being fully
         sorry-free, so proof debt is shown separately.
       </p>
@@ -1448,7 +1446,7 @@ pre {{
     <h2>Snapshot Table</h2>
     <div>
       <table>
-        <tr><th>pi-Base object</th><th>pi-Base total</th><th>Lean entries in this fork</th><th>coverage</th><th>not yet represented</th></tr>
+        <tr><th>pi-Base object</th><th>pi-Base total</th><th>Lean entries</th><th>coverage</th><th>not yet represented</th></tr>
         <tr><td>properties</td><td>{comma(property_total)}</td><td>{comma(property_covered)}</td><td>{pct(property_covered, property_total)}</td><td>{comma(property_missing)}</td></tr>
         <tr><td>theorem rows</td><td>{comma(theorem_total)}</td><td>{comma(theorem_covered)}</td><td>{pct(theorem_covered, theorem_total)}</td><td>{comma(theorem_missing)}</td></tr>
       </table>
@@ -1495,7 +1493,7 @@ pre {{
     <h2>Tools</h2>
     <ul class="tools">
       <li><b><a href="index.html">Home</a></b> Lean-first formalization status.</li>
-      <li><b><a href="review.html">Review UI</a></b> Side-by-side pi-Base statements and Lean definitions from this fork.</li>
+      <li><b><a href="review.html">Review UI</a></b> Side-by-side pi-Base statements and Lean definitions.</li>
       <li><b><a href="{OPEN_APP}">Open implications</a></b> Browser tool for testing and submitting unresolved implication claims.</li>
       <li><b><a href="{PIBASE}/">pi-Base</a></b> The source database of spaces, properties, theorems, and counterexamples.</li>
       <li><b><a href="{REPO_BLOB}/data/questions.json">Questions JSON</a></b> Machine-readable open implication frontier.</li>
@@ -1521,7 +1519,7 @@ python3 scripts/build_project_page.py</code></pre>
       <li><b><a href="{ETP}">Equational Theories</a></b> The project-page model and graph-completion inspiration.</li>
       <li><b><a href="{REPO_BLOB}/README.md">README</a></b> Repository overview, build commands, and design notes.</li>
       <li><b><a href="blueprint.html">Blueprint</a></b> Web blueprint for the Lean formalization and generated graph.</li>
-      <li><b><a href="{UPSTREAM_REPO}">Upstream</a></b> Felix Pernegger's original pibase-lean repository.</li>
+      <li><b><a href="{SOURCE_REPO}">Repository</a></b> Felix Pernegger's pibase-lean project on GitHub.</li>
     </ul>
   </section>
 
