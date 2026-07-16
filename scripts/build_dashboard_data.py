@@ -364,6 +364,44 @@ def direct_theorem_map(data: dict) -> dict[tuple[str, str], list[str]]:
     return result
 
 
+def rank_frontier(
+    nodes: list[str],
+    reach: dict[str, set[str]],
+    pairs: list[tuple[str, str]],
+) -> list[dict]:
+    """Rank unresolved edges by the new transitive-closure cells they unlock."""
+    ancestors = {uid: {uid} for uid in nodes}
+    for source in nodes:
+        for target in reach[source]:
+            ancestors[target].add(source)
+
+    frontier = []
+    for source, target in pairs:
+        sources = ancestors[source]
+        targets = set(reach[target]) | {target}
+        closure_gain = sum(
+            1
+            for left in sources
+            for right in targets
+            if left != right and right not in reach[left]
+        )
+        frontier.append({
+            "source": source,
+            "target": target,
+            "closureGain": closure_gain,
+            "sourceAncestors": len(sources) - 1,
+            "targetDescendants": len(targets) - 1,
+        })
+    frontier.sort(
+        key=lambda item: (
+            -item["closureGain"],
+            item["source"],
+            item["target"],
+        )
+    )
+    return frontier
+
+
 def build_graph(
     data: dict,
     axiom_dependencies: dict[tuple[str, str], dict],
@@ -463,41 +501,15 @@ def build_graph(
             outcomes.append(state)
             witnesses.append(witness_index)
 
-    ancestors = {uid: {uid} for uid in nodes}
-    for source in nodes:
-        for target in reach[source]:
-            ancestors[target].add(source)
-
-    frontier = []
-    for source, target in unclassified_pairs:
-        sources = ancestors[source]
-        targets = set(reach[target]) | {target}
-        closure_gain = sum(
-            1
-            for left in sources
-            for right in targets
-            if left != right and right not in reach[left]
-        )
-        frontier.append({
-            "source": source,
-            "target": target,
-            "closureGain": closure_gain,
-            "sourceAncestors": len(sources) - 1,
-            "targetDescendants": len(targets) - 1,
-            "conditionalEvidence": bool(conditional_evidence.get((source, target))),
-            "axioms": sorted({
-                axiom
-                for witness in conditional_evidence.get((source, target), [])
-                for axiom in witness["assumptions"]
-            }),
+    frontier = rank_frontier(nodes, reach, unclassified_pairs)
+    for item in frontier:
+        pair = (item["source"], item["target"])
+        item["conditionalEvidence"] = bool(conditional_evidence.get(pair))
+        item["axioms"] = sorted({
+            axiom
+            for witness in conditional_evidence.get(pair, [])
+            for axiom in witness["assumptions"]
         })
-    frontier.sort(
-        key=lambda item: (
-            -item["closureGain"],
-            item["source"],
-            item["target"],
-        )
-    )
 
     direct = [
         {
@@ -530,7 +542,11 @@ def build_graph(
     }
 
 
-def build_formalized_graph(data: dict, statuses: dict[str, dict]) -> dict:
+def build_formalized_graph(
+    data: dict,
+    statuses: dict[str, dict],
+    pibase_graph: dict,
+) -> dict:
     """Project locally placeholder-free Lean pairwise theorem declarations onto the graph."""
     nodes = [item["uid"] for item in data["properties"]]
     node_set = set(nodes)
@@ -580,7 +596,27 @@ def build_formalized_graph(data: dict, statuses: dict[str, dict]) -> dict:
         for source in nodes
         for target in sorted(direct_edges.get(source, ()))
     ]
-    return {"outcomes": outcomes, "counts": dict(counts), "direct": direct}
+    pibase_direct = {
+        (edge["source"], edge["target"])
+        for edge in pibase_graph["direct"]
+    }
+    candidates = [
+        (source, target)
+        for source in nodes
+        for target in pibase_graph["reach"][source]
+        if source != target and target not in reach[source]
+    ]
+    frontier = rank_frontier(nodes, reach, candidates)
+    for item in frontier:
+        pair = (item["source"], item["target"])
+        item["pibaseStatus"] = "direct" if pair in pibase_direct else "derived"
+
+    return {
+        "outcomes": outcomes,
+        "counts": dict(counts),
+        "direct": direct,
+        "frontier": frontier,
+    }
 
 
 def recent_activity() -> tuple[list[dict], dict]:
@@ -787,7 +823,7 @@ def main() -> None:
     source_date = git("log", "-1", "--format=%cI")[:10]
     statuses, analyses = analyze_lean_tree()
     graph = build_graph(data, axiom_dependencies, conditional_spaces)
-    formalized_graph = build_formalized_graph(data, statuses)
+    formalized_graph = build_formalized_graph(data, statuses, graph)
     names = {item["uid"]: item["name"] for item in data["properties"]}
     recent, delta = recent_activity()
 
@@ -843,7 +879,7 @@ def main() -> None:
         + counts.get("axiomDependent", 0)
     )
     dashboard = {
-        "schemaVersion": 3,
+        "schemaVersion": 4,
         "project": {
             "id": "pibase-lean",
             "name": "pibase-lean",
@@ -898,6 +934,7 @@ def main() -> None:
                 "counts": formalized_graph["counts"],
                 "outcomesPath": "data/formalized-outcomes.bin",
                 "direct": formalized_graph["direct"],
+                "frontier": formalized_graph["frontier"],
             },
         },
         "properties": properties,
@@ -922,7 +959,8 @@ def main() -> None:
             {"label": "Formalized outcome matrix", "path": "data/formalized-outcomes.bin", "format": "Uint8"},
             {"label": "Witness matrix", "path": "data/witnesses.bin", "format": "Uint16 LE"},
             {"label": "Axiom dependencies", "path": "data/axiom-dependencies.json", "format": "JSON"},
-            {"label": "Unclassified frontier", "path": "data/frontier.json", "format": "JSON"},
+            {"label": "Formalization frontier", "path": "data/formalization-frontier.json", "format": "JSON"},
+            {"label": "pi-Base frontier", "path": "data/frontier.json", "format": "JSON"},
             {"label": "Review: spaces", "path": "data/review-spaces.json", "format": "JSON"},
             {"label": "Review: properties", "path": "data/review-properties.json", "format": "JSON"},
             {"label": "Review: theorems", "path": "data/review-theorems.json", "format": "JSON"},
@@ -935,6 +973,12 @@ def main() -> None:
         "sourceCommit": commit,
         "properties": {uid: names[uid] for uid in graph["nodes"]},
         "frontier": graph["frontier"],
+    })
+    dump_json(OUT_DIR / "formalization-frontier.json", {
+        "schemaVersion": 1,
+        "sourceCommit": commit,
+        "properties": {uid: names[uid] for uid in graph["nodes"]},
+        "frontier": formalized_graph["frontier"],
     })
     dump_json(OUT_DIR / "axiom-dependencies.json", {
         "schemaVersion": 1,
@@ -968,7 +1012,8 @@ def main() -> None:
 
     print(
         "dashboard data: "
-        f"{len(properties)} properties, {len(graph['frontier'])} unclassified pairs, "
+        f"{len(properties)} properties, {len(formalized_graph['frontier'])} formalization candidates, "
+        f"{len(graph['frontier'])} unclassified pairs, "
         f"{theorem_implementations} implemented theorem rows from {commit_short}"
     )
 

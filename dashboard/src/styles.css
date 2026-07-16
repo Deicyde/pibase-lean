@@ -246,6 +246,8 @@ p { margin: 0; }
 .section-heading .eyebrow { margin-bottom: 5px; }
 .section-summary { max-width: 680px; margin: 6px 0 0; color: var(--muted); font-size: 12px; }
 .section-count { color: var(--muted); font-size: 18px; font-weight: 700; }
+.section-heading-actions, .frontier-intro-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 10px; }
+.frontier-intro-actions { align-self: end; }
 .text-link {
   display: inline-flex;
   align-items: center;
@@ -754,6 +756,7 @@ textarea { padding: 10px 11px; resize: vertical; }
   .primary-nav { grid-template-columns: repeat(5, 1fr); }
   .page-intro { display: grid; gap: 18px; padding-bottom: 22px; }
   .page-intro > :last-child { justify-self: start; }
+  .frontier-intro-actions { align-items: flex-start; justify-content: flex-start; }
   .compact-intro h1, h1 { font-size: 32px; }
   .source-ledger { width: 100%; min-width: 0; border-left: 0; border-top: 1px solid var(--rule); padding: 12px 0 0; }
   .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
@@ -763,6 +766,7 @@ textarea { padding: 10px 11px; resize: vertical; }
   .section-heading { align-items: start; }
   .section-graph .section-heading { flex-wrap: wrap; }
   .explorer-heading-actions { width: 100%; justify-content: space-between; }
+  .section-heading-actions { align-items: flex-end; }
   .graph-layout { gap: 22px; }
   .trust-note { grid-template-columns: auto 1fr; }
   .frontier-preview a { grid-template-columns: 100px minmax(0, 1fr); }

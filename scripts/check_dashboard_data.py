@@ -55,7 +55,7 @@ def check_review(kind: str, expected: int, source_prefix: str) -> None:
 def main() -> None:
     manifest = load(DATA / "dashboard.json")
     canonical_repo = "https://github.com/felixpernegger/pibase-lean"
-    require(manifest["schemaVersion"] == 3, "unexpected dashboard schema version")
+    require(manifest["schemaVersion"] == 4, "unexpected dashboard schema version")
     require(manifest["project"]["repoUrl"] == canonical_repo, "project repository is not Felix's repository")
     require(
         manifest["project"]["repositoryLabel"] == "felixpernegger/pibase-lean",
@@ -118,6 +118,43 @@ def main() -> None:
     )
 
     node_index = {item["id"]: index for index, item in enumerate(manifest["properties"])}
+    formal_frontier = manifest["graph"]["formalized"]["frontier"]
+    formal_frontier_pairs = {(item["source"], item["target"]) for item in formal_frontier}
+    known_true_count = expected.get("explicitTrue", 0) + expected.get("derivedTrue", 0)
+    formalized_true_count = (
+        formalized_counts.get("formalizedDirect", 0)
+        + formalized_counts.get("formalizedDerived", 0)
+    )
+    require(
+        len(formal_frontier) == known_true_count - formalized_true_count,
+        "formalization frontier size disagrees with known pi-Base implications missing from Lean",
+    )
+    require(
+        len(formal_frontier_pairs) == len(formal_frontier),
+        "formalization frontier contains duplicate pairs",
+    )
+    require(
+        all(
+            formalized_outcomes[node_index[item["source"]] * size + node_index[item["target"]]] == 5
+            and outcomes[node_index[item["source"]] * size + node_index[item["target"]]] in {1, 2}
+            and item.get("pibaseStatus")
+            == (
+                "direct"
+                if outcomes[node_index[item["source"]] * size + node_index[item["target"]]] == 1
+                else "derived"
+            )
+            for item in formal_frontier
+        ),
+        "formalization frontier contains a resolved Lean pair or a non-true pi-Base pair",
+    )
+    require(
+        all(
+            informal in {1, 2}
+            for formal, informal in zip(formalized_outcomes, outcomes, strict=True)
+            if formal in {1, 2}
+        ),
+        "formalized graph contains an implication not recorded as true by pi-Base",
+    )
     axiom_dependencies = manifest["graph"]["axiomDependencies"]
     require(
         len(axiom_dependencies) == expected.get("axiomDependent", 0),
@@ -223,6 +260,14 @@ def main() -> None:
         and dependency_artifact["conditionalEvidence"] == conditional_evidence,
         "axiom dependency artifact disagrees with the manifest",
     )
+    require(
+        load(DATA / "formalization-frontier.json")["frontier"] == formal_frontier,
+        "formalization frontier artifact disagrees with the manifest",
+    )
+    require(
+        load(DATA / "frontier.json")["frontier"] == frontier,
+        "pi-Base frontier artifact disagrees with the manifest",
+    )
     for page in ("blueprint.html", "review.html", "data.html"):
         require((PUBLIC / page).exists(), f"public page is missing: {page}")
     blueprint = (PUBLIC / "blueprint.html").read_text(encoding="utf-8")
@@ -232,7 +277,8 @@ def main() -> None:
     print(
         "dashboard integrity: "
         f"{size} nodes, {sum(histogram.values()):,} cells, "
-        f"{len(frontier):,} frontier pairs, review chunks valid"
+        f"{len(formal_frontier):,} formalization and {len(frontier):,} pi-Base frontier pairs, "
+        "review chunks valid"
     )
 
 

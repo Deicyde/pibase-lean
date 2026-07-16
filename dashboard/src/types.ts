@@ -46,8 +46,9 @@ export interface FrontierItem {
   closureGain: number;
   sourceAncestors: number;
   targetDescendants: number;
-  conditionalEvidence: boolean;
-  axioms: string[];
+  conditionalEvidence?: boolean;
+  axioms?: string[];
+  pibaseStatus?: "direct" | "derived";
 }
 
 export interface AxiomDependency {
@@ -137,6 +138,7 @@ export interface DashboardData {
       counts: Record<string, number>;
       outcomesPath: string;
       direct: DirectEdge[];
+      frontier: FrontierItem[];
     };
   };
   properties: PropertyNode[];

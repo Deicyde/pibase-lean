@@ -49,6 +49,7 @@ function statusClass(view: MatrixView, state: GraphStatusCode): string {
 export default function Overview({ bundle, params }: { bundle: DashboardBundle; params: URLSearchParams }) {
   const { data } = bundle;
   const [matrixView, setMatrixView] = useState<MatrixView>(params.get("view") === "pibase" ? "pibase" : "formalized");
+  const [frontierView, setFrontierView] = useState<MatrixView>("formalized");
   const lead = data.graph.formalized.direct[0]
     ?? data.frontier[0]
     ?? { source: data.properties[0].id, target: data.properties[0].id };
@@ -69,11 +70,18 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
   const pibaseState = bundle.outcomes[graphIndex(data.graph.size, sourceIndex, targetIndex)] as GraphStatusCode;
   const statusLabels = matrixView === "formalized" ? FORMAL_GRAPH_STATUS : GRAPH_STATUS;
   const direct = activeDirect.find((edge) => edge.source === source && edge.target === target);
+  const pibaseDirect = data.graph.direct.find((edge) => edge.source === source && edge.target === target);
   const formalEdge = data.graph.formalized.direct.find((edge) => edge.source === source && edge.target === target);
   const path = state === 2 ? findProofPath(data, source, target, activeDirect) : [];
+  const pibasePath = pibaseState === 2 ? findProofPath(data, source, target, data.graph.direct) : [];
   const witnessValue = bundle.witnesses[graphIndex(data.graph.size, sourceIndex, targetIndex)];
   const witness = witnessValue ? data.spaces[witnessValue - 1] : null;
-  const frontier = pibaseState === 5 ? data.frontier.find((item) => item.source === source && item.target === target) : null;
+  const formalFrontier = state === 5
+    ? data.graph.formalized.frontier.find((item) => item.source === source && item.target === target)
+    : null;
+  const pibaseFrontier = pibaseState === 5
+    ? data.frontier.find((item) => item.source === source && item.target === target)
+    : null;
   const axiomDependency = data.graph.axiomDependencies.find(
     (item) => item.source === source && item.target === target,
   );
@@ -281,7 +289,25 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                       <p>No canonical pairwise Lean theorem path is currently recorded for this implication.</p>
                       <dl className="frontier-evidence">
                         <div><dt>pi-Base classification</dt><dd>{graphStatusLabel(data, pibaseState, source, target)}</dd></div>
+                        {formalFrontier && <div><dt>Lean closure gain</dt><dd>{formatNumber(formalFrontier.closureGain)}</dd></div>}
                       </dl>
+                      {formalFrontier && pibaseState === 1 && (
+                        <div className="lean-implementation-links">
+                          <span>π-Base theorem evidence</span>
+                          <TheoremLinks data={data} theoremIds={pibaseDirect?.theorems ?? []} view="pibase" />
+                        </div>
+                      )}
+                      {formalFrontier && pibaseState === 2 && (
+                        <div className="lean-implementation-links">
+                          <span>π-Base transitive trace</span>
+                          <TheoremTrace data={data} path={pibasePath} directEdges={data.graph.direct} view="pibase" />
+                        </div>
+                      )}
+                      {formalFrontier && (
+                        <a className="text-link" href={routeTo("frontier", { q: `${sourceNode.shortId} ${targetNode.shortId}` })}>
+                          View in formalization frontier <ArrowRight size={15} aria-hidden="true" />
+                        </a>
+                      )}
                     </div>
                   )}
                 </>
@@ -323,7 +349,7 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                       <TheoremLinks data={data} theoremIds={axiomDependency.theorems} view="pibase" />
                     </div>
                   )}
-                  {state === 5 && frontier && (
+                  {state === 5 && pibaseFrontier && (
                     <div>
                       <p>No unconditional theorem path, unconditional separating space, or axiom-dependence certificate is currently recorded.</p>
                       {conditionalEvidence && (
@@ -345,12 +371,12 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                         </div>
                       )}
                       <dl className="frontier-evidence">
-                        <div><dt>Potential closure gain</dt><dd>{formatNumber(frontier.closureGain)}</dd></div>
-                        <div><dt>Known ancestors</dt><dd>{formatNumber(frontier.sourceAncestors)}</dd></div>
-                        <div><dt>Known descendants</dt><dd>{formatNumber(frontier.targetDescendants)}</dd></div>
+                        <div><dt>Potential closure gain</dt><dd>{formatNumber(pibaseFrontier.closureGain)}</dd></div>
+                        <div><dt>Known ancestors</dt><dd>{formatNumber(pibaseFrontier.sourceAncestors)}</dd></div>
+                        <div><dt>Known descendants</dt><dd>{formatNumber(pibaseFrontier.targetDescendants)}</dd></div>
                       </dl>
-                      <a className="text-link" href={routeTo("frontier", { q: `${sourceNode.shortId} ${targetNode.shortId}` })}>
-                        View in frontier <ArrowRight size={15} aria-hidden="true" />
+                      <a className="text-link" href={routeTo("frontier", { q: `${sourceNode.shortId} ${targetNode.shortId}`, view: "pibase" })}>
+                        View in π-Base frontier <ArrowRight size={15} aria-hidden="true" />
                       </a>
                     </div>
                   )}
@@ -398,21 +424,38 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
         <div>
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Unclassified frontier</p>
-              <h2>Largest potential gain</h2>
+              <p className="eyebrow">{frontierView === "formalized" ? "Formalization frontier" : "π-Base frontier"}</p>
+              <h2>{frontierView === "formalized" ? "Highest-leverage proofs" : "Largest potential gain"}</h2>
             </div>
-            <a className="text-link" href={routeTo("frontier")}>View all <ArrowRight size={15} aria-hidden="true" /></a>
+            <div className="section-heading-actions">
+              <div className="segmented" aria-label="Frontier source">
+                {(["formalized", "pibase"] as MatrixView[]).map((view) => (
+                  <button key={view} type="button" aria-pressed={frontierView === view} onClick={() => setFrontierView(view)}>
+                    {view === "formalized" ? "Formalization" : "π-Base"}
+                  </button>
+                ))}
+              </div>
+              <a className="text-link" href={routeTo("frontier", { view: frontierView === "pibase" ? "pibase" : undefined })}>
+                View all <ArrowRight size={15} aria-hidden="true" />
+              </a>
+            </div>
           </div>
           <ol className="frontier-preview">
-            {data.frontier.slice(0, 6).map((item) => {
+            {(frontierView === "formalized" ? data.graph.formalized.frontier : data.frontier).slice(0, 6).map((item) => {
               const source = propertyNames.get(item.source)!;
               const target = propertyNames.get(item.target)!;
               return (
                 <li key={`${item.source}-${item.target}`}>
-                  <a href={routeTo("overview", { source: item.source, target: item.target, view: "pibase" })}>
-                    <span className="pair-label"><code>{source.shortId}</code> <span>⇒?</span> <code>{target.shortId}</code></span>
+                  <a href={routeTo("overview", {
+                    source: item.source,
+                    target: item.target,
+                    view: frontierView === "pibase" ? "pibase" : undefined,
+                  })}>
+                    <span className="pair-label"><code>{source.shortId}</code> <span>{frontierView === "formalized" ? "⇒" : "⇒?"}</span> <code>{target.shortId}</code></span>
                     <span className="pair-names">{source.name} → {target.name}</span>
-                    <span className="gain">+{formatNumber(item.closureGain)} cells if true</span>
+                    <span className="gain">
+                      +{formatNumber(item.closureGain)} {frontierView === "formalized" ? "Lean pairs" : "cells if true"}
+                    </span>
                   </a>
                 </li>
               );
