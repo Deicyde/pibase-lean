@@ -1,16 +1,16 @@
 import renderMathInElement from "katex/contrib/auto-render";
 import { marked } from "marked";
-import { useEffect, useMemo, useRef } from "react";
+import { memo, useLayoutEffect, useMemo, useRef } from "react";
 import "katex/dist/katex.min.css";
 
-export default function MathText({ text, inline = false }: { text: string; inline?: boolean }) {
+function MathText({ text, inline = false }: { text: string; inline?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const html = useMemo(() => {
     if (inline) return String(marked.parseInline(text));
     return String(marked.parse(text));
   }, [inline, text]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!ref.current) return;
     renderMathInElement(ref.current, {
       delimiters: [
@@ -19,7 +19,9 @@ export default function MathText({ text, inline = false }: { text: string; inlin
       ],
       throwOnError: false,
     });
-  }, [html]);
+  });
 
   return <div ref={ref} className={`math-text${inline ? " math-inline" : ""}`} dangerouslySetInnerHTML={{ __html: html }} />;
 }
+
+export default memo(MathText);

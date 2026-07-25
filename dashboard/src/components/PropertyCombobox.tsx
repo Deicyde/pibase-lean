@@ -1,6 +1,6 @@
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { useEffect, useId, useMemo, useState } from "react";
-import { plainMathLabel } from "../lib";
+import { formatNumber, plainMathLabel } from "../lib";
 import type { PropertyNode } from "../types";
 
 const RESULT_LIMIT = 8;
@@ -28,17 +28,23 @@ export default function PropertyCombobox({
   label,
   value,
   properties,
+  optionCounts,
+  placeholder = "Search P-number or name",
+  clearable = false,
   onChange,
 }: {
   id: string;
   label: string;
   value: string;
   properties: PropertyNode[];
+  optionCounts?: ReadonlyMap<string, number>;
+  placeholder?: string;
+  clearable?: boolean;
   onChange: (value: string) => void;
 }) {
   const listId = `${id}-${useId().replace(/:/g, "")}-results`;
-  const selected = properties.find((property) => property.id === value) ?? properties[0];
-  const selectedLabel = optionLabel(selected);
+  const selected = properties.find((property) => property.id === value);
+  const selectedLabel = selected ? optionLabel(selected) : "";
   const [query, setQuery] = useState(selectedLabel);
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -50,12 +56,22 @@ export default function PropertyCombobox({
   const results = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     return properties
-      .map((property) => ({ property, score: matchScore(property, normalized) }))
-      .filter((item): item is { property: PropertyNode; score: number } => item.score !== null)
-      .sort((left, right) => left.score - right.score || Number(left.property.shortId.slice(1)) - Number(right.property.shortId.slice(1)))
+      .map((property) => ({
+        property,
+        count: optionCounts?.get(property.id) ?? 0,
+        score: matchScore(property, normalized),
+      }))
+      .filter((item): item is { property: PropertyNode; count: number; score: number } => (
+        item.score !== null && (!optionCounts || item.count > 0)
+      ))
+      .sort((left, right) => (
+        left.score - right.score
+        || (optionCounts ? right.count - left.count : 0)
+        || Number(left.property.shortId.slice(1)) - Number(right.property.shortId.slice(1))
+      ))
       .slice(0, RESULT_LIMIT)
       .map((item) => item.property);
-  }, [properties, query]);
+  }, [optionCounts, properties, query]);
 
   useEffect(() => {
     setActiveIndex((current) => Math.min(current, Math.max(results.length - 1, 0)));
@@ -71,7 +87,7 @@ export default function PropertyCombobox({
   return (
     <div className="property-combobox">
       <label htmlFor={id}>{label}</label>
-      <div className="property-search-input">
+      <div className={`property-search-input${clearable && value ? " has-clear" : ""}`}>
         <Search size={15} aria-hidden="true" />
         <input
           id={id}
@@ -85,7 +101,7 @@ export default function PropertyCombobox({
           aria-controls={listId}
           aria-activedescendant={open && results.length ? `${listId}-${activeIndex}` : undefined}
           value={query}
-          placeholder="Search P-number or name"
+          placeholder={placeholder}
           onFocus={(event) => {
             event.currentTarget.select();
             setOpen(true);
@@ -116,6 +132,23 @@ export default function PropertyCombobox({
             }
           }}
         />
+        {clearable && value && (
+          <button
+            type="button"
+            className="property-search-clear"
+            aria-label={`Clear ${label.toLowerCase()}`}
+            data-tooltip={`Clear ${label.toLowerCase()}`}
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={() => {
+              setQuery("");
+              setOpen(true);
+              setActiveIndex(0);
+              onChange("");
+            }}
+          >
+            <X size={14} aria-hidden="true" />
+          </button>
+        )}
       </div>
       {open && (
         <div className="property-results" id={listId} role="listbox" aria-label={`${label} matches`}>
@@ -132,7 +165,13 @@ export default function PropertyCombobox({
             >
               <code>{property.shortId}</code>
               <span>{plainMathLabel(property.name)}</span>
-              {property.aliases.length > 0 && <small>{property.aliases.slice(0, 2).join(" · ")}</small>}
+              {(optionCounts || property.aliases.length > 0) && (
+                <small>
+                  {optionCounts && `${formatNumber(optionCounts.get(property.id) ?? 0)} pairs`}
+                  {optionCounts && property.aliases.length > 0 && " · "}
+                  {property.aliases.slice(0, 2).join(" · ")}
+                </small>
+              )}
             </div>
           ))}
           {!results.length && <p className="property-results-empty">No matching property</p>}
