@@ -64,6 +64,10 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
   const targetIndex = data.properties.findIndex((item) => item.id === target);
   const sourceNode = data.properties[sourceIndex];
   const targetNode = data.properties[targetIndex];
+  const missingEndpointDefinitions = [sourceNode, targetNode].filter(
+    (property) => !property.lean?.declarationPresent,
+  );
+  const pairDefinitionsReady = missingEndpointDefinitions.length === 0;
   const activeOutcomes = matrixView === "formalized" ? bundle.formalizedOutcomes : bundle.outcomes;
   const activeDirect = matrixView === "formalized" ? data.graph.formalized.direct : data.graph.direct;
   const state = activeOutcomes[graphIndex(data.graph.size, sourceIndex, targetIndex)] as GraphStatusCode;
@@ -88,6 +92,12 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
   const conditionalEvidence = data.graph.conditionalEvidence.find(
     (item) => item.source === source && item.target === target,
   );
+  const proofReadyPreview = (
+    frontierView === "formalized" ? data.graph.formalized.frontier : data.frontier
+  ).filter((item) => (
+    propertyNames.get(item.source)?.lean?.declarationPresent
+    && propertyNames.get(item.target)?.lean?.declarationPresent
+  ));
   const outcomeLabel = matrixView === "formalized"
     ? statusLabels[state].label
     : graphStatusLabel(data, state, source, target);
@@ -290,6 +300,12 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                       <dl className="frontier-evidence">
                         <div><dt>pi-Base classification</dt><dd>{graphStatusLabel(data, pibaseState, source, target)}</dd></div>
                         {formalFrontier && <div><dt>Lean closure gain</dt><dd>{formatNumber(formalFrontier.closureGain)}</dd></div>}
+                        {!pairDefinitionsReady && (
+                          <div>
+                            <dt>Definition status</dt>
+                            <dd>Needs {missingEndpointDefinitions.map((property) => property.shortId).join(" + ")}</dd>
+                          </div>
+                        )}
                       </dl>
                       {formalFrontier && pibaseState === 1 && (
                         <div className="lean-implementation-links">
@@ -304,8 +320,14 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                         </div>
                       )}
                       {formalFrontier && (
-                        <a className="text-link" href={routeTo("frontier", { q: `${sourceNode.shortId} ${targetNode.shortId}` })}>
-                          View in formalization frontier <ArrowRight size={15} aria-hidden="true" />
+                        <a className="text-link" href={routeTo("frontier", pairDefinitionsReady ? {
+                          source,
+                          target,
+                        } : {
+                          definition: missingEndpointDefinitions[0].id,
+                        })}>
+                          {pairDefinitionsReady ? "View in proof frontier" : "View in definition frontier"}
+                          <ArrowRight size={15} aria-hidden="true" />
                         </a>
                       )}
                     </div>
@@ -374,9 +396,23 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                         <div><dt>Potential closure gain</dt><dd>{formatNumber(pibaseFrontier.closureGain)}</dd></div>
                         <div><dt>Known ancestors</dt><dd>{formatNumber(pibaseFrontier.sourceAncestors)}</dd></div>
                         <div><dt>Known descendants</dt><dd>{formatNumber(pibaseFrontier.targetDescendants)}</dd></div>
+                        {!pairDefinitionsReady && (
+                          <div>
+                            <dt>Definition status</dt>
+                            <dd>Needs {missingEndpointDefinitions.map((property) => property.shortId).join(" + ")}</dd>
+                          </div>
+                        )}
                       </dl>
-                      <a className="text-link" href={routeTo("frontier", { q: `${sourceNode.shortId} ${targetNode.shortId}`, view: "pibase" })}>
-                        View in π-Base frontier <ArrowRight size={15} aria-hidden="true" />
+                      <a className="text-link" href={routeTo("frontier", pairDefinitionsReady ? {
+                        source,
+                        target,
+                        view: "pibase",
+                      } : {
+                        definition: missingEndpointDefinitions[0].id,
+                        view: "pibase",
+                      })}>
+                        {pairDefinitionsReady ? "View in π-Base frontier" : "View in definition frontier"}
+                        <ArrowRight size={15} aria-hidden="true" />
                       </a>
                     </div>
                   )}
@@ -441,7 +477,7 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
             </div>
           </div>
           <ol className="frontier-preview">
-            {(frontierView === "formalized" ? data.graph.formalized.frontier : data.frontier).slice(0, 6).map((item) => {
+            {proofReadyPreview.slice(0, 6).map((item) => {
               const source = propertyNames.get(item.source)!;
               const target = propertyNames.get(item.target)!;
               return (
