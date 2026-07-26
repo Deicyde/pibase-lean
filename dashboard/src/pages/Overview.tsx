@@ -319,14 +319,11 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                           <TheoremTrace data={data} path={pibasePath} directEdges={data.graph.direct} view="pibase" />
                         </div>
                       )}
-                      {formalFrontier && (
-                        <a className="text-link" href={routeTo("frontier", pairDefinitionsReady ? {
-                          source,
-                          target,
-                        } : {
+                      {formalFrontier && !pairDefinitionsReady && (
+                        <a className="text-link" href={routeTo("frontier", {
                           definition: missingEndpointDefinitions[0].id,
                         })}>
-                          {pairDefinitionsReady ? "View in proof frontier" : "View in definition frontier"}
+                          View in definition frontier
                           <ArrowRight size={15} aria-hidden="true" />
                         </a>
                       )}
@@ -403,17 +400,15 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                           </div>
                         )}
                       </dl>
-                      <a className="text-link" href={routeTo("frontier", pairDefinitionsReady ? {
-                        source,
-                        target,
-                        view: "pibase",
-                      } : {
-                        definition: missingEndpointDefinitions[0].id,
-                        view: "pibase",
-                      })}>
-                        {pairDefinitionsReady ? "View in π-Base frontier" : "View in definition frontier"}
-                        <ArrowRight size={15} aria-hidden="true" />
-                      </a>
+                      {!pairDefinitionsReady && (
+                        <a className="text-link" href={routeTo("frontier", {
+                          definition: missingEndpointDefinitions[0].id,
+                          view: "pibase",
+                        })}>
+                          View in definition frontier
+                          <ArrowRight size={15} aria-hidden="true" />
+                        </a>
+                      )}
                     </div>
                   )}
                 </>
