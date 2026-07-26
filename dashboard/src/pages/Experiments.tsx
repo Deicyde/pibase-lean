@@ -1,4 +1,4 @@
-import { CheckCircle2, Download, FileUp, Save, ShieldAlert, Trash2 } from "lucide-react";
+import { CheckCircle2, Download, ExternalLink, FileUp, Save, ShieldAlert, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { downloadText, extractVerdict, formatNumber, formatPercent, parseImportedRuns } from "../lib";
 import type { DashboardData, ImportedRun } from "../types";
@@ -134,19 +134,29 @@ export default function Experiments({ data }: { data: DashboardData }) {
     <div className="page experiments-page">
       <header className="page-intro compact-intro">
         <div>
-          <p className="eyebrow">Mathematical distillation</p>
-          <h1>Experiment lab</h1>
-          <p className="page-lede">Versioned prompts, verdict validation, and comparable evaluation runs.</p>
+          <p className="eyebrow">Upcoming equational-theories project</p>
+          <h1>Prompt evaluation lab</h1>
+          <p className="page-lede">
+            Develop compact prompts that ask a model whether one equational law implies another, then compare
+            accuracy across challenge datasets. This workspace is independent of the π-Base topology graph.
+          </p>
+          <a
+            className="text-link experiment-context-link"
+            href="https://competition.sair.foundation/competitions/mathematics-distillation-challenge-equational-theories-stage1/overview"
+          >
+            Mathematics Distillation Challenge <ExternalLink size={13} aria-hidden="true" />
+          </a>
         </div>
         <div className={`budget-chip ${bytes > data.experiments.promptByteLimit ? "over-budget" : ""}`}>
+          <small>Prompt budget</small>
           <strong>{formatNumber(bytes)}</strong>
           <span>/ {formatNumber(data.experiments.promptByteLimit)} bytes</span>
         </div>
       </header>
 
-      <section className="experiment-config toolbar" aria-label="Experiment configuration">
+      <section className="experiment-config toolbar" aria-label="Evaluation setup">
         <label className="select-field wide-field">
-          <span>Evaluation model</span>
+          <span>Model under test</span>
           <select value={model} onChange={(event) => setModel(event.target.value)}>
             {data.experiments.models.map((item) => <option key={item}>{item}</option>)}
           </select>
@@ -171,8 +181,8 @@ export default function Experiments({ data }: { data: DashboardData }) {
         <div className="prompt-workspace">
           <div className="workspace-heading">
             <div>
-              <p className="eyebrow">Complete prompt</p>
-              <h2>Prompt and cheatsheet</h2>
+              <p className="eyebrow">Model input</p>
+              <h2>Equational implication prompt</h2>
             </div>
             <div className="prompt-metrics">
               <span>{formatNumber(bytes)} bytes</span>
@@ -202,8 +212,8 @@ export default function Experiments({ data }: { data: DashboardData }) {
 
         <aside className="experiment-side">
           <section className="side-section">
-            <p className="eyebrow">Verdict contract</p>
-            <h2>Parser check</h2>
+            <p className="eyebrow">Required output</p>
+            <h2>TRUE / FALSE parser</h2>
             <textarea value={verdictText} onChange={(event) => setVerdictText(event.target.value)} aria-label="Model output for verdict parsing" />
             <div className={`parser-result ${parsedVerdict === null ? "unknown" : parsedVerdict ? "true" : "false"}`}>
               <span>Parsed verdict</span>
@@ -211,8 +221,8 @@ export default function Experiments({ data }: { data: DashboardData }) {
             </div>
           </section>
           <section className="side-section version-save">
-            <p className="eyebrow">Artifact</p>
-            <h2>Save version</h2>
+            <p className="eyebrow">Prompt snapshot</p>
+            <h2>Save this setup</h2>
             <label><span>Name</span><input value={versionName} onChange={(event) => setVersionName(event.target.value)} /></label>
             <div className="button-row">
               <button type="button" className="button button-primary" onClick={saveVersion}><Save size={16} /> Save</button>
@@ -225,8 +235,8 @@ export default function Experiments({ data }: { data: DashboardData }) {
       <section className="dashboard-section run-section">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Evaluation results</p>
-            <h2>Run analysis</h2>
+            <p className="eyebrow">Model performance</p>
+            <h2>Imported evaluation results</h2>
           </div>
           <label className="button file-button">
             <FileUp size={16} aria-hidden="true" /> Import JSONL
@@ -246,8 +256,8 @@ export default function Experiments({ data }: { data: DashboardData }) {
       <section className="dashboard-section">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Local ledger</p>
-            <h2>Prompt versions</h2>
+            <p className="eyebrow">Saved in this browser</p>
+            <h2>Prompt trials</h2>
           </div>
           <span className="section-count">{formatNumber(versions.length)}</span>
         </div>

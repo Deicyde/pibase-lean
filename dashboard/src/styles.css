@@ -209,6 +209,7 @@ p { margin: 0; }
   color: var(--muted);
   font-size: 17px;
 }
+.experiment-context-link { width: fit-content; margin-top: 12px; }
 .source-ledger {
   min-width: 310px;
   margin: 0;
@@ -584,6 +585,13 @@ textarea { padding: 10px 11px; resize: vertical; }
 .frontier-total, .review-progress, .budget-chip { display: grid; grid-template-columns: auto auto; gap: 2px 6px; }
 .frontier-total strong, .review-progress strong, .budget-chip strong { color: var(--ink); font-size: 24px; line-height: 1; }
 .frontier-total span, .review-progress span, .budget-chip span { align-self: end; }
+.budget-chip small {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
 .review-progress small { grid-column: 1 / -1; color: var(--rust); }
 .frontier-results-heading {
   display: flex;
