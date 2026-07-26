@@ -1,173 +1,314 @@
-import { Download, ExternalLink, FileCode2, GitCommitHorizontal } from "lucide-react";
-import TrustBar from "../components/TrustBar";
-import { formatNumber, formatPercent, plainMathLabel, routeTo } from "../lib";
+import { BookOpenCheck, Download, ExternalLink, FileCode2 } from "lucide-react";
+import { formatNumber, plainMathLabel, routeTo } from "../lib";
 import type { DashboardData } from "../types";
+
+const DOWNLOAD_DESCRIPTIONS: Record<string, string> = {
+  "data/dashboard.json": "Source versions, summary counts, properties, spaces, and graph metadata.",
+  "data/outcomes.bin": "Every ordered property pair classified from the pinned π-Base dataset.",
+  "data/formalized-outcomes.bin": "Lean-verified implications, including pairs obtained by transitive closure.",
+  "data/witnesses.bin": "Indexes the separating spaces used for unconditional counterexamples.",
+  "data/axiom-dependencies.json": "Pairs whose truth changes under assumptions such as CH or MA.",
+  "data/formalization-frontier.json": "π-Base implications ready to prove using existing Lean definitions.",
+  "data/frontier.json": "Pairs that remain unresolved in the pinned π-Base dataset.",
+  "data/review-spaces.json": "Space records and their Lean implementation status.",
+  "data/review-properties.json": "Property definitions and their well-definedness audit.",
+  "data/review-theorems.json": "Theorem records, declarations, and placeholder audit.",
+};
+
+const IMPLICATION_TERMS = [
+  {
+    term: "Lean theorem",
+    definition: "A direct property implication with a canonical theorem whose own theorem files contain no active placeholder or explicit axiom.",
+  },
+  {
+    term: "By transitive closure",
+    definition: "A pair resolved by composing direct Lean proofs. It is not a separate theorem declaration.",
+  },
+  {
+    term: "Not yet formalized",
+    definition: "No direct or transitive Lean proof currently resolves the pair.",
+  },
+  {
+    term: "Unconditional counterexample",
+    definition: "A separating π-Base space refutes the implication without requiring an additional set-theoretic assumption.",
+  },
+  {
+    term: "Axiom-dependent",
+    definition: "The implication changes truth value under named assumptions such as CH or MA, so it is neither unconditionally true nor false.",
+  },
+  {
+    term: "Unclassified",
+    definition: "The pinned π-Base data contains no unconditional proof, unconditional witness, or axiom-dependence certificate.",
+  },
+];
+
+const AUDIT_TERMS = [
+  {
+    term: "Property coverage",
+    definition: "The canonical Lean definition exists. A separate well-definedness proof may still contain a placeholder; Review flags those cases.",
+  },
+  {
+    term: "Theorem coverage",
+    definition: "The π-Base theorem record has a canonical Lean declaration with no active placeholder in its own theorem files.",
+  },
+  {
+    term: "Dependency-clean",
+    definition: "The declaration and its project import closure contain no active placeholder or explicit project axiom.",
+  },
+  {
+    term: "Dependency debt",
+    definition: "The declaration has no local placeholder, but at least one imported project file does. This does not prove that the declaration uses that debt.",
+  },
+  {
+    term: "Local debt",
+    definition: "The entity's own Lean files contain an active sorry or admit.",
+  },
+  {
+    term: "Missing declaration",
+    definition: "The expected canonical bundled declaration is absent from the entity's primary file.",
+  },
+];
 
 export default function DataPage({ data }: { data: DashboardData }) {
   const propertyMap = new Map(data.properties.map((item) => [item.id, item]));
   const conditionalSpaces = data.spaces.filter((item) => item.assumptions.length);
+  const qualificationCount = data.graph.axiomDependencies.length + conditionalSpaces.length;
+  const inventory = [
+    {
+      label: "Properties",
+      implemented: data.summary.propertyImplementations,
+      total: data.summary.propertyTotal,
+    },
+    {
+      label: "Theorem records",
+      implemented: data.summary.theoremImplementations,
+      total: data.summary.theoremTotal,
+    },
+    {
+      label: "Spaces",
+      implemented: data.summary.spaceImplementations,
+      total: data.summary.spaceTotal,
+    },
+  ];
+  const downloadGroups = [
+    {
+      key: "manifest",
+      title: "Start here",
+      summary: "One readable JSON file describing this dashboard build.",
+      items: data.downloads.filter((item) => item.path === "data/dashboard.json"),
+    },
+    {
+      key: "graph",
+      title: "Graph and frontier data",
+      summary: "Machine-readable classifications, witnesses, and open targets.",
+      items: data.downloads.filter(
+        (item) => item.path !== "data/dashboard.json" && !item.path.startsWith("data/review-"),
+      ),
+    },
+    {
+      key: "review",
+      title: "Review audit data",
+      summary: "Detailed source records used by the Review page.",
+      items: data.downloads.filter((item) => item.path.startsWith("data/review-")),
+    },
+  ];
 
   return (
     <div className="page data-page">
       <header className="page-intro compact-intro">
         <div>
-          <p className="eyebrow">Reproducibility</p>
-          <h1>Data ledger</h1>
-          <p className="page-lede">Versioned formalization, graph, evidence, and review artifacts.</p>
+          <p className="eyebrow">Dashboard provenance</p>
+          <h1>Sources &amp; downloads</h1>
+          <p className="page-lede">
+            See which Lean and π-Base versions power the dashboard, what records they contain, and which files are
+            available for further analysis.
+          </p>
         </div>
-        <a className="button" href="blueprint.html"><FileCode2 size={16} /> Blueprint</a>
+        <a className="button" href="blueprint.html"><FileCode2 size={16} /> Technical blueprint</a>
       </header>
 
-      <section className="source-grid" aria-label="Source versions">
-        <article>
-          <span>Lean source</span>
-          <strong><code>{data.source.commitShort}</code></strong>
-          <p>{data.project.repositoryLabel} · {data.source.sourceDate}</p>
-          <a href={`${data.project.repoUrl}/commit/${data.source.commit}`}>Commit <ExternalLink size={13} /></a>
-        </article>
-        <article>
-          <span>pi-Base snapshot</span>
-          <strong><code>{data.source.dataSha.slice(0, 12)}</code></strong>
-          <p>{formatNumber(data.summary.propertyTotal)} properties · {formatNumber(data.summary.theoremTotal)} theorem records</p>
-          <a href={`https://github.com/pi-base/data/tree/${data.source.dataSha}`}>Snapshot <ExternalLink size={13} /></a>
-        </article>
-        <article>
-          <span>Dashboard schema</span>
-          <strong>Version {data.schemaVersion}</strong>
-          <p>Generated {new Date(data.source.generatedAt).toLocaleString()}</p>
-          <a href="data/dashboard.json">Manifest <ExternalLink size={13} /></a>
-        </article>
-      </section>
-
-      <section className="dashboard-section">
+      <section className="dashboard-section data-first-section" aria-labelledby="data-sources-heading">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Foundational status</p>
-            <h2>Axiom dependencies</h2>
-          </div>
-          <span className="frontier-total"><strong>{formatNumber(data.graph.axiomDependencies.length)}</strong><span>certified pairs</span></span>
-        </div>
-        <div className="foundations-grid">
-          <div>
-            <h3>Implications</h3>
-            <table className="data-table foundations-table">
-              <thead><tr><th scope="col">Implication</th><th scope="col">Depends on</th><th scope="col">Truth conditions</th><th scope="col">Evidence</th></tr></thead>
-              <tbody>
-                {data.graph.axiomDependencies.map((item) => {
-                  const source = propertyMap.get(item.source)!;
-                  const target = propertyMap.get(item.target)!;
-                  return (
-                    <tr key={`${item.source}-${item.target}`}>
-                      <td>
-                        <a className="pair-cell" href={routeTo("overview", { source: item.source, target: item.target, view: "pibase" })}>
-                          <span><code>{source.shortId}</code> ⇒ <code>{target.shortId}</code></span>
-                          <small>{plainMathLabel(source.name)} → {plainMathLabel(target.name)}</small>
-                        </a>
-                      </td>
-                      <td><strong>{item.axioms.join(" + ")}</strong><span className="cell-detail">over {item.baseTheory}</span></td>
-                      <td><span>{item.trueWhen}: true</span><span className="cell-detail">{item.falseWhen}: false</span></td>
-                      <td><a className="text-link" href={item.referenceUrl}>{item.theorems.map((id) => id.replace(/^T0+/, "T")).join(", ")} <ExternalLink size={13} /></a></td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-          <div>
-            <h3>Conditional constructions</h3>
-            <table className="data-table foundations-table">
-              <thead><tr><th scope="col">Space</th><th scope="col">Available under</th></tr></thead>
-              <tbody>
-                {conditionalSpaces.map((space) => (
-                  <tr key={space.id}>
-                    <td><a className="pair-cell" href={space.referenceUrl}><code>{space.shortId}</code><small>{plainMathLabel(space.name)}</small></a></td>
-                    <td><strong>{space.assumptions.join(" + ")}</strong><span className="cell-detail">Conditional evidence only</span></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <p className="eyebrow">Pinned inputs</p>
+            <h2 id="data-sources-heading">Data sources</h2>
+            <p className="section-summary">Every number on the dashboard can be traced to these exact versions.</p>
           </div>
         </div>
-      </section>
-
-      <section className="dashboard-section">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">π-Base dataset</p>
-            <h2>Formalization coverage</h2>
-            <p className="section-summary">Lean formalizations compared with every record in the pinned π-Base dataset.</p>
-          </div>
-        </div>
-        <div className="coverage-grid">
-          <div className="coverage-item">
-            <div><strong>π-Base properties formalized</strong><span>{formatNumber(data.summary.propertyImplementations)} / {formatNumber(data.summary.propertyTotal)}</span></div>
-            <div className="coverage-track"><i style={{ width: formatPercent(data.summary.propertyImplementations, data.summary.propertyTotal) }} /></div>
-          </div>
-          <div className="coverage-item coverage-theorems">
-            <div><strong>π-Base theorem records formalized</strong><span>{formatNumber(data.summary.theoremImplementations)} / {formatNumber(data.summary.theoremTotal)}</span></div>
-            <div className="coverage-track"><i style={{ width: formatPercent(data.summary.theoremImplementations, data.summary.theoremTotal) }} /></div>
-          </div>
-          <div className="coverage-item coverage-spaces">
-            <div><strong>π-Base spaces formalized</strong><span>{formatNumber(data.summary.spaceImplementations)} / {formatNumber(data.summary.spaceTotal)}</span></div>
-            <div className="coverage-track"><i style={{ width: formatPercent(data.summary.spaceImplementations, data.summary.spaceTotal) }} /></div>
-          </div>
-        </div>
-        <div className="trust-ledger data-trust-ledger">
-          <div className="data-audit-heading">
-            <h3>Dependency audit</h3>
-            <p>Trust states classify only the Lean source entries found in Felix's checkout.</p>
-          </div>
-          <TrustBar label="Property source entries" values={data.trust.properties} />
-          <TrustBar label="Theorem source entries" values={data.trust.theorems} />
-          {data.summary.spaceEntries > 0 && <TrustBar label="Space source entries" values={data.trust.spaces} />}
-        </div>
-      </section>
-
-      <section className="dashboard-section">
-        <div className="section-heading">
-          <div><p className="eyebrow">Artifacts</p><h2>Downloads</h2></div>
-        </div>
-        <div className="download-list">
-          {data.downloads.map((item) => (
-            <a key={item.path} href={item.path} download>
-              <Download size={17} aria-hidden="true" />
-              <span><strong>{item.label}</strong><small>{item.path}</small></span>
-              <code>{item.format}</code>
+        <div className="data-source-list">
+          <article>
+            <span>Lean formalization</span>
+            <h3>Felix's repository</h3>
+            <strong><code>{data.source.commitShort}</code></strong>
+            <p>Source commit dated <time dateTime={data.source.sourceDate}>{data.source.sourceDate}</time>.</p>
+            <a className="text-link" href={`${data.project.repoUrl}/commit/${data.source.commit}`}>
+              View Lean commit <ExternalLink size={13} aria-hidden="true" />
             </a>
+          </article>
+          <article>
+            <span>Reference dataset</span>
+            <h3>π-Base snapshot</h3>
+            <strong><code>{data.source.dataSha.slice(0, 12)}</code></strong>
+            <p>{formatNumber(data.summary.propertyTotal)} properties, {formatNumber(data.summary.theoremTotal)} theorem records, and {formatNumber(data.summary.spaceTotal)} spaces.</p>
+            <a className="text-link" href={`https://github.com/pi-base/data/tree/${data.source.dataSha}`}>
+              View π-Base snapshot <ExternalLink size={13} aria-hidden="true" />
+            </a>
+          </article>
+          <article>
+            <span>Generated output</span>
+            <h3>This dashboard build</h3>
+            <strong>Schema {data.schemaVersion}</strong>
+            <p>Generated <time dateTime={data.source.generatedAt}>{new Date(data.source.generatedAt).toLocaleString()}</time>.</p>
+            <a className="text-link" href="data/dashboard.json">
+              Open dashboard manifest <FileCode2 size={13} aria-hidden="true" />
+            </a>
+          </article>
+        </div>
+      </section>
+
+      <section className="dashboard-section" aria-labelledby="inventory-heading">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Record coverage</p>
+            <h2 id="inventory-heading">What has a Lean implementation?</h2>
+            <p className="section-summary">
+              These counts compare Felix's repository with existing records in π-Base. They are not implication-pair counts.
+            </p>
+          </div>
+        </div>
+        <div className="data-inventory">
+          {inventory.map((item) => {
+            const remaining = Math.max(item.total - item.implemented, 0);
+            return (
+              <article key={item.label}>
+                <h3>{item.label}</h3>
+                <p><strong>{formatNumber(item.implemented)}</strong><span>of {formatNumber(item.total)} formalized in Lean</span></p>
+                <small>{formatNumber(remaining)} π-Base record{remaining === 1 ? "" : "s"} not yet formalized</small>
+              </article>
+            );
+          })}
+        </div>
+        <div className="data-review-link">
+          <BookOpenCheck size={20} aria-hidden="true" />
+          <div>
+            <strong>Need declaration-level details?</strong>
+            <p>The Review page shows placeholders, missing declarations, and incomplete well-definedness proofs.</p>
+          </div>
+          <a className="button" href={routeTo("review")}><BookOpenCheck size={16} /> Open Review</a>
+        </div>
+      </section>
+
+      <section className="dashboard-section" aria-labelledby="downloads-heading">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Reusable files</p>
+            <h2 id="downloads-heading">Downloads</h2>
+            <p className="section-summary">Files are grouped by purpose; the description explains what each one contains.</p>
+          </div>
+        </div>
+        <div className="download-groups">
+          {downloadGroups.map((group) => (
+            <section className="download-group" key={group.key} aria-labelledby={`download-${group.key}`}>
+              <div className="download-group-heading">
+                <h3 id={`download-${group.key}`}>{group.title}</h3>
+                <p>{group.summary}</p>
+              </div>
+              <div className="download-list">
+                {group.items.map((item) => (
+                  <a key={item.path} href={item.path} download aria-label={`Download ${item.label} as ${item.format}`}>
+                    <Download size={17} aria-hidden="true" />
+                    <span>
+                      <strong>{item.label}</strong>
+                      <small>{DOWNLOAD_DESCRIPTIONS[item.path] ?? item.path}</small>
+                    </span>
+                    <span className="download-meta">
+                      <code>{item.format}</code>
+                      <small>{item.path}</small>
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </section>
           ))}
         </div>
       </section>
 
-      <section className="dashboard-section two-column-section">
-        <div>
-          <div className="section-heading"><div><p className="eyebrow">Contract</p><h2>Status semantics</h2></div></div>
-          <table className="data-table schema-table">
-            <tbody>
-              <tr><th scope="row">Implemented property or space</th><td>The canonical bundled definition exists. A property still counts when only its separate well-definedness obligation contains a placeholder; Review flags those cases.</td></tr>
-              <tr><th scope="row">Formalized theorem record</th><td>The π-Base theorem record has a canonical Lean declaration whose own theorem files contain no active <code>sorry</code>, <code>admit</code>, or explicit axiom.</td></tr>
-              <tr><th scope="row">Formalized graph edge</th><td>A positive property-to-property implication with a canonical Lean theorem and no placeholder or explicit axiom in its own theorem files. Conservative import-closure debt is reported separately.</td></tr>
-              <tr><th scope="row">Transitive closure cell</th><td>An implication obtained by composing formalized graph edges. It is a resolved pair, not an additional Lean theorem declaration.</td></tr>
-              <tr><th scope="row">Formalization frontier</th><td>An implication recorded as true by π-Base but not yet reachable through placeholder-free Lean proofs. Its gain is computed against the Lean implication graph.</td></tr>
-              <tr><th scope="row">π-Base frontier</th><td>An implication with no recorded unconditional proof, unconditional separating space, or axiom-dependence certificate in the pinned π-Base dataset. Its gain is hypothetical.</td></tr>
-              <tr><th scope="row">Unconditional counterexample</th><td>A separating π-Base space requiring no additional set-theoretic assumption satisfies the hypothesis and refutes the conclusion.</td></tr>
-              <tr><th scope="row">Axiom-dependent</th><td>A certificate records that the implication's truth value changes under named assumptions such as CH or MA. The pair is neither unconditionally true nor unconditionally false over the stated base theory.</td></tr>
-              <tr><th scope="row">Conditional evidence</th><td>A theorem or separating space is available under an additional assumption. This evidence is displayed, but it does not classify the unconditional implication by itself.</td></tr>
-              <tr><th scope="row">Unclassified</th><td>No unconditional theorem path, unconditional witness, or axiom-dependence certificate is currently recorded.</td></tr>
-              <tr><th scope="row">Dependency-clean</th><td>Canonical declaration, no local placeholders or explicit axioms, and none in the project import closure.</td></tr>
-              <tr><th scope="row">Dependency debt</th><td>Canonical declaration with no local placeholder, but at least one imported project file contains proof debt. This conservative file-level audit does not mean the declaration uses that debt.</td></tr>
-              <tr><th scope="row">Local debt</th><td>The entity's own Lean files contain an active <code>sorry</code> or <code>admit</code>.</td></tr>
-              <tr><th scope="row">Missing declaration</th><td>The expected canonical bundled declaration is absent from the entity's primary file.</td></tr>
-            </tbody>
-          </table>
+      {qualificationCount > 0 && (
+        <section className="dashboard-section" aria-labelledby="qualifications-heading">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Special cases</p>
+              <h2 id="qualifications-heading">Results that require extra assumptions</h2>
+              <p className="section-summary">
+                These records rely on CH or another named axiom and are not treated as unconditional true or false evidence.
+              </p>
+            </div>
+            <span className="section-count">{formatNumber(qualificationCount)} records</span>
+          </div>
+          <div className="qualification-list">
+            {data.graph.axiomDependencies.map((item) => {
+              const source = propertyMap.get(item.source)!;
+              const target = propertyMap.get(item.target)!;
+              return (
+                <article key={`${item.source}-${item.target}`}>
+                  <span className="record-kind">Implication</span>
+                  <div>
+                    <a href={routeTo("overview", { source: item.source, target: item.target, view: "pibase" })}>
+                      <code>{source.shortId}</code> ⇒ <code>{target.shortId}</code>
+                      <span>{plainMathLabel(source.name)} → {plainMathLabel(target.name)}</span>
+                    </a>
+                    <p><strong>{item.axioms.join(" + ")}</strong> over {item.baseTheory}: {item.trueWhen} makes the implication true; {item.falseWhen} makes it false.</p>
+                  </div>
+                  <a className="text-link" href={item.referenceUrl}>
+                    Evidence {item.theorems.map((id) => id.replace(/^T0+/, "T")).join(", ")} <ExternalLink size={13} aria-hidden="true" />
+                  </a>
+                </article>
+              );
+            })}
+            {conditionalSpaces.map((space) => (
+              <article key={space.id}>
+                <span className="record-kind">Space</span>
+                <div>
+                  <a href={space.referenceUrl}>
+                    <code>{space.shortId}</code>
+                    <span>{plainMathLabel(space.name)}</span>
+                  </a>
+                  <p>Available under <strong>{space.assumptions.join(" + ")}</strong>. This construction is conditional evidence only.</p>
+                </div>
+                <a className="text-link" href={space.referenceUrl}>
+                  View on π-Base <ExternalLink size={13} aria-hidden="true" />
+                </a>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section className="dashboard-section" aria-labelledby="terminology-heading">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Reference</p>
+            <h2 id="terminology-heading">Dashboard terminology</h2>
+            <p className="section-summary">Open a group only when you need a precise definition.</p>
+          </div>
         </div>
-        <div>
-          <div className="section-heading"><div><p className="eyebrow">Build</p><h2>Pipeline</h2></div></div>
-          <ol className="pipeline-list">
-            <li><GitCommitHorizontal size={16} /><span><strong>Lean checkout</strong><small>Repository tree and import closure</small></span></li>
-            <li><span className="pipeline-index">2</span><span><strong>pi-Base snapshot</strong><small>Properties, theorem rules, spaces, and traits</small></span></li>
-            <li><span className="pipeline-index">3</span><span><strong>Graph classification</strong><small>True, false, axiom-dependent, and unclassified</small></span></li>
-            <li><span className="pipeline-index">4</span><span><strong>Static application</strong><small>Versioned JSON and packed matrix artifacts</small></span></li>
-          </ol>
+        <div className="terminology-disclosures">
+          <details>
+            <summary>Implication classifications <span>{IMPLICATION_TERMS.length} terms</span></summary>
+            <dl>
+              {IMPLICATION_TERMS.map((item) => (
+                <div key={item.term}><dt>{item.term}</dt><dd>{item.definition}</dd></div>
+              ))}
+            </dl>
+          </details>
+          <details>
+            <summary>Formalization audit terms <span>{AUDIT_TERMS.length} terms</span></summary>
+            <dl>
+              {AUDIT_TERMS.map((item) => (
+                <div key={item.term}><dt>{item.term}</dt><dd>{item.definition}</dd></div>
+              ))}
+            </dl>
+          </details>
         </div>
       </section>
     </div>

@@ -14,7 +14,7 @@ const NAV = [
   { route: "overview", label: "Overview", icon: BarChart3 },
   { route: "frontier", label: "Frontier", icon: ListTodo },
   { route: "review", label: "Review", icon: BookOpenCheck },
-  { route: "data", label: "Data", icon: Database },
+  { route: "data", label: "Sources", icon: Database },
 ];
 
 export default function Shell({ data, route, children }: { data: DashboardData; route: string; children: ReactNode }) {
