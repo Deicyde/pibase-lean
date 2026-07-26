@@ -2,10 +2,10 @@ import type { DashboardBundle, DashboardData, DirectEdge } from "./types";
 
 export const GRAPH_STATUS = {
   0: { key: "diagonal", label: "Diagonal" },
-  1: { key: "explicit-true", label: "True · pi-Base theorem" },
+  1: { key: "explicit-true", label: "True · π-Base theorem" },
   2: { key: "derived-true", label: "True · transitive closure" },
   3: { key: "false", label: "False · unconditional witness" },
-  4: { key: "axiom-dependent", label: "Axiom-dependent" },
+  4: { key: "independent", label: "Independent of ZFC" },
   5: { key: "unclassified", label: "Unclassified" },
 } as const;
 
@@ -95,8 +95,8 @@ export function graphStatusLabel(
   const dependency = data.graph.axiomDependencies.find(
     (item) => item.source === source && item.target === target,
   );
-  return dependency?.axioms.length
-    ? `Dependent on ${dependency.axioms.join(" + ")}`
+  return dependency?.baseTheory
+    ? `Independent of ${dependency.baseTheory}`
     : GRAPH_STATUS[state].label;
 }
 

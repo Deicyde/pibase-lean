@@ -1,5 +1,4 @@
 import { Download, ExternalLink, FileCode2 } from "lucide-react";
-import { formatNumber, plainMathLabel, routeTo } from "../lib";
 import type { DashboardData } from "../types";
 
 const DOWNLOAD_DESCRIPTIONS: Record<string, string> = {
@@ -7,7 +6,7 @@ const DOWNLOAD_DESCRIPTIONS: Record<string, string> = {
   "data/outcomes.bin": "Every ordered property pair classified from the pinned π-Base dataset.",
   "data/formalized-outcomes.bin": "Lean-verified implications, including pairs obtained by transitive closure.",
   "data/witnesses.bin": "Indexes the separating spaces used for unconditional counterexamples.",
-  "data/axiom-dependencies.json": "Pairs whose truth changes under assumptions such as CH or MA.",
+  "data/axiom-dependencies.json": "Implications known to be independent of ZFC, with the assumptions controlling each truth value.",
   "data/formalization-frontier.json": "π-Base implications ready to prove using existing Lean definitions.",
   "data/frontier.json": "Pairs that remain unresolved in the pinned π-Base dataset.",
   "data/review-spaces.json": "Space records and their Lean implementation status.",
@@ -33,8 +32,8 @@ const IMPLICATION_TERMS = [
     definition: "A separating π-Base space refutes the implication without requiring an additional set-theoretic assumption.",
   },
   {
-    term: "Axiom-dependent",
-    definition: "The implication changes truth value under named assumptions such as CH or MA, so it is neither unconditionally true nor false.",
+    term: "Independent of ZFC",
+    definition: "The implication is true in some models of ZFC and false in others; a named statement such as CH records which side holds.",
   },
   {
     term: "Unclassified",
@@ -70,9 +69,6 @@ const AUDIT_TERMS = [
 ];
 
 export default function DataPage({ data }: { data: DashboardData }) {
-  const propertyMap = new Map(data.properties.map((item) => [item.id, item]));
-  const conditionalSpaces = data.spaces.filter((item) => item.assumptions.length);
-  const qualificationCount = data.graph.axiomDependencies.length + conditionalSpaces.length;
   const downloadGroups = [
     {
       key: "manifest",
@@ -175,57 +171,6 @@ export default function DataPage({ data }: { data: DashboardData }) {
           ))}
         </div>
       </section>
-
-      {qualificationCount > 0 && (
-        <section className="dashboard-section" aria-labelledby="qualifications-heading">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">Special cases</p>
-              <h2 id="qualifications-heading">Results that require extra assumptions</h2>
-              <p className="section-summary">
-                These records rely on CH or another named axiom and are not treated as unconditional true or false evidence.
-              </p>
-            </div>
-            <span className="section-count">{formatNumber(qualificationCount)} records</span>
-          </div>
-          <div className="qualification-list">
-            {data.graph.axiomDependencies.map((item) => {
-              const source = propertyMap.get(item.source)!;
-              const target = propertyMap.get(item.target)!;
-              return (
-                <article key={`${item.source}-${item.target}`}>
-                  <span className="record-kind">Implication</span>
-                  <div>
-                    <a href={routeTo("overview", { source: item.source, target: item.target, view: "pibase" })}>
-                      <code>{source.shortId}</code> ⇒ <code>{target.shortId}</code>
-                      <span>{plainMathLabel(source.name)} → {plainMathLabel(target.name)}</span>
-                    </a>
-                    <p><strong>{item.axioms.join(" + ")}</strong> over {item.baseTheory}: {item.trueWhen} makes the implication true; {item.falseWhen} makes it false.</p>
-                  </div>
-                  <a className="text-link" href={item.referenceUrl}>
-                    Evidence {item.theorems.map((id) => id.replace(/^T0+/, "T")).join(", ")} <ExternalLink size={13} aria-hidden="true" />
-                  </a>
-                </article>
-              );
-            })}
-            {conditionalSpaces.map((space) => (
-              <article key={space.id}>
-                <span className="record-kind">Space</span>
-                <div>
-                  <a href={space.referenceUrl}>
-                    <code>{space.shortId}</code>
-                    <span>{plainMathLabel(space.name)}</span>
-                  </a>
-                  <p>Available under <strong>{space.assumptions.join(" + ")}</strong>. This construction is conditional evidence only.</p>
-                </div>
-                <a className="text-link" href={space.referenceUrl}>
-                  View on π-Base <ExternalLink size={13} aria-hidden="true" />
-                </a>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
 
       <section className="dashboard-section" aria-labelledby="terminology-heading">
         <div className="section-heading">

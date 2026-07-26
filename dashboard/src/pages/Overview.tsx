@@ -21,6 +21,7 @@ import {
   formatPercent,
   graphIndex,
   graphStatusLabel,
+  plainMathLabel,
   routeTo,
   type GraphStatusCode,
 } from "../lib";
@@ -33,7 +34,7 @@ const PIBASE_STATUS_CLASS: Record<number, string> = {
   1: "explicit-true",
   2: "derived-true",
   3: "false",
-  4: "axiom-dependent",
+  4: "independent",
   5: "unclassified",
 };
 
@@ -44,6 +45,10 @@ function statusClass(view: MatrixView, state: GraphStatusCode): string {
     return state === 0 ? "diagonal" : "unformalized";
   }
   return PIBASE_STATUS_CLASS[state];
+}
+
+function conditionLabel(condition: string): string {
+  return condition.replace(/^not\s+/i, "¬");
 }
 
 export default function Overview({ bundle, params }: { bundle: DashboardBundle; params: URLSearchParams }) {
@@ -60,6 +65,7 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
   const formalDirectCount = data.graph.formalized.counts.formalizedDirect ?? 0;
   const formalDerivedCount = data.graph.formalized.counts.formalizedDerived ?? 0;
   const formalPairCount = formalDirectCount + formalDerivedCount;
+  const conditionalSpaces = data.spaces.filter((item) => item.assumptions.length);
   const sourceIndex = data.properties.findIndex((item) => item.id === source);
   const targetIndex = data.properties.findIndex((item) => item.id === target);
   const sourceNode = data.properties[sourceIndex];
@@ -145,11 +151,10 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
             Formalizing the implication graph of π-Base.
           </p>
         </div>
-        <dl className="source-ledger">
-          <div><dt>Lean source</dt><dd><a href={`${data.project.repoUrl}/commit/${data.source.commit}`}><code>{data.source.commitShort}</code></a></dd></div>
-          <div><dt>pi-Base data</dt><dd><code>{data.source.dataSha.slice(0, 12)}</code></dd></div>
-          <div><dt>Source date</dt><dd>{data.source.sourceDate}</dd></div>
-        </dl>
+        <div className="overview-sources" aria-label="Project sources">
+          <a href={data.project.repoUrl}><span>Lean formalization</span><strong>Felix's pibase-lean</strong></a>
+          <a href={data.project.referenceUrl}><span>Reference dataset</span><strong>π-Base</strong></a>
+        </div>
       </header>
 
       <section className="metric-grid" aria-label="Project status">
@@ -198,7 +203,7 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                   aria-pressed={matrixView === view}
                   onClick={() => selectMatrixView(view)}
                 >
-                  {view === "formalized" ? "Formalized" : "pi-Base"}
+                  {view === "formalized" ? "Formalized" : "π-Base"}
                 </button>
               ))}
             </div>
@@ -266,13 +271,13 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                   <span>Hypothesis</span>
                   <h2><MathText text={sourceNode.name} inline /></h2>
                   <MathText text={sourceNode.description} />
-                  <a href={sourceNode.referenceUrl}>pi-Base <ExternalLink size={13} aria-hidden="true" /></a>
+                  <a href={sourceNode.referenceUrl}>π-Base <ExternalLink size={13} aria-hidden="true" /></a>
                 </div>
                 <div>
                   <span>Conclusion</span>
                   <h2><MathText text={targetNode.name} inline /></h2>
                   <MathText text={targetNode.description} />
-                  <a href={targetNode.referenceUrl}>pi-Base <ExternalLink size={13} aria-hidden="true" /></a>
+                  <a href={targetNode.referenceUrl}>π-Base <ExternalLink size={13} aria-hidden="true" /></a>
                 </div>
               </div>
             </Suspense>
@@ -298,7 +303,7 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                     <div>
                       <p>No canonical pairwise Lean theorem path is currently recorded for this implication.</p>
                       <dl className="frontier-evidence">
-                        <div><dt>pi-Base classification</dt><dd>{graphStatusLabel(data, pibaseState, source, target)}</dd></div>
+                        <div><dt>π-Base classification</dt><dd>{graphStatusLabel(data, pibaseState, source, target)}</dd></div>
                         {formalFrontier && <div><dt>Lean closure gain</dt><dd>{formatNumber(formalFrontier.closureGain)}</dd></div>}
                         {!pairDefinitionsReady && (
                           <div>
@@ -335,7 +340,7 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                   {state === 0 && <p>The hypothesis and conclusion are the same property.</p>}
                   {state === 1 && (
                     <div>
-                      <p>Recorded as a direct pi-Base theorem edge.</p>
+                      <p>Recorded as a direct π-Base theorem edge.</p>
                       <TheoremLinks data={data} theoremIds={direct?.theorems ?? []} view="pibase" />
                       {formalEdge && (
                         <div className="lean-implementation-links">
@@ -347,7 +352,7 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                   )}
                   {state === 2 && (
                     <div>
-                      <p>Derived from {Math.max(0, path.length - 1)} explicit pi-Base theorem edges.</p>
+                      <p>Derived from {Math.max(0, path.length - 1)} explicit π-Base theorem edges.</p>
                       <TheoremTrace data={data} path={path} directEdges={activeDirect} view="pibase" />
                     </div>
                   )}
@@ -359,11 +364,10 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                   )}
                   {state === 4 && axiomDependency && (
                     <div className="axiom-evidence">
-                      <p>{axiomDependency.summary}</p>
+                      <p><strong>Independent of {axiomDependency.baseTheory}.</strong> {axiomDependency.summary}</p>
                       <dl className="frontier-evidence">
-                        <div><dt>Base theory</dt><dd>{axiomDependency.baseTheory}</dd></div>
-                        {axiomDependency.trueWhen && <div><dt>True when</dt><dd>{axiomDependency.trueWhen}</dd></div>}
-                        {axiomDependency.falseWhen && <div><dt>False when</dt><dd>{axiomDependency.falseWhen}</dd></div>}
+                        {axiomDependency.trueWhen && <div><dt>True under</dt><dd>{conditionLabel(axiomDependency.trueWhen)}</dd></div>}
+                        {axiomDependency.falseWhen && <div><dt>False under</dt><dd>{conditionLabel(axiomDependency.falseWhen)}</dd></div>}
                       </dl>
                       <TheoremLinks data={data} theoremIds={axiomDependency.theorems} view="pibase" />
                     </div>
@@ -422,6 +426,86 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
           </aside>
         </div>
       </section>
+
+      {data.graph.axiomDependencies.length > 0 && (
+        <section className="dashboard-section independence-section" aria-labelledby="independence-heading">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">π-Base set-theoretic status</p>
+              <h2 id="independence-heading">Independent of ZFC</h2>
+              <p className="section-summary">
+                These implications have different truth values in different models of ZFC. They form a third resolved
+                outcome alongside true and false in the π-Base view.
+              </p>
+            </div>
+            <span className="section-count">
+              {formatNumber(data.graph.axiomDependencies.length)} independent implication
+              {data.graph.axiomDependencies.length === 1 ? "" : "s"}
+            </span>
+          </div>
+
+          <div className="independence-layout">
+            <div className="independence-list">
+              {data.graph.axiomDependencies.map((item) => {
+                const independentSource = propertyNames.get(item.source)!;
+                const independentTarget = propertyNames.get(item.target)!;
+                return (
+                  <article key={`${item.source}-${item.target}`}>
+                    <div className="independence-result">
+                      <span className="independence-status">
+                        <i className="matrix-swatch graph-independent" aria-hidden="true" />
+                        Independent of {item.baseTheory}
+                      </span>
+                      <a
+                        className="independence-pair"
+                        href={routeTo("overview", { source: item.source, target: item.target, view: "pibase" })}
+                      >
+                        <span><code>{independentSource.shortId}</code> ⇒ <code>{independentTarget.shortId}</code></span>
+                        <small>{plainMathLabel(independentSource.name)} → {plainMathLabel(independentTarget.name)}</small>
+                      </a>
+                      <p>{item.summary}</p>
+                      <TheoremLinks data={data} theoremIds={item.theorems} view="pibase" />
+                    </div>
+                    <dl className="independence-conditions">
+                      <div>
+                        <dt>{conditionLabel(item.trueWhen)}</dt>
+                        <dd><i className="matrix-swatch graph-explicit-true" aria-hidden="true" /> True</dd>
+                      </div>
+                      <div>
+                        <dt>{conditionLabel(item.falseWhen)}</dt>
+                        <dd><i className="matrix-swatch graph-false" aria-hidden="true" /> False</dd>
+                      </div>
+                    </dl>
+                  </article>
+                );
+              })}
+            </div>
+
+            {conditionalSpaces.length > 0 && (
+              <aside className="conditional-constructions" aria-labelledby="conditional-constructions-heading">
+                <p className="eyebrow">Conditional evidence</p>
+                <h3 id="conditional-constructions-heading">Constructions using extra axioms</h3>
+                <p>
+                  These spaces are available under the stated assumption. They can refute implications conditionally,
+                  but do not establish ZFC-independence by themselves.
+                </p>
+                <div>
+                  {conditionalSpaces.map((space) => (
+                    <a key={space.id} href={space.referenceUrl}>
+                      <code>{space.shortId}</code>
+                      <span>
+                        <strong>{plainMathLabel(space.name)}</strong>
+                        <small>Available under {space.assumptions.join(" + ")}</small>
+                      </span>
+                      <ExternalLink size={14} aria-hidden="true" />
+                    </a>
+                  ))}
+                </div>
+              </aside>
+            )}
+          </div>
+        </section>
+      )}
 
       <section className="dashboard-section section-split">
         <div className="section-heading">

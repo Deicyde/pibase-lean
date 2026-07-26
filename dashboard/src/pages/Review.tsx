@@ -174,7 +174,7 @@ export default function Review({ data, params }: { data: DashboardData; params: 
         <div>
           <p className="eyebrow">Semantic verification</p>
           <h1>Review</h1>
-          <p className="page-lede">Informal pi-Base statements beside their Lean representation and dependency status.</p>
+          <p className="page-lede">Informal π-Base statements beside their Lean representation and dependency status.</p>
         </div>
         <div className="review-progress">
           <strong>{formatNumber(reviewedCount)}</strong>
@@ -246,7 +246,7 @@ export default function Review({ data, params }: { data: DashboardData; params: 
               {entry.author && <span className="author-name">{entry.author}</span>}
               <StatusBadge status={entry.leanStatus.status} label={statusLabel(kind, entry)} />
               <div className="entry-links">
-                <a className="icon-link" href={entry.referenceUrl} aria-label={`Open ${entry.shortId} on pi-Base`} data-tooltip="pi-Base"><ExternalLink size={15} /></a>
+                <a className="icon-link" href={entry.referenceUrl} aria-label={`Open ${entry.shortId} on π-Base`} data-tooltip="π-Base"><ExternalLink size={15} /></a>
                 <a className="icon-link" href={entry.sourceUrl} aria-label={`Open ${entry.shortId} Lean source`} data-tooltip="Lean source"><code>λ</code></a>
               </div>
               <div className="review-actions">

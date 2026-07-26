@@ -1,5 +1,5 @@
 {
-  "note": "Certified axiom-dependent implications and conditional pi-Base constructions. A pair is classified as axiom-dependent only when its truth value under the named assumptions is documented; a conditional space supplies conditional evidence but never an unconditional refutation.",
+  "note": "Certified ZFC-independent implications and conditional π-Base constructions. A pair is classified as independent only when both truth values under the named assumptions are documented; a conditional space supplies conditional evidence but never an unconditional refutation.",
   "baseTheory": "ZFC",
   "pairs": [
     {
