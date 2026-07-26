@@ -942,17 +942,6 @@ def main() -> None:
         "frontier": graph["frontier"],
         "recentActivity": recent,
         "latestDelta": delta,
-        "experiments": {
-            "promptByteLimit": 10240,
-            "tokenCaps": [8192, 16384],
-            "models": [
-                "openai/gpt-oss-120b",
-                "meta-llama/llama-3.3-70b-instruct",
-                "google/gemma-4-31b-it",
-            ],
-            "datasets": ["normal", "hard1", "hard2", "hard3", "order5", "extra-hard"],
-            "requiredPlaceholders": ["equation1", "equation2"],
-        },
         "downloads": [
             {"label": "Dashboard manifest", "path": "data/dashboard.json", "format": "JSON"},
             {"label": "Outcome matrix", "path": "data/outcomes.bin", "format": "Uint8"},

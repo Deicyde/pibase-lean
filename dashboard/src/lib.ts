@@ -1,4 +1,4 @@
-import type { DashboardBundle, DashboardData, DirectEdge, ImportedRun } from "./types";
+import type { DashboardBundle, DashboardData, DirectEdge } from "./types";
 
 export const GRAPH_STATUS = {
   0: { key: "diagonal", label: "Diagonal" },
@@ -122,29 +122,6 @@ export function downloadText(filename: string, content: string, type = "applicat
   anchor.download = filename;
   anchor.click();
   URL.revokeObjectURL(url);
-}
-
-export function parseImportedRuns(text: string): ImportedRun[] {
-  const trimmed = text.trim();
-  if (!trimmed) return [];
-  if (trimmed.startsWith("[")) return JSON.parse(trimmed) as ImportedRun[];
-  return trimmed
-    .split(/\r?\n/)
-    .filter(Boolean)
-    .map((line) => JSON.parse(line) as ImportedRun)
-    .filter((row) => !Object.prototype.hasOwnProperty.call(row, "summary"));
-}
-
-export function extractVerdict(text: string): boolean | null {
-  const boxed = [...text.matchAll(/\\boxed\s*\{\s*(TRUE|FALSE)\s*\}/gi)];
-  if (boxed.length) return boxed[boxed.length - 1][1].toUpperCase() === "TRUE";
-  const labelled = [...text.matchAll(/(?:VERDICT|ANSWER|FINAL)\s*[:=-]\s*(TRUE|FALSE)/gi)];
-  if (labelled.length) return labelled[labelled.length - 1][1].toUpperCase() === "TRUE";
-  const lines = text.trim().split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
-  for (const line of [lines.at(-1), lines[0]]) {
-    if (/^(TRUE|FALSE)[.!]?$/i.test(line ?? "")) return /^TRUE/i.test(line ?? "");
-  }
-  return null;
 }
 
 export function findProofPath(

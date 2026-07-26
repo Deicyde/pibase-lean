@@ -151,13 +151,6 @@ export interface DashboardData {
     subject: string;
   }>;
   latestDelta: Record<string, number>;
-  experiments: {
-    promptByteLimit: number;
-    tokenCaps: number[];
-    models: string[];
-    datasets: string[];
-    requiredPlaceholders: string[];
-  };
   downloads: Array<{ label: string; path: string; format: string }>;
 }
 
@@ -223,19 +216,4 @@ export interface ReviewChunkPayload {
   chunk: number;
   sourceCommit: string;
   entries: ReviewEntry[];
-}
-
-export interface ImportedRun {
-  model?: string;
-  problem_id?: string;
-  expected_answer?: boolean;
-  correct?: boolean;
-  reason?: string;
-  finish_reason?: string;
-  tokens_in?: number;
-  tokens_out?: number;
-  latency_ms?: number;
-  cost?: number;
-  response_text?: string;
-  verdict?: boolean | null;
 }

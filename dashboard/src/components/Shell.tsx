@@ -1,6 +1,5 @@
 import {
   BarChart3,
-  Beaker,
   BookOpenCheck,
   Database,
   Github,
@@ -14,7 +13,6 @@ import { routeTo } from "../lib";
 const NAV = [
   { route: "overview", label: "Overview", icon: BarChart3 },
   { route: "frontier", label: "Frontier", icon: ListTodo },
-  { route: "experiments", label: "Prompt Lab", icon: Beaker },
   { route: "review", label: "Review", icon: BookOpenCheck },
   { route: "data", label: "Data", icon: Database },
 ];
