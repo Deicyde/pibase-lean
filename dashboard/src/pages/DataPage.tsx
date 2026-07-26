@@ -1,4 +1,4 @@
-import { BookOpenCheck, Download, ExternalLink, FileCode2 } from "lucide-react";
+import { Download, ExternalLink, FileCode2 } from "lucide-react";
 import { formatNumber, plainMathLabel, routeTo } from "../lib";
 import type { DashboardData } from "../types";
 
@@ -73,23 +73,6 @@ export default function DataPage({ data }: { data: DashboardData }) {
   const propertyMap = new Map(data.properties.map((item) => [item.id, item]));
   const conditionalSpaces = data.spaces.filter((item) => item.assumptions.length);
   const qualificationCount = data.graph.axiomDependencies.length + conditionalSpaces.length;
-  const inventory = [
-    {
-      label: "Properties",
-      implemented: data.summary.propertyImplementations,
-      total: data.summary.propertyTotal,
-    },
-    {
-      label: "Theorem records",
-      implemented: data.summary.theoremImplementations,
-      total: data.summary.theoremTotal,
-    },
-    {
-      label: "Spaces",
-      implemented: data.summary.spaceImplementations,
-      total: data.summary.spaceTotal,
-    },
-  ];
   const downloadGroups = [
     {
       key: "manifest",
@@ -120,8 +103,7 @@ export default function DataPage({ data }: { data: DashboardData }) {
           <p className="eyebrow">Dashboard provenance</p>
           <h1>Sources &amp; downloads</h1>
           <p className="page-lede">
-            See which Lean and π-Base versions power the dashboard, what records they contain, and which files are
-            available for further analysis.
+            See which projects supply the dashboard data and download the generated graph, frontier, and review files.
           </p>
         </div>
         <a className="button" href="blueprint.html"><FileCode2 size={16} /> Technical blueprint</a>
@@ -130,72 +112,33 @@ export default function DataPage({ data }: { data: DashboardData }) {
       <section className="dashboard-section data-first-section" aria-labelledby="data-sources-heading">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Pinned inputs</p>
-            <h2 id="data-sources-heading">Data sources</h2>
-            <p className="section-summary">Every number on the dashboard can be traced to these exact versions.</p>
+            <p className="eyebrow">Source projects</p>
+            <h2 id="data-sources-heading">Where the data comes from</h2>
+            <p className="section-summary">The dashboard combines Felix's Lean formalization with the π-Base reference dataset.</p>
           </div>
         </div>
         <div className="data-source-list">
           <article>
             <span>Lean formalization</span>
-            <h3>Felix's repository</h3>
-            <strong><code>{data.source.commitShort}</code></strong>
-            <p>Source commit dated <time dateTime={data.source.sourceDate}>{data.source.sourceDate}</time>.</p>
-            <a className="text-link" href={`${data.project.repoUrl}/commit/${data.source.commit}`}>
-              View Lean commit <ExternalLink size={13} aria-hidden="true" />
+            <h3>felixpernegger/pibase-lean</h3>
+            <p>Definitions and proofs used for the Lean-verified implication graph.</p>
+            <a className="text-link" href={data.project.repoUrl}>
+              Open Felix's repository <ExternalLink size={13} aria-hidden="true" />
             </a>
           </article>
           <article>
             <span>Reference dataset</span>
-            <h3>π-Base snapshot</h3>
-            <strong><code>{data.source.dataSha.slice(0, 12)}</code></strong>
-            <p>{formatNumber(data.summary.propertyTotal)} properties, {formatNumber(data.summary.theoremTotal)} theorem records, and {formatNumber(data.summary.spaceTotal)} spaces.</p>
-            <a className="text-link" href={`https://github.com/pi-base/data/tree/${data.source.dataSha}`}>
-              View π-Base snapshot <ExternalLink size={13} aria-hidden="true" />
-            </a>
-          </article>
-          <article>
-            <span>Generated output</span>
-            <h3>This dashboard build</h3>
-            <strong>Schema {data.schemaVersion}</strong>
-            <p>Generated <time dateTime={data.source.generatedAt}>{new Date(data.source.generatedAt).toLocaleString()}</time>.</p>
-            <a className="text-link" href="data/dashboard.json">
-              Open dashboard manifest <FileCode2 size={13} aria-hidden="true" />
+            <h3>π-Base data</h3>
+            <p>Properties, theorem records, and spaces used to classify the complete implication graph.</p>
+            <a className="text-link" href="https://github.com/pi-base/data">
+              Open π-Base data <ExternalLink size={13} aria-hidden="true" />
             </a>
           </article>
         </div>
-      </section>
-
-      <section className="dashboard-section" aria-labelledby="inventory-heading">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Record coverage</p>
-            <h2 id="inventory-heading">What has a Lean implementation?</h2>
-            <p className="section-summary">
-              These counts compare Felix's repository with existing records in π-Base. They are not implication-pair counts.
-            </p>
-          </div>
-        </div>
-        <div className="data-inventory">
-          {inventory.map((item) => {
-            const remaining = Math.max(item.total - item.implemented, 0);
-            return (
-              <article key={item.label}>
-                <h3>{item.label}</h3>
-                <p><strong>{formatNumber(item.implemented)}</strong><span>of {formatNumber(item.total)} formalized in Lean</span></p>
-                <small>{formatNumber(remaining)} π-Base record{remaining === 1 ? "" : "s"} not yet formalized</small>
-              </article>
-            );
-          })}
-        </div>
-        <div className="data-review-link">
-          <BookOpenCheck size={20} aria-hidden="true" />
-          <div>
-            <strong>Need declaration-level details?</strong>
-            <p>The Review page shows placeholders, missing declarations, and incomplete well-definedness proofs.</p>
-          </div>
-          <a className="button" href={routeTo("review")}><BookOpenCheck size={16} /> Open Review</a>
-        </div>
+        <p className="data-source-note">
+          <FileCode2 size={14} aria-hidden="true" />
+          Exact pinned versions and build metadata remain available in the <a href="data/dashboard.json">dashboard manifest</a>.
+        </p>
       </section>
 
       <section className="dashboard-section" aria-labelledby="downloads-heading">

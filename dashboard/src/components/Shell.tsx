@@ -42,9 +42,6 @@ export default function Shell({ data, route, children }: { data: DashboardData; 
             ))}
           </nav>
           <div className="topbar-source">
-            <a href={`${data.project.repoUrl}/commit/${data.source.commit}`} className="commit-link">
-              <code>{data.source.commitShort}</code>
-            </a>
             <a
               className="icon-link"
               href={data.project.repoUrl}
@@ -58,8 +55,7 @@ export default function Shell({ data, route, children }: { data: DashboardData; 
       </header>
       <main className="main-content">{children}</main>
       <footer className="site-footer">
-        <span>Lean source <code>{data.source.commitShort}</code></span>
-        <span>pi-Base data <code>{data.source.dataSha.slice(0, 12)}</code></span>
+        <span>Built from <a href={data.project.repoUrl}>Felix's pibase-lean</a> and <a href={data.project.referenceUrl}>π-Base</a></span>
         <span>Generated {new Date(data.source.generatedAt).toLocaleString()}</span>
       </footer>
     </div>
