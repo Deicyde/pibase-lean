@@ -21,7 +21,6 @@ import {
   formatPercent,
   graphIndex,
   graphStatusLabel,
-  plainMathLabel,
   routeTo,
   type GraphStatusCode,
 } from "../lib";
@@ -65,7 +64,7 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
   const formalDirectCount = data.graph.formalized.counts.formalizedDirect ?? 0;
   const formalDerivedCount = data.graph.formalized.counts.formalizedDerived ?? 0;
   const formalPairCount = formalDirectCount + formalDerivedCount;
-  const conditionalSpaces = data.spaces.filter((item) => item.assumptions.length);
+  const firstIndependentPair = data.graph.axiomDependencies[0];
   const sourceIndex = data.properties.findIndex((item) => item.id === source);
   const targetIndex = data.properties.findIndex((item) => item.id === target);
   const sourceNode = data.properties[sourceIndex];
@@ -138,6 +137,18 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
       source,
       target,
       view: nextView === "pibase" ? "pibase" : undefined,
+    }));
+  }
+
+  function selectIndependentPair() {
+    if (!firstIndependentPair) return;
+    setMatrixView("pibase");
+    setSource(firstIndependentPair.source);
+    setTarget(firstIndependentPair.target);
+    window.history.replaceState(null, "", routeTo("overview", {
+      source: firstIndependentPair.source,
+      target: firstIndependentPair.target,
+      view: "pibase",
     }));
   }
 
@@ -244,6 +255,22 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                   ? `${formatNumber(formalDirectCount)} proved directly · ${formatNumber(formalDerivedCount)} by transitivity`
                   : `${formatNumber(data.graph.counts.explicitTrue)} direct · ${formatNumber(data.graph.counts.derivedTrue)} by closure`}
               </span>
+              {firstIndependentPair && (
+                <button
+                  type="button"
+                  className="matrix-status-shortcut"
+                  aria-pressed={
+                    matrixView === "pibase"
+                    && source === firstIndependentPair.source
+                    && target === firstIndependentPair.target
+                  }
+                  onClick={selectIndependentPair}
+                >
+                  <i className="matrix-swatch graph-independent" aria-hidden="true" />
+                  {formatNumber(data.graph.axiomDependencies.length)} independent of {firstIndependentPair.baseTheory}
+                  <ArrowRight size={13} aria-hidden="true" />
+                </button>
+              )}
             </div>
             <Matrix
               bundle={bundle}
@@ -422,86 +449,6 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
           </aside>
         </div>
       </section>
-
-      {data.graph.axiomDependencies.length > 0 && (
-        <section className="dashboard-section independence-section" aria-labelledby="independence-heading">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">π-Base set-theoretic status</p>
-              <h2 id="independence-heading">Independent of ZFC</h2>
-              <p className="section-summary">
-                These implications have different truth values in different models of ZFC. They form a third resolved
-                outcome alongside true and false in the π-Base view.
-              </p>
-            </div>
-            <span className="section-count">
-              {formatNumber(data.graph.axiomDependencies.length)} independent implication
-              {data.graph.axiomDependencies.length === 1 ? "" : "s"}
-            </span>
-          </div>
-
-          <div className="independence-layout">
-            <div className="independence-list">
-              {data.graph.axiomDependencies.map((item) => {
-                const independentSource = propertyNames.get(item.source)!;
-                const independentTarget = propertyNames.get(item.target)!;
-                return (
-                  <article key={`${item.source}-${item.target}`}>
-                    <div className="independence-result">
-                      <span className="independence-status">
-                        <i className="matrix-swatch graph-independent" aria-hidden="true" />
-                        Independent of {item.baseTheory}
-                      </span>
-                      <a
-                        className="independence-pair"
-                        href={routeTo("overview", { source: item.source, target: item.target, view: "pibase" })}
-                      >
-                        <span><code>{independentSource.shortId}</code> ⇒ <code>{independentTarget.shortId}</code></span>
-                        <small>{plainMathLabel(independentSource.name)} → {plainMathLabel(independentTarget.name)}</small>
-                      </a>
-                      <p>{item.summary}</p>
-                      <TheoremLinks data={data} theoremIds={item.theorems} view="pibase" />
-                    </div>
-                    <dl className="independence-conditions">
-                      <div>
-                        <dt>{conditionLabel(item.trueWhen)}</dt>
-                        <dd><i className="matrix-swatch graph-explicit-true" aria-hidden="true" /> True</dd>
-                      </div>
-                      <div>
-                        <dt>{conditionLabel(item.falseWhen)}</dt>
-                        <dd><i className="matrix-swatch graph-false" aria-hidden="true" /> False</dd>
-                      </div>
-                    </dl>
-                  </article>
-                );
-              })}
-            </div>
-
-            {conditionalSpaces.length > 0 && (
-              <aside className="conditional-constructions" aria-labelledby="conditional-constructions-heading">
-                <p className="eyebrow">Conditional evidence</p>
-                <h3 id="conditional-constructions-heading">Constructions using extra axioms</h3>
-                <p>
-                  These spaces are available under the stated assumption. They can refute implications conditionally,
-                  but do not establish ZFC-independence by themselves.
-                </p>
-                <div>
-                  {conditionalSpaces.map((space) => (
-                    <a key={space.id} href={space.referenceUrl}>
-                      <code>{space.shortId}</code>
-                      <span>
-                        <strong>{plainMathLabel(space.name)}</strong>
-                        <small>Available under {space.assumptions.join(" + ")}</small>
-                      </span>
-                      <ExternalLink size={14} aria-hidden="true" />
-                    </a>
-                  ))}
-                </div>
-              </aside>
-            )}
-          </div>
-        </section>
-      )}
 
       <section className="dashboard-section section-split">
         <div className="section-heading">
