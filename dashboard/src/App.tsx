@@ -7,9 +7,9 @@ import type { DashboardBundle } from "./types";
 
 const Frontier = lazy(() => import("./pages/Frontier"));
 const Review = lazy(() => import("./pages/Review"));
-const DataPage = lazy(() => import("./pages/DataPage"));
 
-const ROUTES = new Set(["overview", "frontier", "review", "data"]);
+const ROUTES = new Set(["overview", "frontier", "review"]);
+const LEGACY_ROUTES = new Set(["explorer", "experiments", "data"]);
 
 export default function App() {
   const [bundle, setBundle] = useState<DashboardBundle | null>(null);
@@ -24,7 +24,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (location.route !== "explorer" && location.route !== "experiments") return;
+    if (!LEGACY_ROUTES.has(location.route)) return;
     const query = location.params.toString();
     window.history.replaceState(null, "", `#/overview${query ? `?${query}` : ""}`);
     setLocation({ route: "overview", params: location.params });
@@ -66,7 +66,6 @@ export default function App() {
   switch (route) {
     case "frontier": page = <Frontier bundle={bundle} params={location.params} />; break;
     case "review": page = <Review data={bundle.data} params={location.params} />; break;
-    case "data": page = <DataPage data={bundle.data} />; break;
     default: page = <Overview bundle={bundle} params={location.params} />;
   }
 

@@ -151,10 +151,6 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
             Formalizing the implication graph of π-Base.
           </p>
         </div>
-        <div className="overview-sources" aria-label="Project sources">
-          <a href={data.project.repoUrl}><span>Lean formalization</span><strong>Felix's pibase-lean</strong></a>
-          <a href={data.project.referenceUrl}><span>Reference dataset</span><strong>π-Base</strong></a>
-        </div>
       </header>
 
       <section className="metric-grid" aria-label="Project status">

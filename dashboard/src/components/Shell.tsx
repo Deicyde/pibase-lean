@@ -1,8 +1,8 @@
 import {
   BarChart3,
   BookOpenCheck,
-  Database,
   Github,
+  Globe,
   ListTodo,
   Network,
 } from "lucide-react";
@@ -14,7 +14,6 @@ const NAV = [
   { route: "overview", label: "Overview", icon: BarChart3 },
   { route: "frontier", label: "Frontier", icon: ListTodo },
   { route: "review", label: "Review", icon: BookOpenCheck },
-  { route: "data", label: "Sources", icon: Database },
 ];
 
 export default function Shell({ data, route, children }: { data: DashboardData; route: string; children: ReactNode }) {
@@ -42,6 +41,14 @@ export default function Shell({ data, route, children }: { data: DashboardData; 
             ))}
           </nav>
           <div className="topbar-source">
+            <a
+              className="icon-link"
+              href={data.project.referenceUrl}
+              aria-label="Open π-Base"
+              data-tooltip="π-Base"
+            >
+              <Globe size={18} aria-hidden="true" />
+            </a>
             <a
               className="icon-link"
               href={data.project.repoUrl}
