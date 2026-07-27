@@ -479,21 +479,7 @@ textarea { padding: 10px 11px; resize: vertical; }
 .outcome-chip { font-weight: 750; }
 .explorer-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 420px); gap: 24px; align-items: start; }
 .matrix-workspace { min-width: 0; }
-.matrix-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 12px; margin-bottom: 10px; color: var(--muted); font-size: 12px; }
-.matrix-status-shortcut {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 2px 0;
-  border: 0;
-  background: transparent;
-  color: var(--purple);
-  cursor: pointer;
-  font-size: 11px;
-  font-weight: 750;
-}
-.matrix-status-shortcut:hover, .matrix-status-shortcut[aria-pressed="true"] { color: var(--ink); }
-.matrix-status-shortcut[aria-pressed="true"] { text-decoration: underline; text-underline-offset: 3px; }
+.matrix-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; color: var(--muted); font-size: 12px; }
 .pair-inspector {
   min-width: 0;
   border: 1px solid var(--rule);

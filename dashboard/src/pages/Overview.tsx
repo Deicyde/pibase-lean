@@ -64,7 +64,6 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
   const formalDirectCount = data.graph.formalized.counts.formalizedDirect ?? 0;
   const formalDerivedCount = data.graph.formalized.counts.formalizedDerived ?? 0;
   const formalPairCount = formalDirectCount + formalDerivedCount;
-  const firstIndependentPair = data.graph.axiomDependencies[0];
   const sourceIndex = data.properties.findIndex((item) => item.id === source);
   const targetIndex = data.properties.findIndex((item) => item.id === target);
   const sourceNode = data.properties[sourceIndex];
@@ -137,18 +136,6 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
       source,
       target,
       view: nextView === "pibase" ? "pibase" : undefined,
-    }));
-  }
-
-  function selectIndependentPair() {
-    if (!firstIndependentPair) return;
-    setMatrixView("pibase");
-    setSource(firstIndependentPair.source);
-    setTarget(firstIndependentPair.target);
-    window.history.replaceState(null, "", routeTo("overview", {
-      source: firstIndependentPair.source,
-      target: firstIndependentPair.target,
-      view: "pibase",
     }));
   }
 
@@ -255,22 +242,6 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                   ? `${formatNumber(formalDirectCount)} proved directly · ${formatNumber(formalDerivedCount)} by transitivity`
                   : `${formatNumber(data.graph.counts.explicitTrue)} direct · ${formatNumber(data.graph.counts.derivedTrue)} by closure`}
               </span>
-              {firstIndependentPair && (
-                <button
-                  type="button"
-                  className="matrix-status-shortcut"
-                  aria-pressed={
-                    matrixView === "pibase"
-                    && source === firstIndependentPair.source
-                    && target === firstIndependentPair.target
-                  }
-                  onClick={selectIndependentPair}
-                >
-                  <i className="matrix-swatch graph-independent" aria-hidden="true" />
-                  {formatNumber(data.graph.axiomDependencies.length)} independent of {firstIndependentPair.baseTheory}
-                  <ArrowRight size={13} aria-hidden="true" />
-                </button>
-              )}
             </div>
             <Matrix
               bundle={bundle}
