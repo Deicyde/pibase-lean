@@ -73,6 +73,7 @@ export default function Review({ data, params }: { data: DashboardData; params: 
         return response.json() as Promise<ReviewPayload>;
       })
       .then((next) => {
+        if (next.kind !== kind) throw new Error(`Review index does not match ${kind}`);
         cache.set(kind, next);
         if (active) { setPayload(next); setError(""); }
       })
@@ -83,7 +84,7 @@ export default function Review({ data, params }: { data: DashboardData; params: 
   }, [kind]);
 
   const filtered = useMemo(() => {
-    if (!payload) return [];
+    if (!payload || payload.kind !== kind) return [];
     const term = query.trim().toLowerCase();
     const exactId = /^[pst]\d+$/.test(term);
     return payload.entries.filter((entry) => {
@@ -94,19 +95,23 @@ export default function Review({ data, params }: { data: DashboardData; params: 
       if (entry.id.toLowerCase() === term) return true;
       return [entry.shortId, entry.name, entry.author, ...entry.aliases].join(" ").toLowerCase().includes(term);
     });
-  }, [hideReviewed, marks, payload, query, status]);
+  }, [hideReviewed, kind, marks, payload, query, status]);
 
   useEffect(() => {
-    if (!payload) return;
+    if (!payload || payload.kind !== kind) return;
     let active = true;
+    const payloadKind = payload.kind;
     const wanted = [...new Set(filtered.slice(0, limit).map((entry) => entry.chunk))];
-    const missing = wanted.filter((chunk) => !chunkCache.has(`${kind}:${chunk}`));
+    const missing = wanted.filter((chunk) => !chunkCache.has(`${payloadKind}:${chunk}`));
     if (!missing.length) return () => { active = false; };
     Promise.all(missing.map(async (chunk) => {
       const response = await fetch(new URL(payload.chunks[chunk], document.baseURI));
       if (!response.ok) throw new Error(`Review chunk returned ${response.status}`);
       const next = await response.json() as ReviewChunkPayload;
-      chunkCache.set(`${kind}:${chunk}`, next.entries);
+      if (next.kind !== payloadKind || next.chunk !== chunk) {
+        throw new Error(`Review chunk ${chunk} does not match ${payloadKind}`);
+      }
+      chunkCache.set(`${payloadKind}:${chunk}`, next.entries);
       return next.entries;
     }))
       .then((groups) => {
