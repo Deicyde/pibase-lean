@@ -7,6 +7,7 @@
     "dashboard:data": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/build_dashboard_data.py",
     "dashboard:build": "npm run dashboard:data && vite build",
     "dashboard:dev": "npm run dashboard:data && vite --host 127.0.0.1",
+    "dashboard:preview": "vite preview --host 127.0.0.1 --port 4290",
     "dashboard:check": "tsc --noEmit -p dashboard/tsconfig.json",
     "dashboard:verify": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/check_dashboard_data.py"
   },

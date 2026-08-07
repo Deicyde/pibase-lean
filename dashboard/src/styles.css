@@ -1032,3 +1032,158 @@ textarea { padding: 10px 11px; resize: vertical; }
     --graph-muted: #253036;
   }
 }
+
+/* Implications page */
+.implications-page .page-intro { max-width: 860px; }
+.stale-notice {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  padding: 14px 16px;
+  border: 1px solid var(--gold);
+  border-radius: 7px;
+  background: var(--gold-soft);
+  font-size: 13.5px;
+}
+.stale-notice ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.checker-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+.checker-literal { display: flex; align-items: flex-end; gap: 7px; flex: 1 1 220px; min-width: 210px; }
+.checker-literal .property-combobox { flex: 1; }
+.checker-controls .swap-button { margin-bottom: 3px; }
+.negation-toggle {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 2px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--muted);
+  font: 600 16px/1 ui-serif, Georgia, serif;
+  cursor: pointer;
+}
+.negation-toggle:hover { border-color: var(--rule-strong); color: var(--ink); }
+.negation-toggle[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+.checker-verdict {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--surface);
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+}
+.verdict-provable { border-left: 4px solid var(--green); }
+.verdict-refuted { border-left: 4px solid var(--rust); }
+.verdict-open { border-left: 4px solid var(--blue); }
+.verdict-statement {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+}
+.implication-statement { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 5px; }
+.implication-literal { display: inline-flex; align-items: baseline; gap: 2px; }
+.literal-negation { font-weight: 700; }
+.statement-connective { color: var(--muted); padding: 0 2px; }
+.verdict-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.verdict-chip-provable { background: var(--green-soft); color: var(--green); }
+.verdict-chip-refuted { background: var(--rust-soft); color: var(--rust); }
+.verdict-chip-open { background: var(--blue-soft); color: var(--blue); }
+.verdict-chip-pending { background: var(--gold-soft); color: var(--gold); }
+.verdict-detail { display: grid; gap: 10px; justify-items: start; font-size: 13.5px; }
+.proof-references { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+.proof-references li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 9px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--surface-subtle);
+}
+.proof-references li a { display: inline-flex; align-items: center; gap: 4px; text-decoration: none; }
+.proof-lean-link { text-decoration: none; }
+.proof-assertion { flex-wrap: wrap; }
+.assertion-tag { font-size: 12px; font-weight: 650; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
+.assertion-citation { display: grid; gap: 5px; justify-items: start; padding: 10px; border: 1px solid var(--rule); border-radius: 6px; }
+.assertion-citation small { color: var(--muted); }
+.assert-form { display: grid; gap: 8px; width: min(560px, 100%); }
+.assert-form label { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.assert-form textarea {
+  padding: 9px 11px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--surface);
+  resize: vertical;
+}
+.assert-error { color: var(--rust); font-size: 13px; }
+.assert-actions { display: flex; gap: 8px; }
+.button.verdict-true { border-color: var(--green); color: var(--green); }
+.button.verdict-true:hover { background: var(--green-soft); }
+.button.verdict-false { border-color: var(--rust); color: var(--rust); }
+.button.verdict-false:hover { background: var(--rust-soft); }
+.open-list-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
+.open-list-controls input[type="search"] {
+  flex: 1 1 260px;
+  padding: 8px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--surface);
+}
+.open-list-table { width: 100%; margin-top: 12px; border-collapse: collapse; font-size: 13.5px; }
+.open-list-table th {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--rule-strong);
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.open-list-table td { padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.open-list-table .score-column { text-align: right; white-space: nowrap; width: 90px; font-variant-numeric: tabular-nums; }
+.open-list-table .action-column { text-align: right; width: 84px; }
+.show-more { margin-top: 12px; }
+.assertion-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.assertion-list li {
+  display: grid;
+  gap: 5px;
+  justify-items: start;
+  padding: 11px 13px;
+  border: 1px solid var(--rule);
+  border-radius: 7px;
+  background: var(--surface);
+  font-size: 13.5px;
+}
+.assertion-list li small { color: var(--muted); }
+.assertion-list .why-link { border: 0; padding: 0; background: none; cursor: pointer; }
+.assertion-empty { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font-size: 13.5px; }
+.local-assertion-list li { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+.local-assertion-list li > :first-child { grid-column: 1 / -1; }
+.local-assertion-list li small { grid-column: 1 / -1; }
+.local-assertion-list li.is-stale { opacity: 0.55; }
+.assertion-state { font-size: 12px; color: var(--muted); }
+.assertion-state.is-submitted { color: var(--green); }
+.section-checker .section-summary, .section-open-list .section-summary { max-width: 640px; }
+@media (max-width: 760px) {
+  .checker-controls { flex-direction: column; align-items: stretch; }
+  .checker-controls .swap-button { align-self: center; margin: 0; transform: rotate(90deg); }
+  .open-list-table .score-column { width: 64px; }
+}

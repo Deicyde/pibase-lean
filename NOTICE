@@ -22,3 +22,17 @@ their representation changes.
 
 The π-Base software (the deduction engine this project's closure.py re-implements)
 is separately available at https://github.com/pi-base/web under the MIT License.
+
+This product includes the implications engine payload from Felix Pernegger's
+pi-base data fork, vendored at data/implications.json and refreshed at deploy
+time by scripts/fetch_implications.py.
+
+    Source:  https://github.com/felixpernegger/pibase-data
+    Site:    https://felixpernegger.github.io/pibase-data/
+    License: Creative Commons Attribution 4.0 International (CC-BY-4.0)
+             (the repository's data license; see its LICENSE.md)
+
+Changes: dashboard/src/engine.ts is a TypeScript port of that repository's
+site_engine.js in-browser deduction engine, and the payload is served verbatim
+to the dashboard's Implications page. The underlying mathematical facts are
+unmodified; only their representation changes.

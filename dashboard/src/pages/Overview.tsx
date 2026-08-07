@@ -398,6 +398,10 @@ export default function Overview({ bundle, params }: { bundle: DashboardBundle; 
                           </div>
                         )}
                       </dl>
+                      <a className="text-link" href={routeTo("implications", { hyp: source, concl: target })}>
+                        Check under community assertions
+                        <ArrowRight size={15} aria-hidden="true" />
+                      </a>
                       {!pairDefinitionsReady && (
                         <a className="text-link" href={routeTo("frontier", {
                           definition: missingEndpointDefinitions[0].id,

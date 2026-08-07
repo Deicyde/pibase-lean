@@ -25,9 +25,18 @@ jobs:
       - name: Check out Felix's Lean source
         # Full history is used for per-file authorship in the review audit.
         run: git clone --filter=blob:none --no-tags --branch master https://github.com/felixpernegger/pibase-lean.git "$RUNNER_TEMP/felix-pibase-lean"
+      - name: Check out Felix's pi-base data
+        run: git clone --depth 1 --branch main https://github.com/felixpernegger/pibase-data.git "$RUNNER_TEMP/felix-pibase-data"
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Refresh the implications payload
+        # Felix's deduction engine (build_site.py) produces the payload replayed
+        # by the Implications page, so assertions accepted upstream are current
+        # at every deploy.
+        run: |
+          pip install pyyaml
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/fetch_implications.py "$RUNNER_TEMP/felix-pibase-data"
       - uses: actions/setup-node@v5
         with:
           node-version: "24"

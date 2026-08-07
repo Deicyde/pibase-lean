@@ -77,6 +77,10 @@ export function plainMathLabel(value: string): string {
     .trim();
 }
 
+export function shortUid(uid: string): string {
+  return `${uid[0]}${Number(uid.slice(1))}`;
+}
+
 export function graphIndex(size: number, sourceIndex: number, targetIndex: number): number {
   return sourceIndex * size + targetIndex;
 }

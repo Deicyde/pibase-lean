@@ -252,6 +252,44 @@ def main() -> None:
         "formalized graph includes a theorem with local proof debt",
     )
 
+    implications = load(DATA / "implications.json")
+    require(
+        implications.get("repo") == "felixpernegger/pibase-data",
+        "implications payload is not built from Felix's pibase-data",
+    )
+    literal_count = 2 * len(implications["prop_ids"])
+    require(
+        len(implications["prop_names"]) == len(implications["prop_ids"]),
+        "implications property names are not aligned with ids",
+    )
+    require(
+        len(implications["clauses"]) == len(implications["clause_ids"]),
+        "implications clause sources are not aligned with clauses",
+    )
+    require(
+        len(implications["models"]) == len(implications["model_meta"]),
+        "implications model metadata is not aligned with models",
+    )
+    require(
+        all(0 <= literal < literal_count for clause in implications["clauses"] for literal in clause),
+        "implications clause literal is out of range",
+    )
+    require(
+        all(
+            len(model) == len(implications["prop_ids"]) and set(model) <= {"0", "1", "?"}
+            for model in implications["models"]
+        ),
+        "implications payload contains a malformed model",
+    )
+    require(
+        implications["counts"]["unknown"] == len(implications["pairs"]),
+        "implications open count disagrees with the pair list",
+    )
+    require(
+        any(artifact["path"] == "data/implications.json" for artifact in manifest["downloads"]),
+        "implications payload is not listed as a download",
+    )
+
     for artifact in manifest["downloads"]:
         require((PUBLIC / artifact["path"]).exists(), f"download is missing: {artifact['path']}")
     dependency_artifact = load(DATA / "axiom-dependencies.json")
@@ -278,7 +316,7 @@ def main() -> None:
         "dashboard integrity: "
         f"{size} nodes, {sum(histogram.values()):,} cells, "
         f"{len(formal_frontier):,} formalization and {len(frontier):,} pi-Base frontier pairs, "
-        "review chunks valid"
+        f"{len(implications['pairs']):,} open literal implications, review chunks valid"
     )
 
 

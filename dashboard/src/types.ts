@@ -161,6 +161,54 @@ export interface DashboardBundle {
   witnesses: Uint16Array;
 }
 
+export interface ImplicationAtom {
+  uid: string;
+  value: boolean;
+  name: string;
+}
+
+export interface ImplicationPair {
+  if: ImplicationAtom | ImplicationAtom[];
+  then: ImplicationAtom;
+}
+
+export interface AcceptedAssertion extends ImplicationPair {
+  holds: boolean;
+  note: string;
+  date: string;
+}
+
+export type ImplicationModelMeta =
+  | { kind: "space"; uid: string; name: string }
+  | { kind: "assertion"; index: number };
+
+// The payload produced by felixpernegger/pibase-data's build_site.py; see
+// dashboard/src/engine.ts for the literal encoding conventions.
+export interface ImplicationsData {
+  repo: string;
+  generated: string;
+  counts: { total: number; refuted: number; provable: number; unknown: number };
+  spaces: number;
+  assertions: AcceptedAssertion[];
+  pairs: ImplicationPair[];
+  prop_ids: string[];
+  prop_names: string[];
+  clauses: number[][];
+  clause_ids: string[];
+  models: string[];
+  model_meta: ImplicationModelMeta[];
+  new_true: ImplicationPair[];
+}
+
+export interface LocalAssertion {
+  if: ImplicationAtom[];
+  then: ImplicationAtom;
+  holds: boolean;
+  note: string;
+  date: string;
+  submitted: boolean;
+}
+
 export type ReviewKind = "spaces" | "properties" | "theorems";
 
 export interface ReviewTrait {

@@ -1,6 +1,7 @@
 import {
   BarChart3,
   BookOpenCheck,
+  FlaskConical,
   Github,
   Globe,
   ListTodo,
@@ -13,6 +14,7 @@ import { routeTo } from "../lib";
 const NAV = [
   { route: "overview", label: "Overview", icon: BarChart3 },
   { route: "frontier", label: "Frontier", icon: ListTodo },
+  { route: "implications", label: "Implications", icon: FlaskConical },
   { route: "review", label: "Review", icon: BookOpenCheck },
 ];
 

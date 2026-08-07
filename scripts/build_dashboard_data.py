@@ -767,6 +767,48 @@ def build_review_payloads(
         })
 
 
+def validate_implications(payload) -> None:
+    """Check the internal alignment of the pibase-data engine payload.
+
+    The payload is produced by felixpernegger/pibase-data's build_site.py and
+    replayed verbatim by dashboard/src/engine.ts, so every parallel-array
+    invariant the browser engine relies on is enforced here.
+    """
+    def require(condition: bool, message: str) -> None:
+        if not condition:
+            raise SystemExit(f"implications payload error: {message}")
+
+    require(payload.get("repo") == "felixpernegger/pibase-data", "unexpected source repository")
+    prop_ids = payload["prop_ids"]
+    prop_count = len(prop_ids)
+    require(prop_count > 0, "empty property list")
+    require(len(payload["prop_names"]) == prop_count, "prop_names is not aligned with prop_ids")
+    require(len(set(prop_ids)) == prop_count, "duplicate property ids")
+    require(len(payload["clauses"]) == len(payload["clause_ids"]), "clause_ids is not aligned with clauses")
+    require(len(payload["models"]) == len(payload["model_meta"]), "model_meta is not aligned with models")
+    for clause in payload["clauses"]:
+        require(
+            bool(clause) and all(isinstance(lit, int) and 0 <= lit < 2 * prop_count for lit in clause),
+            "clause literal out of range",
+        )
+    for model in payload["models"]:
+        require(len(model) == prop_count and set(model) <= {"0", "1", "?"}, "malformed model string")
+    known = set(prop_ids)
+    def atoms(value):
+        return value if isinstance(value, list) else [value]
+    for pair in payload["pairs"]:
+        for atom in [*atoms(pair["if"]), pair["then"]]:
+            require(atom["uid"] in known, f"pair references unknown property {atom['uid']}")
+    for assertion in payload["assertions"]:
+        for atom in [*atoms(assertion["if"]), assertion["then"]]:
+            require(atom["uid"] in known, f"assertion references unknown property {atom['uid']}")
+    require(payload["counts"]["unknown"] == len(payload["pairs"]), "counts.unknown disagrees with pairs")
+    accepted = len(payload["assertions"])
+    for meta in payload["model_meta"]:
+        if meta["kind"] == "assertion":
+            require(0 <= meta["index"] < accepted, "model_meta assertion index out of range")
+
+
 def main() -> None:
     if not (LEAN_ROOT / "PiBaseLean").is_dir():
         raise SystemExit(f"Lean source tree not found at {LEAN_ROOT}")
@@ -787,6 +829,8 @@ def main() -> None:
     questions = load_json(DATA_DIR / "questions.json")
     registry = load_json(DATA_DIR / "registry.json")
     foundations = load_json(DATA_DIR / "independence.json")
+    implications = load_json(DATA_DIR / "implications.json")
+    validate_implications(implications)
     base_theory = foundations.get("baseTheory", "ZFC")
     axiom_dependency_records = [
         {
@@ -953,10 +997,12 @@ def main() -> None:
             {"label": "Review: spaces", "path": "data/review-spaces.json", "format": "JSON"},
             {"label": "Review: properties", "path": "data/review-properties.json", "format": "JSON"},
             {"label": "Review: theorems", "path": "data/review-theorems.json", "format": "JSON"},
+            {"label": "Implications engine payload", "path": "data/implications.json", "format": "JSON"},
         ],
     }
 
     dump_json(OUT_DIR / "dashboard.json", dashboard)
+    dump_json(OUT_DIR / "implications.json", implications)
     dump_json(OUT_DIR / "frontier.json", {
         "schemaVersion": 1,
         "sourceCommit": commit,

@@ -6,9 +6,10 @@ import Overview from "./pages/Overview";
 import type { DashboardBundle } from "./types";
 
 const Frontier = lazy(() => import("./pages/Frontier"));
+const Implications = lazy(() => import("./pages/Implications"));
 const Review = lazy(() => import("./pages/Review"));
 
-const ROUTES = new Set(["overview", "frontier", "review"]);
+const ROUTES = new Set(["overview", "frontier", "implications", "review"]);
 const LEGACY_ROUTES = new Set(["explorer", "experiments", "data"]);
 
 export default function App() {
@@ -65,6 +66,7 @@ export default function App() {
   let page;
   switch (route) {
     case "frontier": page = <Frontier bundle={bundle} params={location.params} />; break;
+    case "implications": page = <Implications bundle={bundle} params={location.params} />; break;
     case "review": page = <Review data={bundle.data} params={location.params} />; break;
     default: page = <Overview bundle={bundle} params={location.params} />;
   }
