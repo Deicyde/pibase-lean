@@ -16,12 +16,24 @@ namespace PiBase
 
 /-- Theorem T704: P96 (LocallyArcConnectedSpace) => P43 (LocallyInjPathConnectedSpace) -/
 instance instLocallyInjPathConnectedSpaceOfLocallyArcConnectedSpace (X : Type u)
-    [TopologicalSpace X] [h : LocallyArcConnectedSpace X] :
+  [TopologicalSpace X] [h : LocallyArcConnectedSpace X] :
     LocallyInjPathConnectedSpace X where
   inj_path_connected_basis x := by
+    suffices (𝓝 x).HasBasis (fun s ↦ s ∈ 𝓝 x ∧ IsOpen s ∧ IsInjPathConnected s) id by
+      convert this using 1
+      ext s
+      simp only [and_congr_left_iff, and_imp]
+      intro hs _
+      exact (IsOpen.mem_nhds_iff hs).symm
     apply hasBasis_self.mpr (fun t ht ↦ ?_)
-    obtain ⟨r, rx, hr, rt⟩ := hasBasis_self.mp (h.arc_connected_basis x) t ht
-    refine ⟨r, rx, ?_, rt⟩
+    have : (𝓝 x).HasBasis (fun s ↦ s ∈ 𝓝 x ∧ IsOpen s ∧ ArcConnectedSpace ↑s) id := by
+      convert h.arc_connected_basis x using 1
+      ext s
+      simp only [and_congr_left_iff, and_imp]
+      intro hs _
+      exact IsOpen.mem_nhds_iff hs
+    obtain ⟨r, rx, ⟨hr, ri⟩, rt⟩ := hasBasis_self.mp this t ht
+    refine ⟨r, rx, ⟨hr, ?_⟩, rt⟩
     rw [isInjPathConnected_iff_injPathConnectedSpace]
     infer_instance
 

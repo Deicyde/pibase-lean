@@ -29,8 +29,7 @@ def PointCountable (U : ι → Set X) :=
   ∀ x : X, { i | x ∈ U i }.Countable
 
 /-- Star of an open cover. -/
-def CoverStar (U : ι → Set X) (x : X) :
-    Set X := ⋃ i : ι, ⋃ (_ : x ∈ U i), U i
+def CoverStar (U : ι → Set X) (x : X) : Set X := ⋃ i : ι, ⋃ (_ : x ∈ U i), U i
 
 /-- A collection of sets is called *star finite*
 if each member of the collection only meets finitely many other member. -/
@@ -76,7 +75,7 @@ theorem LocallyFinite.locallyCountable {U : ι → Set X} (h : LocallyFinite U) 
 
 /-- A discrete family of sets. -/
 def IsDiscreteFamily (F : ι → Set X) : Prop :=
-  ∀ x : X, ∃ U ∈ 𝓝 x, {i : ι | (F i ∩ U).Nonempty}.encard ≤ 1
+  ∀ x : X, ∃ U ∈ 𝓝 x, {i : ι | (F i ∩ U).Nonempty}.Subsingleton
 
 /-- An omega cover of a space. -/
 def IsOmegaCover (f : ι → Opens X) : Prop :=
@@ -110,7 +109,8 @@ def IsNetwork (f : ι → Set X) : Prop :=
 
 /-- A k-network of a topological space. -/
 def IsKNetwork (f : ι → Set X) : Prop :=
-  ∀ U K : Set X, IsOpen U → IsCompact K → K ⊆ U → ∃ s : Set ι, K ⊆ ⋃ i ∈ s, f i ∧ ⋃ i ∈ s, f i ⊆ U
+  ∀ U K : Set X, IsOpen U → IsCompact K → K ⊆ U → ∃ s : Finset ι,
+    K ⊆ ⋃ i ∈ s, f i ∧ ⋃ i ∈ s, f i ⊆ U
 
 /-- Every k-network is a network -/
 theorem IsKNetwork.isNetwork {f : ι → Set X} (h : IsKNetwork f) : IsNetwork f := by
@@ -136,7 +136,7 @@ def IsKCover' (s : Set (Set X)) : Prop :=
 
 /-- K-cover of a topological space -/
 def IsKCover'' (f : ι → Set X) : Prop :=
-  (∀ i : ι, IsOpen (f i)) ∧ (⋃ i : ι, f i = univ) ∧ ⊤ ∉ range f ∧
+  (∀ i : ι, IsOpen (f i)) ∧ (⋃ i : ι, f i = univ) ∧ univ ∉ range f ∧
     ∀ ⦃K : Set X⦄, IsCompact K → ∃ i : ι, K ⊆ f i
 
 --TODO: we now have 3 defs for K covers, when we only need one...
