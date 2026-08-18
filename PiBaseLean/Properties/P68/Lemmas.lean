@@ -15,11 +15,8 @@ section Meta
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.rothbergerSpace [h : RothbergerSpace X] (f : X ≃ₜ Y) : RothbergerSpace Y :=
-  Formal.P68.well_defined f h
-
 theorem WellDefined.rothbergerSpace : WellDefined RothbergerSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.rothbergerSpace h.some
+  fun {_ _} _ _ h hX => Formal.P68.well_defined h.some hX
 
 end Meta
 

@@ -13,11 +13,8 @@ section Meta
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.developableSpace [h : DevelopableSpace X] (f : X ≃ₜ Y) : DevelopableSpace Y :=
-  Formal.P110.well_defined f h
-
 theorem WellDefined.developableSpace : WellDefined DevelopableSpace :=
-  fun {_ _} _ _ h _ => Homeomorph.developableSpace h.some
+  fun {_ _} _ _ h hX => Formal.P110.well_defined h.some hX
 
 end Meta
 

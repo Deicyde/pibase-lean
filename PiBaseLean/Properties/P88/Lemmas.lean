@@ -15,10 +15,6 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.collectionwiseNormalSpace [h : CollectionwiseNormalSpace X] (f : X ≃ₜ Y) :
-    CollectionwiseNormalSpace Y :=
-  Formal.P88.well_defined f h
-
 theorem WellDefined.collectionwiseNormalSpace : WellDefined CollectionwiseNormalSpace :=
   fun {_ _} _ _ h hX => Formal.P88.well_defined h.some hX
 

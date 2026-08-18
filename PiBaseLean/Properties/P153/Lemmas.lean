@@ -15,11 +15,8 @@ section Meta
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.omegaMengerSpace [h : OmegaMengerSpace X] (f : X ≃ₜ Y) : OmegaMengerSpace Y :=
-  Formal.P153.well_defined f h
-
 theorem WellDefined.omegaMengerSpace : WellDefined OmegaMengerSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.omegaMengerSpace h.some
+  fun {_ _} _ _ h hX => Formal.P153.well_defined h.some hX
 
 end Meta
 

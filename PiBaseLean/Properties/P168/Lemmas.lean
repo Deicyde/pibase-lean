@@ -15,10 +15,6 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.countableSetsDiscrete [h : CountableSetsDiscrete X]
-    (f : X ≃ₜ Y) : CountableSetsDiscrete Y :=
-  Formal.P168.well_defined f h
-
 theorem WellDefined.countableSetsDiscrete : WellDefined CountableSetsDiscrete :=
   fun {_ _} _ _ h hX => Formal.P168.well_defined h.some hX
 

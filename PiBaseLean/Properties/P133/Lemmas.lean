@@ -12,13 +12,13 @@ open Topology Filter Set TopologicalSpace
 
 variable {X Y : Type u} [t : TopologicalSpace X] [s : TopologicalSpace Y]
 
-theorem Homeomorph.lots [h : Lots X] (f : X ≃ₜ Y) : Lots Y :=
-  Formal.P133.well_defined (X := X) (Y := Y) f h
+instance instLotsOfOrderTopology {X : Type*} [TopologicalSpace X] [h : LinearOrder X]
+    [h' : OrderTopology X] : Lots X where from_linear_order := ⟨h, h'⟩
 
 section Meta
 
 theorem WellDefined.lots : WellDefined Lots :=
-  fun {_ _} _ _ hXY hX => Homeomorph.lots hXY.some
+  fun {_ _} _ _ hXY hX => Formal.P133.well_defined hXY.some hX
 
 end Meta
 

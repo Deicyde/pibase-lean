@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.embedsInTopologicalWGroupSpace [h : EmbedsInTopologicalWGroupSpace X]
-    (f : X ≃ₜ Y) : EmbedsInTopologicalWGroupSpace Y :=
-  Formal.P186.well_defined f h
-
 theorem WellDefined.embedsInTopologicalWGroupSpace : WellDefined EmbedsInTopologicalWGroupSpace :=
-  fun {_ _} _ _ h _ => Homeomorph.embedsInTopologicalWGroupSpace h.some
+  fun {_ _} _ _ h hX => Formal.P186.well_defined h.some hX
 
 end Meta
 

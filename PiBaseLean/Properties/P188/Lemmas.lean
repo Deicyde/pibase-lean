@@ -15,11 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.continuumSpace [h : ContinuumSpace X] (f : X ≃ₜ Y) : ContinuumSpace Y :=
-  Formal.P188.well_defined f h
-
 theorem WellDefined.continuumSpace : WellDefined ContinuumSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.continuumSpace (h := hX) h.some
+  fun {_ _} _ _ h hX => Formal.P188.well_defined h.some hX
 
 end Meta
 

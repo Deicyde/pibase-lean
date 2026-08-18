@@ -13,11 +13,8 @@ section Meta
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.hasClosedRetract [h : HasClosedRetract X] (f : X ≃ₜ Y) : HasClosedRetract Y :=
-  Formal.P101.well_defined f h
-
 theorem WellDefined.hasClosedRetract : WellDefined HasClosedRetract :=
-  fun {_ _} _ _ h hX => Homeomorph.hasClosedRetract h.some
+  fun {_ _} _ _ h hX => Formal.P101.well_defined h.some hX
 
 end Meta
 

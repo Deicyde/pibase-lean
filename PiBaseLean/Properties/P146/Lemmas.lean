@@ -15,12 +15,8 @@ section Meta
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.ultraparacompactSpace [h : UltraparacompactSpace X] (f : X ≃ₜ Y) :
-    UltraparacompactSpace Y :=
-  Formal.P146.well_defined f h
-
 theorem WellDefined.ultraparacompactSpace : WellDefined UltraparacompactSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.ultraparacompactSpace h.some
+  fun {_ _} _ _ h hX => Formal.P146.well_defined h.some hX
 
 end Meta
 

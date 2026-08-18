@@ -12,11 +12,8 @@ universe u
 section Meta
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.anticompactSpace [h : AnticompactSpace X] (f : X ≃ₜ Y) : AnticompactSpace Y :=
-  Formal.P136.well_defined f h
-
 theorem WellDefined.anticompactSpace : WellDefined AnticompactSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.anticompactSpace h.some
+  fun {_ _} _ _ h hX => Formal.P136.well_defined h.some hX
 
 end Meta
 

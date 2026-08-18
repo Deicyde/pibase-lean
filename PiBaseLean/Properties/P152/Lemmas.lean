@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.markovRothbergerSpace [h : MarkovRothbergerSpace X] (f : X ≃ₜ Y) :
-    MarkovRothbergerSpace Y :=
-  Formal.P152.well_defined f h
-
 theorem WellDefined.markovRothbergerSpace : WellDefined MarkovRothbergerSpace :=
-  fun {_ _} _ _ hXY _hX => Homeomorph.markovRothbergerSpace hXY.some
+  fun {_ _} _ _ h hX => Formal.P152.well_defined h.some hX
 
 end Meta
 

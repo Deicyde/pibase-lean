@@ -15,9 +15,6 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.cWComplexSpace [h : CWComplexSpace X] (f : X ≃ₜ Y) : CWComplexSpace Y :=
-  Formal.P240.well_defined f h
-
 theorem WellDefined.cWComplexSpace : WellDefined CWComplexSpace :=
   fun {_ _} _ _ h hX => Formal.P240.well_defined h.some hX
 

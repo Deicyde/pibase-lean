@@ -17,12 +17,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.hasCountablePiCharacter [HasCountablePiCharacter X] (f : X ≃ₜ Y) :
-    HasCountablePiCharacter Y :=
-  Formal.P244.well_defined f (inferInstance : HasCountablePiCharacter X)
-
 theorem WellDefined.hasCountablePiCharacter : WellDefined HasCountablePiCharacter :=
-  fun {_ _} _ _ h hX => Homeomorph.hasCountablePiCharacter h.some
+  fun {_ _} _ _ h hX => Formal.P244.well_defined h.some hX
 
 end Meta
 

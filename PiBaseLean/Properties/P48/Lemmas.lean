@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.totallySeparatedSpace [h : TotallySeparatedSpace X] (f : X ≃ₜ Y) :
-    TotallySeparatedSpace Y :=
-  Formal.P48.well_defined f h
-
 theorem WellDefined.totallySeparatedSpace : WellDefined TotallySeparatedSpace :=
-  fun {_ _} _ _ h _ => Homeomorph.totallySeparatedSpace h.some
+  fun {_ _} _ _ h hX => Formal.P48.well_defined h.some hX
 
 end Meta
 

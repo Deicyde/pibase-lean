@@ -15,11 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.proximalSpace [h : ProximalSpace X] (f : X ≃ₜ Y) : ProximalSpace Y :=
-  Formal.P76.well_defined f h
-
 theorem WellDefined.proximalSpace : WellDefined ProximalSpace :=
-  fun {_ _} _ _ h _ => Homeomorph.proximalSpace h.some
+  fun {_ _} _ _ h hX => Formal.P76.well_defined h.some hX
 
 end Meta
 

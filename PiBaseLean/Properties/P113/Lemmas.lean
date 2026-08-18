@@ -13,11 +13,8 @@ section Meta
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.mooreSpace [h : MooreSpace X] (f : X ≃ₜ Y) : MooreSpace Y :=
-  Formal.P113.well_defined f h
-
 theorem WellDefined.mooreSpace : WellDefined MooreSpace :=
-  fun {_ _} _ _ h _ => Homeomorph.mooreSpace h.some
+  fun {_ _} _ _ h hX => Formal.P113.well_defined h.some hX
 
 end Meta
 

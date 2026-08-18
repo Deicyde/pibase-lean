@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.strategicallyRothbergerSpace [h : StrategicallyRothbergerSpace X] (f : X ≃ₜ Y) :
-    StrategicallyRothbergerSpace Y :=
-  Formal.P151.well_defined f h
-
 theorem WellDefined.strategicallyRothbergerSpace : WellDefined StrategicallyRothbergerSpace :=
-  fun {_ _} _ _ hXY _hX => Homeomorph.strategicallyRothbergerSpace hXY.some
+  fun {_ _} _ _ h hX => Formal.P151.well_defined h.some hX
 
 end Meta
 

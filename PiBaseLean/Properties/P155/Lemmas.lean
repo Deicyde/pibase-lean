@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.locallyOneEuclideanSpace [h : LocallyOneEuclideanSpace X] (f : X ≃ₜ Y) :
-    LocallyOneEuclideanSpace Y :=
-  Formal.P155.well_defined f h
-
 theorem WellDefined.locallyOneEuclideanSpace : WellDefined LocallyOneEuclideanSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.locallyOneEuclideanSpace h.some
+  fun {_ _} _ _ h hX => Formal.P155.well_defined h.some hX
 
 end Meta
 

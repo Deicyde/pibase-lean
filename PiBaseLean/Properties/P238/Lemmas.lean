@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.hasRealTVSTopology [h : HasRealTVSTopology X] (f : X ≃ₜ Y) :
-    HasRealTVSTopology Y :=
-  Formal.P238.well_defined f h
-
 theorem WellDefined.hasRealTVSTopology : WellDefined HasRealTVSTopology :=
-  fun {_ _} _ _ h _ => Homeomorph.hasRealTVSTopology h.some
+  fun {_ _} _ _ h hX => Formal.P238.well_defined h.some hX
 
 end Meta
 

@@ -18,9 +18,6 @@ variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 theorem WellDefined.semiT2Space : WellDefined SemiT2Space :=
   fun {_ _} _ _ h hX => Formal.P169.well_defined h.some hX
 
-theorem Homeomorph.semiT2Space [h : SemiT2Space X] (f : X ≃ₜ Y) : SemiT2Space Y :=
-  Formal.P169.well_defined f h
-
 end Meta
 
 end PiBase

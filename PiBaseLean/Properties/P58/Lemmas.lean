@@ -12,15 +12,18 @@ open Cardinal
 
 section Meta
 
-universe u
+universe u v
 
-variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X : Type u} {Y : Type v} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem Homeomorph.cardLtContinuum [h : CardLtContinuum X] (f : X ≃ₜ Y) :
     CardLtContinuum Y where
   card_lt := by
-    rw [← Cardinal.mk_congr f.toEquiv]
-    exact h.card_lt
+    refine Cardinal.lift_lt.mp ?_
+    rw [← Cardinal.mk_congr_lift f.toEquiv, Cardinal.lift_continuum]
+    have hx : Cardinal.lift.{v, u} #X < Cardinal.lift.{v, u} 𝔠 :=
+      Cardinal.lift_lt.mpr h.card_lt
+    simpa only [Cardinal.lift_continuum] using hx
 
 theorem WellDefined.cardLtContinuum :
     WellDefined (fun (X : Type u) => CardLtContinuum X) :=

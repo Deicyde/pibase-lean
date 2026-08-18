@@ -15,16 +15,13 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.hasClosedDiscreteSubsetCardContinuum
-    [h : HasClosedDiscreteSubsetCardContinuum X] (f : X ≃ₜ Y) :
-    HasClosedDiscreteSubsetCardContinuum Y :=
-  PiBase.Formal.P227.well_defined f h
+-- Transport
 
 -- Transport DiscreteTopology on subtype via subtype homeomorphism,
 -- closedness via Homeomorph closed image, cardinal via mk_image_eq.
 theorem WellDefined.hasClosedDiscreteSubsetCardContinuum :
     WellDefined HasClosedDiscreteSubsetCardContinuum :=
-  fun {_ _} _ _ h _ => Homeomorph.hasClosedDiscreteSubsetCardContinuum h.some
+  fun {_ _} _ _ h hX => PiBase.Formal.P227.well_defined h.some hX
 
 end Meta
 

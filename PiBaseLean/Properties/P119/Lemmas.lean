@@ -13,11 +13,8 @@ section Meta
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.stoneanSpace [h : StoneanSpace X] (f : X ≃ₜ Y) : StoneanSpace Y :=
-  Formal.P119.well_defined f h
-
 theorem WellDefined.stoneanSpace : WellDefined StoneanSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.stoneanSpace h.some
+  fun {_ _} _ _ h hX => Formal.P119.well_defined h.some hX
 
 end Meta
 

@@ -13,14 +13,9 @@ section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.hasCoarserSeparableMetrizableTopology
-    [h : HasCoarserSeparableMetrizableTopology X] (f : X ≃ₜ Y) :
-    HasCoarserSeparableMetrizableTopology Y :=
-  Formal.P166.well_defined f h
-
 theorem WellDefined.hasCoarserSeparableMetrizableTopology :
     WellDefined HasCoarserSeparableMetrizableTopology :=
-  fun {_ _} _ _ h _ => Homeomorph.hasCoarserSeparableMetrizableTopology h.some
+  fun {_ _} _ _ h hX => Formal.P166.well_defined h.some hX
 
 end Meta
 

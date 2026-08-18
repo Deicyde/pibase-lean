@@ -15,11 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.stoneSpace [h : StoneSpace X] (φ : X ≃ₜ Y) : StoneSpace Y :=
-  Formal.P195.well_defined φ h
-
 theorem WellDefined.stoneSpace : WellDefined StoneSpace :=
-  fun {_ _} _ _ h _ => Homeomorph.stoneSpace h.some
+  fun {_ _} _ _ h hX => Formal.P195.well_defined h.some hX
 
 end Meta
 

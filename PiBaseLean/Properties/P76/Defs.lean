@@ -2,7 +2,6 @@ module
 
 public import PiBaseLean.AdditionalDefs.Games
 public import PiBaseLean.Properties.Bundled.Defs
-public import PiBaseLean.Properties.P69.Defs
 public import Mathlib.Topology.UniformSpace.Basic
 public import Mathlib.Topology.UniformSpace.UniformEmbedding
 
@@ -19,85 +18,6 @@ class ProximalSpace (X : Type u) [τ : TopologicalSpace X] : Prop where
 
 end PiBase
 
-namespace PiBase
-
-open Set Filter Topology
-
-/-! ### Transporting the proximal game along a homeomorphism -/
-
-section Proximal
-
-variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
-
-@[simp]
-theorem prodMap_symm_prodMap (φ : X ≃ₜ Y) (p : X × X) :
-    Prod.map (φ.symm : Y → X) φ.symm (Prod.map (φ : X → Y) φ p) = p := by
-  obtain ⟨x₁, x₂⟩ := p; simp
-
-@[simp]
-theorem prodMap_prodMap_symm (φ : X ≃ₜ Y) (p : Y × Y) :
-    Prod.map (φ : X → Y) φ (Prod.map (φ.symm : Y → X) φ.symm p) = p := by
-  obtain ⟨y₁, y₂⟩ := p; simp
-
-/-- Taking preimages under `φ × φ` is a bijection between the relations on `Y` and the
-relations on `X`. -/
-def preimageRelEquiv (φ : X ≃ₜ Y) : Set (Y × Y) ≃ Set (X × X) where
-  toFun V := Prod.map φ φ ⁻¹' V
-  invFun U := Prod.map φ.symm φ.symm ⁻¹' U
-  left_inv V := by ext p; simp
-  right_inv U := by ext p; simp
-
-@[simp]
-theorem preimageRelEquiv_apply (φ : X ≃ₜ Y) (V : Set (Y × Y)) :
-    preimageRelEquiv φ V = Prod.map φ φ ⁻¹' V := rfl
-
-/-- The bijection between the moves of the proximal game on `Y` and the moves of the proximal
-game on `X`. -/
-def proximalMoveEquiv (φ : X ≃ₜ Y) : Y × Set (Y × Y) ≃ X × Set (X × X) :=
-  (φ.symm.toEquiv).prodCongr (preimageRelEquiv φ)
-
-@[simp]
-theorem proximalMoveEquiv_fst (φ : X ≃ₜ Y) (p : Y × Set (Y × Y)) :
-    (proximalMoveEquiv φ p).1 = φ.symm p.1 := rfl
-
-@[simp]
-theorem proximalMoveEquiv_snd (φ : X ≃ₜ Y) (p : Y × Set (Y × Y)) :
-    (proximalMoveEquiv φ p).2 = Prod.map φ φ ⁻¹' p.2 := rfl
-
-theorem prodMap_surjective (φ : X ≃ₜ Y) : Function.Surjective (Prod.map (φ : X → Y) φ) :=
-  fun p ↦ ⟨Prod.map φ.symm φ.symm p, prodMap_prodMap_symm φ p⟩
-
-@[simp]
-theorem preimage_prodMap_subset_iff (φ : X ≃ₜ Y) (V W : Set (Y × Y)) :
-    Prod.map φ φ ⁻¹' V ⊆ Prod.map φ φ ⁻¹' W ↔ V ⊆ W :=
-  preimage_subset_preimage_iff (by rw [(prodMap_surjective φ).range_eq]; exact subset_univ V)
-
-@[simp]
-theorem preimage_prodMap_eq_iff (φ : X ≃ₜ Y) (V W : Set (Y × Y)) :
-    Prod.map φ φ ⁻¹' V = Prod.map φ φ ⁻¹' W ↔ V = W :=
-  preimage_eq_preimage (prodMap_surjective φ)
-
-theorem preimage_eq_empty_iff_of_homeomorph (φ : X ≃ₜ Y) (S : Set Y) :
-    φ ⁻¹' S = ∅ ↔ S = ∅ := by
-  refine ⟨fun h ↦ ?_, fun h ↦ by rw [h, preimage_empty]⟩
-  rw [← image_preimage_eq S φ.surjective, h, image_empty]
-
-/-- The slice of a transported entourage is the preimage of the slice of the original one. -/
-theorem slice_preimage_prodMap (φ : X ≃ₜ Y) (y : Y) (V : Set (Y × Y)) :
-    Prod.mk (φ.symm y) ⁻¹' (Prod.map φ φ ⁻¹' V) = φ ⁻¹' (Prod.mk y ⁻¹' V) := by
-  ext x; simp
-
-/-- Convergence of a sequence can be transported along a homeomorphism. -/
-theorem exists_tendsto_comp_iff (φ : X ≃ₜ Y) (f : ℕ → Y) :
-    (∃ z : X, Tendsto (fun n ↦ φ.symm (f n)) atTop (𝓝 z)) ↔
-      ∃ z : Y, Tendsto f atTop (𝓝 z) := by
-  refine ⟨fun ⟨z, hz⟩ ↦ ⟨φ z, ?_⟩,
-    fun ⟨z, hz⟩ ↦ ⟨φ.symm z, (φ.symm.continuous.tendsto z).comp hz⟩⟩
-  simpa [Function.comp_def] using (φ.continuous.tendsto z).comp hz
-
-end Proximal
-
-end PiBase
 
 namespace PiBase.Formal
 

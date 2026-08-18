@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.locallyArcConnectedSpace [h : LocallyArcConnectedSpace X]
-    (f : X ≃ₜ Y) : LocallyArcConnectedSpace Y :=
-  Formal.P96.well_defined f h
-
 theorem WellDefined.locallyArcConnectedSpace : WellDefined LocallyArcConnectedSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.locallyArcConnectedSpace h.some
+  fun {_ _} _ _ h hX => Formal.P96.well_defined h.some hX
 
 end Meta
 

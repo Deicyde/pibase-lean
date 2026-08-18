@@ -13,12 +13,8 @@ section Meta
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.locallyOrderableSpace [h : LocallyOrderableSpace X] (f : X ≃ₜ Y) :
-    LocallyOrderableSpace Y :=
-  Formal.P120.well_defined f h
-
 theorem WellDefined.locallyOrderableSpace : WellDefined LocallyOrderableSpace :=
-  fun {_ _} _ _ h _ => Homeomorph.locallyOrderableSpace h.some
+  fun {_ _} _ _ h hX => Formal.P120.well_defined h.some hX
 
 end Meta
 

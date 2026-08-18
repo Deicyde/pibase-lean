@@ -15,10 +15,6 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.symmetrizableSpace [h : SymmetrizableSpace X] (f : X ≃ₜ Y) :
-    SymmetrizableSpace Y :=
-  Formal.P104.well_defined f h
-
 theorem WellDefined.symmetrizableSpace : WellDefined SymmetrizableSpace :=
   fun {_ _} _ _ h hX => Formal.P104.well_defined h.some hX
 

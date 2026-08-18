@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.markovKRothbergerSpace [h : MarkovKRothbergerSpace X] (f : X ≃ₜ Y) :
-    MarkovKRothbergerSpace Y :=
-  Formal.P158.well_defined f h
-
 theorem WellDefined.markovKRothbergerSpace : WellDefined MarkovKRothbergerSpace :=
-  fun {_ _} _ _ hXY _hX => Homeomorph.markovKRothbergerSpace hXY.some
+  fun {_ _} _ _ h hX => Formal.P158.well_defined h.some hX
 
 end Meta
 

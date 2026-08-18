@@ -15,10 +15,6 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.pseudoradialSpace [h : PseudoradialSpace X] (f : X ≃ₜ Y) :
-    PseudoradialSpace Y :=
-  Formal.P173.well_defined f h
-
 theorem WellDefined.pseudoradialSpace : WellDefined PseudoradialSpace :=
   fun {_ _} _ _ h hX => Formal.P173.well_defined h.some hX
 

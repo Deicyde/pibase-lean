@@ -15,10 +15,6 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.weaklyLindelofSpace [h : WeaklyLindelofSpace X] (f : X ≃ₜ Y) :
-    WeaklyLindelofSpace Y :=
-  Formal.P62.well_defined f h
-
 theorem WellDefined.weaklyLindelofSpace : WellDefined WeaklyLindelofSpace :=
   fun {_ _} _ _ h hX => Formal.P62.well_defined h.some hX
 

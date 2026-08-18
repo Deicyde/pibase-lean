@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.exhaustibleByCompacts [h : ExhaustibleByCompacts X] (f : X ≃ₜ Y) :
-    ExhaustibleByCompacts Y :=
-  Formal.P25.well_defined f h
-
 theorem WellDefined.exhaustibleByCompacts : WellDefined ExhaustibleByCompacts :=
-  fun {_ _} _ _ hX h => Homeomorph.exhaustibleByCompacts hX.some
+  fun {_ _} _ _ h hX => Formal.P25.well_defined h.some hX
 
 end Meta
 

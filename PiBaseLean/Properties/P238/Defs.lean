@@ -28,11 +28,11 @@ def P238 : Property where
   well_defined {X Y} _ _ φ h := by
     obtain ⟨aX, mX, hCont⟩ := h.homeomorphic_to_tvs
     obtain ⟨hSmulCont, hAddCont⟩ := hCont
-    letI : AddCommMonoid X := aX
-    letI : Module ℝ X := mX
+    let : AddCommMonoid X := aX
+    let : Module ℝ X := mX
     let e : Y ≃ X := φ.symm.toEquiv
     let aY : AddCommMonoid Y := e.addCommMonoid
-    letI : AddCommMonoid Y := aY
+    let : AddCommMonoid Y := aY
     let mY : Module ℝ Y := e.module ℝ
     refine ⟨aY, mY, ?_, ?_⟩
     · -- scalar multiplication continuity by conjugation with φ / φ.symm

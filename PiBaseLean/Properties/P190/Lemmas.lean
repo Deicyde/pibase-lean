@@ -15,11 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.ordinalSpace [OrdinalSpace X] (f : X ≃ₜ Y) : OrdinalSpace Y :=
-  Formal.P190.well_defined f ‹_›
-
 theorem WellDefined.ordinalSpace : WellDefined OrdinalSpace :=
-  fun {_ _} _ _ h _ => Homeomorph.ordinalSpace h.some
+  fun {_ _} _ _ h hX => Formal.P190.well_defined h.some hX
 
 end Meta
 

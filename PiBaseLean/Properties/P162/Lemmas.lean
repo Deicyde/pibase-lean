@@ -29,11 +29,6 @@ theorem Homeomorph.realcompactSpace [h : RealcompactSpace X] (g : X ≃ₜ Y) : 
 theorem WellDefined.realcompactSpace : WellDefined RealcompactSpace :=
   fun {_ _} _ _ h hX => Formal.P162.well_defined h.some hX
 
-theorem Homeomorph.realcompactSpace {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
-    [h : RealcompactSpace X] (f : X ≃ₜ Y) : RealcompactSpace Y := by
-  obtain ⟨ι, g, hg⟩ := h.homeo_closed
-  exact ⟨⟨ι, g ∘ f.symm, hg.comp f.symm.isClosedEmbedding⟩⟩
-
 end Meta
 
 end PiBase

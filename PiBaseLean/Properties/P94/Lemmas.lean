@@ -15,11 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.locallyFiniteSpace [h : LocallyFiniteSpace X] (f : X ≃ₜ Y) : LocallyFiniteSpace Y :=
-  Formal.P94.well_defined f h
-
 theorem WellDefined.locallyFiniteSpace : WellDefined LocallyFiniteSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.locallyFiniteSpace h.some
+  fun {_ _} _ _ h hX => Formal.P94.well_defined h.some hX
 
 end Meta
 

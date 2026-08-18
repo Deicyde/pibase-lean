@@ -17,12 +17,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.hasCountablePiWeight [HasCountablePiWeight X] (f : X ≃ₜ Y) :
-    HasCountablePiWeight Y :=
-  Formal.P243.well_defined f (inferInstance : HasCountablePiWeight X)
-
 theorem WellDefined.hasCountablePiWeight : WellDefined HasCountablePiWeight :=
-  fun {_ _} _ _ h hX => Homeomorph.hasCountablePiWeight h.some
+  fun {_ _} _ _ h hX => Formal.P243.well_defined h.some hX
 
 end Meta
 

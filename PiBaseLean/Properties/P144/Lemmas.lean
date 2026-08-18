@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.locallyPseudoMetrizableSpace [h : LocallyPseudoMetrizableSpace X] (f : X ≃ₜ Y) :
-    LocallyPseudoMetrizableSpace Y :=
-  Formal.P144.well_defined f h
-
 theorem WellDefined.locallyPseudoMetrizableSpace : WellDefined LocallyPseudoMetrizableSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.locallyPseudoMetrizableSpace h.some
+  fun {_ _} _ _ h hX => Formal.P144.well_defined h.some hX
 
 end Meta
 

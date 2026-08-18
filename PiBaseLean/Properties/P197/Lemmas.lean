@@ -67,13 +67,8 @@ private lemma isDiscrete_preimage_homeomorph {X Y : Type*} [TopologicalSpace X] 
   rw [h_eq]
   exact isDiscrete_image_homeomorph φ.symm ht
 
-theorem Homeomorph.hasCountableSpread {X Y : Type u} [TopologicalSpace X]
-    [TopologicalSpace Y] [h : HasCountableSpread X] (φ : X ≃ₜ Y) :
-    HasCountableSpread Y :=
-  Formal.P197.well_defined φ h
-
 theorem WellDefined.hasCountableSpread : WellDefined HasCountableSpread :=
-  fun {_ _} _ _ h _ ↦ Homeomorph.hasCountableSpread h.some
+  fun {_ _} _ _ h hX => Formal.P197.well_defined h.some hX
 
 end Meta
 

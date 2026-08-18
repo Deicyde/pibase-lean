@@ -13,11 +13,8 @@ section Meta
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.stronglyKcSpace [h : StronglyKcSpace X] (f : X ≃ₜ Y) : StronglyKcSpace Y :=
-  Formal.P103.well_defined f h
-
 theorem WellDefined.stronglyKcSpace : WellDefined StronglyKcSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.stronglyKcSpace h.some
+  fun {_ _} _ _ h hX => Formal.P103.well_defined h.some hX
 
 end Meta
 

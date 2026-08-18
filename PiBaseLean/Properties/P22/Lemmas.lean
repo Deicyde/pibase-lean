@@ -15,10 +15,6 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.pseudocompactSpace [h : PseudocompactSpace X] (f : X ≃ₜ Y) :
-    PseudocompactSpace Y :=
-  Formal.P22.well_defined f h
-
 theorem WellDefined.pseudocompactSpace : WellDefined PseudocompactSpace :=
   fun {_ _} _ _ h hX => Formal.P22.well_defined h.some hX
 

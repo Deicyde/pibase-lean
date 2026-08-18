@@ -11,9 +11,9 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-universe u
+universe u v
 
-variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X : Type u} {Y : Type v} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.functionallyT2Space : WellDefined FunctionallyT2Space :=
   fun {X Y} _ _ φ h => by
@@ -23,8 +23,13 @@ theorem WellDefined.functionallyT2Space : WellDefined FunctionallyT2Space :=
     rcases h.functionally_t2 hxy with ⟨f, f₀, f₁⟩
     refine ⟨f.comp (φ.some.symm : C(Y, X)), ?_, ?_⟩ <;> simpa
 
-theorem Homeomorph.functionallyT2Space [FunctionallyT2Space X] (f : X ≃ₜ Y) : FunctionallyT2Space Y :=
-  WellDefined.functionallyT2Space ⟨f⟩ inferInstance
+theorem Homeomorph.functionallyT2Space [h : FunctionallyT2Space X] (f : X ≃ₜ Y) :
+    FunctionallyT2Space Y := by
+  constructor
+  rw [← EquivLike.pairwise_comp_iff f]
+  intro x y hxy
+  rcases h.functionally_t2 hxy with ⟨g, g₀, g₁⟩
+  refine ⟨g.comp (f.symm : C(Y, X)), ?_, ?_⟩ <;> simpa
 
 end Meta
 

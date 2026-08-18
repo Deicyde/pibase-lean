@@ -66,13 +66,8 @@ private lemma isDiscrete_preimage_homeomorph {X Y : Type*} [TopologicalSpace X] 
   rw [h_eq]
   exact isDiscrete_image_homeomorph φ.symm ht
 
-theorem Homeomorph.hasCountableExtent {X Y : Type u} [TopologicalSpace X]
-    [TopologicalSpace Y] [h : HasCountableExtent X] (φ : X ≃ₜ Y) :
-    HasCountableExtent Y :=
-  Formal.P198.well_defined φ h
-
 theorem WellDefined.hasCountableExtent : WellDefined HasCountableExtent :=
-  fun {_ _} _ _ h _ ↦ Homeomorph.hasCountableExtent h.some
+  fun {_ _} _ _ h hX => Formal.P198.well_defined h.some hX
 
 end Meta
 

@@ -15,11 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.hemicompactSpace [h : HemicompactSpace X] (f : X ≃ₜ Y) : HemicompactSpace Y :=
-  Formal.P111.well_defined f h
-
 theorem WellDefined.hemicompactSpace : WellDefined HemicompactSpace :=
-  fun {_ _} _ _ h _ => Homeomorph.hemicompactSpace h.some
+  fun {_ _} _ _ h hX => Formal.P111.well_defined h.some hX
 
 end Meta
 

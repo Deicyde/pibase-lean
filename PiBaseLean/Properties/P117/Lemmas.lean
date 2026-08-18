@@ -13,12 +13,8 @@ section Meta
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.hasSigmaLocallyFiniteNetwork [h : HasSigmaLocallyFiniteNetwork X] (f : X ≃ₜ Y) :
-    HasSigmaLocallyFiniteNetwork Y :=
-  Formal.P117.well_defined f h
-
 theorem WellDefined.hasSigmaLocallyFiniteNetwork : WellDefined HasSigmaLocallyFiniteNetwork :=
-  fun {_ _} _ _ h _ => Homeomorph.hasSigmaLocallyFiniteNetwork h.some
+  fun {_ _} _ _ h hX => Formal.P117.well_defined h.some hX
 
 end Meta
 

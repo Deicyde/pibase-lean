@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.locallyInjPathConnectedSpace [h : LocallyInjPathConnectedSpace X]
-    (f : X ≃ₜ Y) : LocallyInjPathConnectedSpace Y :=
-  Formal.P43.well_defined f h
-
 theorem WellDefined.locallyInjPathConnectedSpace : WellDefined LocallyInjPathConnectedSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.locallyInjPathConnectedSpace h.some
+  fun {_ _} _ _ h hX => Formal.P43.well_defined h.some hX
 
 end Meta
 

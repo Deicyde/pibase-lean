@@ -13,11 +13,8 @@ section Meta
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.hasGδDiagonal [h : HasGδDiagonal X] (f : X ≃ₜ Y) : HasGδDiagonal Y :=
-  Formal.P106.well_defined f h
-
 theorem WellDefined.hasGδDiagonal : WellDefined HasGδDiagonal :=
-  fun {_ _} _ _ h hX => Homeomorph.hasGδDiagonal h.some
+  fun {_ _} _ _ h hX => Formal.P106.well_defined h.some hX
 
 end Meta
 

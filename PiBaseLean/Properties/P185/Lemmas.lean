@@ -79,10 +79,6 @@ section Meta
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.partitionTopology [h : PartitionTopology X] (f : X ≃ₜ Y) :
-    PartitionTopology Y :=
-  Formal.P185.well_defined f h
-
 theorem WellDefined.partitionTopology : WellDefined PartitionTopology :=
   fun {_ _} _ _ h hX => Formal.P185.well_defined h.some hX
 

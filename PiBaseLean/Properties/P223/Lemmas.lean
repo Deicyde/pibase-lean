@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.locallyContractibleSpace [h : LocallyContractibleSpace X]
-    (f : X ≃ₜ Y) : LocallyContractibleSpace Y :=
-  Formal.P223.well_defined f h
-
 theorem WellDefined.locallyContractibleSpace : WellDefined LocallyContractibleSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.locallyContractibleSpace h.some
+  fun {_ _} _ _ h hX => Formal.P223.well_defined h.some hX
 
 end Meta
 

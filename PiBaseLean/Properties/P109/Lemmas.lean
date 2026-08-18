@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.monotonicallyNormalSpace [h : MonotonicallyNormalSpace X] (f : X ≃ₜ Y) :
-    MonotonicallyNormalSpace Y :=
-  Formal.P109.well_defined f h
-
 theorem WellDefined.monotonicallyNormalSpace : WellDefined MonotonicallyNormalSpace :=
-  fun {_ _} _ _ h _ => Homeomorph.monotonicallyNormalSpace h.some
+  fun {_ _} _ _ h hX => Formal.P109.well_defined h.some hX
 
 end Meta
 

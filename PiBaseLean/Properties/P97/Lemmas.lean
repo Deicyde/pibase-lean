@@ -18,9 +18,6 @@ variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 theorem WellDefined.embeddableInR : WellDefined EmbeddableInR :=
   fun {_ _} _ _ h hX => Formal.P97.well_defined h.some hX
 
-theorem Homeomorph.embeddableInR [h : EmbeddableInR X] (f : X ≃ₜ Y) : EmbeddableInR Y :=
-  Formal.P97.well_defined f h
-
 end Meta
 
 end PiBase

@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.locallyRelativelyCompactSpace [h : LocallyRelativelyCompactSpace X]
-    (f : X ≃ₜ Y) : LocallyRelativelyCompactSpace Y :=
-  Formal.P24.well_defined f h
-
 theorem WellDefined.locallyRelativelyCompactSpace : WellDefined LocallyRelativelyCompactSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.locallyRelativelyCompactSpace h.some
+  fun {_ _} _ _ h hX => Formal.P24.well_defined h.some hX
 
 end Meta
 

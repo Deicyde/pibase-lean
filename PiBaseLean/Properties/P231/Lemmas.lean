@@ -15,13 +15,9 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.weaklyLocallySimplyConnectedSpace [h : WeaklyLocallySimplyConnectedSpace X]
-    (f : X ≃ₜ Y) : WeaklyLocallySimplyConnectedSpace Y :=
-  Formal.P231.well_defined f h
-
 theorem WellDefined.weaklyLocallySimplyConnectedSpace :
     WellDefined WeaklyLocallySimplyConnectedSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.weaklyLocallySimplyConnectedSpace h.some
+  fun {_ _} _ _ h hX => Formal.P231.well_defined h.some hX
 
 end Meta
 

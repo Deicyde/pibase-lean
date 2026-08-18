@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.semilocallyContractibleSpace [h : SemilocallyContractibleSpace X]
-    (f : X ≃ₜ Y) : SemilocallyContractibleSpace Y :=
-  Formal.P239.well_defined f h
-
 theorem WellDefined.semilocallyContractibleSpace : WellDefined SemilocallyContractibleSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.semilocallyContractibleSpace h.some
+  fun {_ _} _ _ h hX => Formal.P239.well_defined h.some hX
 
 end Meta
 

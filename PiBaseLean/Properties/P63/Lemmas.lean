@@ -15,10 +15,6 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.cechCompleteSpace [h : CechCompleteSpace X] (f : X ≃ₜ Y) :
-    CechCompleteSpace Y :=
-  Formal.P63.well_defined f h
-
 theorem WellDefined.cechCompleteSpace : WellDefined CechCompleteSpace :=
   fun {_ _} _ _ h hX => Formal.P63.well_defined h.some hX
 

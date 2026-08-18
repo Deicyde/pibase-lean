@@ -13,9 +13,6 @@ section Meta
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.paraLindelofSpace [h : ParaLindelofSpace X] (f : X ≃ₜ Y) : ParaLindelofSpace Y :=
-  Formal.P105.well_defined f h
-
 theorem WellDefined.paraLindelofSpace : WellDefined ParaLindelofSpace :=
   fun {_ _} _ _ h hX => Formal.P105.well_defined h.some hX
 

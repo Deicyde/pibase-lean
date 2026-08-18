@@ -11,15 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-universe u
+universe u v
 
-variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X : Type u} {Y : Type v} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.fullyNormalSpace : WellDefined FullyNormalSpace :=
-  fun {X Y} _ _ φ _ => @FullyNormalSpace.mk _ _ φ.some.symm.isClosedEmbedding.paracompactSpace φ.some.normalSpace
+  fun {_ _} _ _ φ _ =>
+    @FullyNormalSpace.mk _ _ φ.some.symm.isClosedEmbedding.paracompactSpace φ.some.normalSpace
 
 theorem Homeomorph.fullyNormalSpace [FullyNormalSpace X] (f : X ≃ₜ Y) : FullyNormalSpace Y :=
-  WellDefined.fullyNormalSpace ⟨f⟩ inferInstance
+  @FullyNormalSpace.mk _ _ f.symm.isClosedEmbedding.paracompactSpace f.normalSpace
 
 end Meta
 

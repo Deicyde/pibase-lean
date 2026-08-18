@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.eberleinCompactSpace [h : EberleinCompactSpace X] (f : X ≃ₜ Y) :
-    EberleinCompactSpace Y :=
-  Formal.P91.well_defined f h
-
 theorem WellDefined.eberleinCompactSpace : WellDefined EberleinCompactSpace :=
-  fun {_ _} _ _ h _ => Homeomorph.eberleinCompactSpace h.some
+  fun {_ _} _ _ h hX => Formal.P91.well_defined h.some hX
 
 end Meta
 

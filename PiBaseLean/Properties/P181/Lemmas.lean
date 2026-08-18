@@ -9,11 +9,11 @@ namespace PiBase
 
 open Topology Filter Set Function TopologicalSpace
 
-universe u
+universe u v
 
 section Meta
 
-variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X : Type u} {Y : Type v} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem Homeomorph.countablyInfinite [h : CountablyInfinite X] (f : X ≃ₜ Y) :
     CountablyInfinite Y where

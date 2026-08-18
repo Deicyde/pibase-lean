@@ -15,11 +15,8 @@ section Meta
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.kRothbergerSpace [h : KRothbergerSpace X] (f : X ≃ₜ Y) : KRothbergerSpace Y :=
-  Formal.P156.well_defined f h
-
 theorem WellDefined.kRothbergerSpace : WellDefined KRothbergerSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.kRothbergerSpace h.some
+  fun {_ _} _ _ h hX => Formal.P156.well_defined h.some hX
 
 end Meta
 

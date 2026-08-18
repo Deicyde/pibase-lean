@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.countablyManyContinuousSelfMaps [h : CountablyManyContinuousSelfMaps X] (f : X ≃ₜ Y) :
-    CountablyManyContinuousSelfMaps Y :=
-  Formal.P138.well_defined f h
-
 theorem WellDefined.countablyManyContinuousSelfMaps : WellDefined CountablyManyContinuousSelfMaps :=
-  fun {_ _} _ _ h hX => Homeomorph.countablyManyContinuousSelfMaps h.some
+  fun {_ _} _ _ h hX => Formal.P138.well_defined h.some hX
 
 end Meta
 

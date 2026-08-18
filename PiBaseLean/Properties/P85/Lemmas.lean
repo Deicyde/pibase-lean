@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.basicallyDisconnectedSpace [h : BasicallyDisconnectedSpace X] (f : X ≃ₜ Y) :
-    BasicallyDisconnectedSpace Y :=
-  Formal.P85.well_defined f h
-
 theorem WellDefined.basicallyDisconnectedSpace : WellDefined BasicallyDisconnectedSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.basicallyDisconnectedSpace h.some
+  fun {_ _} _ _ h hX => Formal.P85.well_defined h.some hX
 
 end Meta
 

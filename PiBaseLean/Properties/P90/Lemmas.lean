@@ -15,11 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.alexandrovDiscrete [h : AlexandrovDiscrete X] (f : X ≃ₜ Y) : AlexandrovDiscrete Y :=
-  Formal.P90.well_defined f h
-
 theorem WellDefined.alexandrovDiscrete : WellDefined AlexandrovDiscrete :=
-  fun {_ _} _ _ h hX => Homeomorph.alexandrovDiscrete h.some
+  fun {_ _} _ _ h hX => Formal.P90.well_defined h.some hX
 
 end Meta
 

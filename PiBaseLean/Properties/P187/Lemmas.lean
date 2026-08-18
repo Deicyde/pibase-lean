@@ -15,9 +15,6 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.wSpace [h : WSpace X] (f : X ≃ₜ Y) : WSpace Y :=
-  Formal.P187.well_defined f h
-
 theorem WellDefined.wSpace : WellDefined WSpace :=
   fun {_ _} _ _ h hX => Formal.P187.well_defined h.some hX
 

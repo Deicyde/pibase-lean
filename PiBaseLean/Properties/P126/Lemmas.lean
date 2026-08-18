@@ -15,11 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.doorSpace [h : DoorSpace X] (f : X ≃ₜ Y) : DoorSpace Y :=
-  Formal.P126.well_defined f h
-
 theorem WellDefined.doorSpace : WellDefined DoorSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.doorSpace h.some
+  fun {_ _} _ _ h hX => Formal.P126.well_defined h.some hX
 
 end Meta
 

@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.topologicalNManifold [h : TopologicalNManifold X] (f : X ≃ₜ Y) :
-    TopologicalNManifold Y :=
-  PiBase.Formal.P124.well_defined f h
-
 theorem WellDefined.topologicalNManifold : WellDefined TopologicalNManifold :=
-  fun {_ _} _ _ h hX ↦ Homeomorph.topologicalNManifold h.some
+  fun {_ _} _ _ h hX => PiBase.Formal.P124.well_defined h.some hX
 
 end Meta
 

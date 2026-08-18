@@ -15,11 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.kω1Space [h : kω1Space X] (f : X ≃ₜ Y) : kω1Space Y :=
-  Formal.P98.well_defined f h
-
 theorem WellDefined.kω1Space : WellDefined kω1Space :=
-  fun {_ _} _ _ h _ => Homeomorph.kω1Space h.some
+  fun {_ _} _ _ h hX => Formal.P98.well_defined h.some hX
 
 end Meta
 

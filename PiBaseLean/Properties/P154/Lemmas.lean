@@ -15,11 +15,8 @@ section Meta
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.goSpace [h : GoSpace X] (f : X ≃ₜ Y) : GoSpace Y :=
-  Formal.P154.well_defined f h
-
 theorem WellDefined.goSpace : WellDefined GoSpace :=
-  fun {_ _} _ _ h hX => Homeomorph.goSpace h.some
+  fun {_ _} _ _ h hX => Formal.P154.well_defined h.some hX
 
 end Meta
 

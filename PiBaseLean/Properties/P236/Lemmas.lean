@@ -15,12 +15,8 @@ universe u
 
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem Homeomorph.locallyNEuclideanHalfSpace [h : LocallyNEuclideanHalfSpace X] (f : X ≃ₜ Y) :
-    LocallyNEuclideanHalfSpace Y :=
-  Formal.P236.well_defined f h
-
 theorem WellDefined.locallyNEuclideanHalfSpace : WellDefined LocallyNEuclideanHalfSpace :=
-  fun {_ _} _ _ h hX ↦ Homeomorph.locallyNEuclideanHalfSpace h.some
+  fun {_ _} _ _ h hX => Formal.P236.well_defined h.some hX
 
 end Meta
 
