@@ -21,7 +21,7 @@ namespace PiBase.Formal
 
 section Transport
 
-variable {M N : Type u}
+variable {M : Type u} {N : Type v}
 
 /-- Mapping an initial segment of a sequence is the initial segment of the mapped sequence. -/
 theorem ofFun_map (g : M → N) (f : ℕ → M) (k : ℕ) :
