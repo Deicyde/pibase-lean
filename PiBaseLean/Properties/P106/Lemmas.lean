@@ -11,7 +11,7 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.hasGδDiagonal : WellDefined HasGδDiagonal :=
   fun {_ _} _ _ h hX => Formal.P106.well_defined h.some hX

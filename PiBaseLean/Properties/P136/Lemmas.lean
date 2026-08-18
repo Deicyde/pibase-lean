@@ -8,9 +8,8 @@ public import PiBaseLean.Properties.P136.Defs
 namespace PiBase
 
 open Topology Filter Set Function TopologicalSpace
-universe u
 section Meta
-variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.anticompactSpace : WellDefined AnticompactSpace :=
   fun {_ _} _ _ h hX => Formal.P136.well_defined h.some hX

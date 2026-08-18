@@ -11,9 +11,8 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-universe u
 
-variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 -- Transport
 

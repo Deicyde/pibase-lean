@@ -7,7 +7,7 @@ public import PiBaseLean.Properties.Bundled.Defs
 
 open Set Filter Topology
 
-universe u
+universe u v
 
 namespace PiBase
 
@@ -54,7 +54,7 @@ end Transport
 
 section WGame
 
-variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X : Type u} {Y : Type v} [TopologicalSpace X] [TopologicalSpace Y]
 
 /-- The move of the `wGame` on `X` corresponding to a move of the `wGame` on `Y`
 along a homeomorphism `φ : X ≃ₜ Y`. -/

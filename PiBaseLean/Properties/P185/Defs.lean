@@ -20,7 +20,7 @@ end PiBase
 namespace PiBase.Formal
 
 /-- A homeomorphism `φ : X ≃ₜ Y` descends to a homeomorphism of the Kolmogorov quotients. -/
-def separationQuotientCongr {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+def separationQuotientCongr {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
     (φ : X ≃ₜ Y) : SeparationQuotient X ≃ₜ SeparationQuotient Y where
   toFun := SeparationQuotient.lift (fun x => SeparationQuotient.mk (φ x))
     fun _ _ hxy => SeparationQuotient.mk_eq_mk.2 (hxy.map φ.continuous)

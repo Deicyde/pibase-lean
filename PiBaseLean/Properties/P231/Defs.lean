@@ -13,7 +13,7 @@ universe u
 namespace PiBase
 
 /- 231. Weakly locally simply connected -/
-class WeaklyLocallySimplyConnectedSpace (X : Type u) [TopologicalSpace X] : Prop where
+class WeaklyLocallySimplyConnectedSpace (X : Type*) [TopologicalSpace X] : Prop where
   simply_connected_nbhd (x : X) : ∃ U ∈ 𝓝 x, SimplyConnectedSpace U
 
 end PiBase

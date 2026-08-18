@@ -24,9 +24,8 @@ theorem countableChainCondition_iff_ex_nonempty_chain (X : Type*) [TopologicalSp
 
 section Meta
 
-universe u
 
-variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.countableChainCondition : WellDefined CountableChainCondition :=
   fun {_ _} _ _ h hX => Formal.P29.well_defined h.some hX

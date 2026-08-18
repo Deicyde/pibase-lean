@@ -14,7 +14,7 @@ section Meta
 
 universe u
 
-variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.cardLtEveryMeasurableCardinal :
     WellDefined (fun (X : Type u) => CardLtEveryMeasurableCardinal X) :=

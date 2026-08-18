@@ -33,7 +33,7 @@ lemma metrizableSpace_iff_exists_metric (X : Type u) [τ : TopologicalSpace X] :
     apply @PseudoMetrizableSpace.toMetrizableSpace X
       <| PseudoMetricSpace.toUniformSpace.toTopologicalSpace (α := X)
 
-variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.pseudoMetrizableSpace : WellDefined PseudoMetrizableSpace :=
   fun {_ _} _ _ h hX => Formal.P121.well_defined h.some hX

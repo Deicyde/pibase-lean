@@ -6,7 +6,7 @@ public import PiBaseLean.Properties.P151.Defs
 
 @[expose] public section
 
-universe u
+universe u v
 
 namespace PiBase
 
@@ -28,7 +28,7 @@ invariant under a homeomorphism (`preimageFamilyEquiv_isKCover'`). -/
 
 section KRothberger
 
-variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X : Type u} {Y : Type v} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem preimageFamilyEquiv_mem_kCovers (φ : X ≃ₜ Y) (S : Set (Set Y)) :
     preimageFamilyEquiv φ S ∈ {A : Set (Set X) | IsKCover' A} ↔

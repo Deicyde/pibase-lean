@@ -12,9 +12,8 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-universe u
 
-variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.hereditarilyRealcompactSpace : WellDefined HereditarilyRealcompactSpace :=
   fun hXY hX => ⟨(Hereditarily.wellDefined WellDefined.realcompactSpace) hXY hX.subset_realcompact⟩

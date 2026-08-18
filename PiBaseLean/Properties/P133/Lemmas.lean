@@ -10,7 +10,7 @@ namespace PiBase
 
 open Topology Filter Set TopologicalSpace
 
-variable {X Y : Type u} [t : TopologicalSpace X] [s : TopologicalSpace Y]
+variable {X Y : Type*} [t : TopologicalSpace X] [s : TopologicalSpace Y]
 
 instance instLotsOfOrderTopology {X : Type*} [TopologicalSpace X] [h : LinearOrder X]
     [h' : OrderTopology X] : Lots X where from_linear_order := ⟨h, h'⟩
