@@ -11,12 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.proximalSpace [h : ProximalSpace X] (f : X ≃ₜ Y) : ProximalSpace Y :=
+  Formal.P76.well_defined f h
 
 theorem WellDefined.proximalSpace : WellDefined ProximalSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.proximalSpace h.some
 
 end Meta
 
 end PiBase
-

@@ -11,10 +11,15 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.doorSpace [h : DoorSpace X] (f : X ≃ₜ Y) : DoorSpace Y :=
+  Formal.P126.well_defined f h
 
 theorem WellDefined.doorSpace : WellDefined DoorSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.doorSpace h.some
 
 end Meta
 

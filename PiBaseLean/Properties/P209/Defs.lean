@@ -20,6 +20,18 @@ namespace PiBase.Formal
 
 def P209 : Property where
   toPred := DensityLeContinuum
-  well_defined φ h := sorry
+  well_defined φ h := by
+    obtain ⟨s, hDense, hLe⟩ := h.ex_dense
+    refine ⟨φ '' s, ?_, ?_⟩
+    · intro y
+      have hmem : φ.symm y ∈ closure s := hDense (φ.symm y)
+      have hmem' : y ∈ φ '' closure s := by
+        rw [Set.mem_image]
+        exact ⟨φ.symm y, hmem, φ.apply_symm_apply y⟩
+      rw [φ.image_closure] at hmem'
+      exact hmem'
+    · have hEq : #(φ '' s) = #s := Cardinal.mk_image_eq φ.injective
+      calc #(φ '' s) = #s := hEq
+        _ ≤ 𝔠 := hLe
 
 end PiBase.Formal

@@ -11,10 +11,15 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.wellBasedSpace [h : WellBasedSpace X] (f : X ≃ₜ Y) : WellBasedSpace Y :=
+  Formal.P174.well_defined f h
 
 theorem WellDefined.wellBasedSpace : WellDefined WellBasedSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Formal.P174.well_defined h.some hX
 
 end Meta
 

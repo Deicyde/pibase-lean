@@ -11,10 +11,14 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.semimetrizableSpace [h : SemimetrizableSpace X] (f : X ≃ₜ Y) :
+    SemimetrizableSpace Y :=
+  Formal.P102.well_defined f h
 
 theorem WellDefined.semimetrizableSpace : WellDefined SemimetrizableSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.semimetrizableSpace h.some
 
 end Meta
 

@@ -22,6 +22,11 @@ namespace PiBase.Formal
 
 def P147 : Property where
   toPred := PSpace
-  well_defined φ h := sorry
+  well_defined φ h := by
+    constructor
+    intro s hs
+    have hg' : IsGδ (φ ⁻¹' s) := IsGδ.preimage φ.continuous hs
+    have ho' := h.isGδ_open hg'
+    exact φ.isOpen_preimage.mp ho'
 
 end PiBase.Formal

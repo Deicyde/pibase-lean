@@ -11,10 +11,15 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.ordinalSpace [OrdinalSpace X] (f : X ≃ₜ Y) : OrdinalSpace Y :=
+  Formal.P190.well_defined f ‹_›
 
 theorem WellDefined.ordinalSpace : WellDefined OrdinalSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.ordinalSpace h.some
 
 end Meta
 

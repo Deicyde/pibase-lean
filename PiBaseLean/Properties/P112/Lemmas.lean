@@ -11,10 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.submetrizableSpace [h : SubmetrizableSpace X] (f : X ≃ₜ Y) :
+    SubmetrizableSpace Y :=
+  Formal.P112.well_defined f h
 
 theorem WellDefined.submetrizableSpace : WellDefined SubmetrizableSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.submetrizableSpace h.some
 
 end Meta
 

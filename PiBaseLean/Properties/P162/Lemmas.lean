@@ -14,20 +14,7 @@ open Topology Filter Set TopologicalSpace
 
 variable {X : Type u} {Y : Type v} [t : TopologicalSpace X] [s : TopologicalSpace Y]
 
-/- Most likely true but difficult
-theorem realcompactSpace_iff_fun_self (X : Type u) [TopologicalSpace X] :
-    RealcompactSpace X ↔ ∃ s : Set (X → ℝ), IsClosed s ∧ IsHomeo X s := by
-  refine ⟨fun ⟨ι, s, sc, hs⟩ ↦ ?_, fun ⟨s, sc, hs⟩ ↦ ⟨X, s, sc, hs⟩⟩
-
-  let s' : Set (s → ℝ) := by
-    sorry
-  replace g := hs.some
-  let sup : Set ι := {i | ∃ r ∈ s, ∃ t ∈ s, r i ≠ t i}
-  let h : sup → s := by
-
-    sorry
-  sorry
--/
+/- Most likely true but difficult - proof omitted -/
 
 section Meta
 
@@ -40,7 +27,12 @@ theorem Homeomorph.realcompactSpace [h : RealcompactSpace X] (g : X ≃ₜ Y) : 
 -/
 
 theorem WellDefined.realcompactSpace : WellDefined RealcompactSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Formal.P162.well_defined h.some hX
+
+theorem Homeomorph.realcompactSpace {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+    [h : RealcompactSpace X] (f : X ≃ₜ Y) : RealcompactSpace Y := by
+  obtain ⟨ι, g, hg⟩ := h.homeo_closed
+  exact ⟨⟨ι, g ∘ f.symm, hg.comp f.symm.isClosedEmbedding⟩⟩
 
 end Meta
 

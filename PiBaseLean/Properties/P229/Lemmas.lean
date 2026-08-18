@@ -13,8 +13,12 @@ section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
+theorem Homeomorph.semilocallySimplyConnectedSpace (f : X ≃ₜ Y)
+    [SemilocallySimplyConnectedSpace X] : SemilocallySimplyConnectedSpace Y :=
+  semilocallySimplyConnectedSpace_of_homeomorph f inferInstance
+
 theorem WellDefined.semilocallySimplyConnectedSpace : WellDefined SemilocallySimplyConnectedSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.semilocallySimplyConnectedSpace h.some
 
 end Meta
 

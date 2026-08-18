@@ -11,10 +11,15 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.radialSpace [h : RadialSpace X] (f : X ≃ₜ Y) : RadialSpace Y :=
+  Formal.P172.well_defined f h
 
 theorem WellDefined.radialSpace : WellDefined RadialSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.radialSpace h.some
 
 end Meta
 

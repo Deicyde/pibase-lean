@@ -11,10 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.cozeroComplementedSpace [h : CozeroComplementedSpace X] (f : X ≃ₜ Y) :
+    CozeroComplementedSpace Y :=
+  Formal.P61.well_defined f h
 
 theorem WellDefined.cozeroComplementedSpace : WellDefined CozeroComplementedSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.cozeroComplementedSpace h.some
 
 end Meta
 

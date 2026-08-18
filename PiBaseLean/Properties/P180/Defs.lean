@@ -3,6 +3,7 @@ module
 public import Mathlib.Topology.Bases
 public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.Bundled.Defs
+public import PiBaseLean.Properties.P26.Lemmas
 
 @[expose] public section
 
@@ -20,6 +21,7 @@ namespace PiBase.Formal
 
 def P180 : Property where
   toPred := HereditarilySeparableSpace
-  well_defined φ h := sorry
+  well_defined φ h :=
+    ⟨Hereditarily.wellDefined WellDefined.separableSpace ⟨φ⟩ h.subset_separable⟩
 
 end PiBase.Formal

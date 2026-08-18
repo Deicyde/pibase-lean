@@ -19,6 +19,11 @@ namespace PiBase.Formal
 
 def P196 : Property where
   toPred := HereditarilyConnected
-  well_defined φ h := sorry
+  well_defined φ h := by
+    constructor
+    intro t
+    have h1 := h.subset_connected (φ ⁻¹' t)
+    have h2 := h1.image φ φ.continuous.continuousOn
+    rwa [φ.image_preimage t] at h2
 
 end PiBase.Formal

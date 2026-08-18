@@ -20,6 +20,16 @@ namespace PiBase.Formal
 
 def P99 : Property where
   toPred := UsSpace
-  well_defined φ h := sorry
+  well_defined φ h := by
+    constructor
+    intro f a b ha hb
+    have ha' : Filter.Tendsto (φ.symm ∘ f) Filter.atTop (𝓝 (φ.symm a)) :=
+      (φ.symm.continuous.continuousAt (x := a)).tendsto.comp ha
+    have hb' : Filter.Tendsto (φ.symm ∘ f) Filter.atTop (𝓝 (φ.symm b)) :=
+      (φ.symm.continuous.continuousAt (x := b)).tendsto.comp hb
+    have heq : φ.symm a = φ.symm b := h.us (φ.symm ∘ f) _ _ ha' hb'
+    calc a = φ (φ.symm a) := (φ.apply_symm_apply a).symm
+      _ = φ (φ.symm b) := by rw [heq]
+      _ = b := φ.apply_symm_apply b
 
 end PiBase.Formal

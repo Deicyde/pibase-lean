@@ -11,10 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.sigmaRelativelyCompactSpace [h : SigmaRelativelyCompactSpace X]
+    (f : X ≃ₜ Y) : SigmaRelativelyCompactSpace Y :=
+  Formal.P71.well_defined f h
 
 theorem WellDefined.sigmaRelativelyCompactSpace : WellDefined SigmaRelativelyCompactSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.sigmaRelativelyCompactSpace h.some
 
 end Meta
 

@@ -11,10 +11,15 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.hasGroupTopology [h : HasGroupTopology X] (f : X ≃ₜ Y) : HasGroupTopology Y :=
+  Formal.P87.well_defined f h
 
 theorem WellDefined.hasGroupTopology : WellDefined HasGroupTopology :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.hasGroupTopology h.some
 
 end Meta
 

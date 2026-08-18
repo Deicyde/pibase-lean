@@ -11,10 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.locallyInjPathConnectedSpace [h : LocallyInjPathConnectedSpace X]
+    (f : X ≃ₜ Y) : LocallyInjPathConnectedSpace Y :=
+  Formal.P43.well_defined f h
 
 theorem WellDefined.locallyInjPathConnectedSpace : WellDefined LocallyInjPathConnectedSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.locallyInjPathConnectedSpace h.some
 
 end Meta
 

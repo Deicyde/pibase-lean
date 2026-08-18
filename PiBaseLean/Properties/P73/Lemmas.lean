@@ -33,8 +33,12 @@ theorem soberSpace_iff_ex_unique_generic :
     exact isGenericPoint_closure
   exact (h (closure {x}) isIrreducible_singleton.closure isClosed_closure).unique px py
 
+theorem Homeomorph.soberSpace [h : SoberSpace X] (f : X ≃ₜ Y) : SoberSpace Y where
+  toQuasiSober := f.symm.isClosedEmbedding.quasiSober
+  toT0Space := f.t0Space
+
 theorem WellDefined.soberSpace : WellDefined SoberSpace :=
-  sorry
+  fun {_ _} _ _ h _ ↦ Homeomorph.soberSpace h.some
 
 end Meta
 

@@ -11,10 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.locallyPseudoMetrizableSpace [h : LocallyPseudoMetrizableSpace X] (f : X ≃ₜ Y) :
+    LocallyPseudoMetrizableSpace Y :=
+  Formal.P144.well_defined f h
 
 theorem WellDefined.locallyPseudoMetrizableSpace : WellDefined LocallyPseudoMetrizableSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.locallyPseudoMetrizableSpace h.some
 
 end Meta
 

@@ -11,10 +11,15 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.cosmicSpace [h : CosmicSpace X] (φ : X ≃ₜ Y) : CosmicSpace Y :=
+  Formal.P74.well_defined φ h
 
 theorem WellDefined.cosmicSpace : WellDefined CosmicSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.cosmicSpace h.some
 
 end Meta
 

@@ -11,12 +11,17 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.markovMengerSpace [h : MarkovMengerSpace X] (f : X ≃ₜ Y) :
+    MarkovMengerSpace Y :=
+  Formal.P70.well_defined f h
 
 theorem WellDefined.markovMengerSpace : WellDefined MarkovMengerSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.markovMengerSpace h.some
 
 end Meta
 
 end PiBase
-

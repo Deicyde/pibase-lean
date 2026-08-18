@@ -11,10 +11,15 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.continuumSpace [h : ContinuumSpace X] (f : X ≃ₜ Y) : ContinuumSpace Y :=
+  Formal.P188.well_defined f h
 
 theorem WellDefined.continuumSpace : WellDefined ContinuumSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.continuumSpace (h := hX) h.some
 
 end Meta
 

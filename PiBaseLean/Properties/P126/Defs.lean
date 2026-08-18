@@ -21,6 +21,10 @@ namespace PiBase.Formal
 
 def P126 : Property where
   toPred := DoorSpace
-  well_defined φ h := sorry
+  well_defined φ h := ⟨fun s => by
+    have hs := h.isOpen_or_isClosed (φ ⁻¹' s)
+    rcases hs with ho | hc
+    · left; exact φ.isOpen_preimage.mp ho
+    · right; exact φ.isClosed_preimage.mp hc⟩
 
 end PiBase.Formal

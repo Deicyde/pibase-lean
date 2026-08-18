@@ -11,10 +11,13 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.hasGδDiagonal [h : HasGδDiagonal X] (f : X ≃ₜ Y) : HasGδDiagonal Y :=
+  Formal.P106.well_defined f h
 
 theorem WellDefined.hasGδDiagonal : WellDefined HasGδDiagonal :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.hasGδDiagonal h.some
 
 end Meta
 

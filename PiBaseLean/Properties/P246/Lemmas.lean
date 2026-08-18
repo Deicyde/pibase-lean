@@ -11,10 +11,19 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
 
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.collectionwiseHausdorffSpace
+    [h : CollectionwiseHausdorffSpace X] (f : X ≃ₜ Y) :
+    CollectionwiseHausdorffSpace Y :=
+  PiBase.Formal.P246.well_defined f h
+
+-- Transport via Homeomorph image: closed preimage via Homeomorph,
+-- discrete via subtype homeomorph, open cover via isOpenMap, etc.
 theorem WellDefined.collectionwiseHausdorffSpace : WellDefined CollectionwiseHausdorffSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.collectionwiseHausdorffSpace h.some
 
 end Meta
 

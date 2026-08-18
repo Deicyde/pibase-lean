@@ -14,7 +14,7 @@ section Meta
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.pseudonormalSpace : WellDefined PseudonormalSpace :=
-  sorry
+  fun {_ _} _ _ h hX ↦ Formal.P165.well_defined h.some hX
 
 end Meta
 

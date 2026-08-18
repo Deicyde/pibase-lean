@@ -2,6 +2,7 @@ module
 
 public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P162.Defs
+public import PiBaseLean.Properties.P162.Lemmas
 
 @[expose] public section
 
@@ -21,6 +22,7 @@ namespace PiBase.Formal
 
 def P215 : Property where
   toPred := HereditarilyRealcompactSpace
-  well_defined φ h := sorry
+  well_defined φ h :=
+    ⟨Hereditarily.wellDefined WellDefined.realcompactSpace ⟨φ⟩ h.subset_realcompact⟩
 
 end PiBase.Formal

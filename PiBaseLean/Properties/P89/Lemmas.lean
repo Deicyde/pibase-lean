@@ -11,10 +11,15 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.fixedPointSpace [h : FixedPointSpace X] (f : X ≃ₜ Y) : FixedPointSpace Y :=
+  Formal.P89.well_defined f h
 
 theorem WellDefined.fixedPointSpace : WellDefined FixedPointSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.fixedPointSpace h.some
 
 end Meta
 

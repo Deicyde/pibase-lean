@@ -9,12 +9,18 @@ namespace PiBase
 
 open Topology Filter Set Function TopologicalSpace
 
+universe u
+
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.ultraparacompactSpace [h : UltraparacompactSpace X] (f : X ≃ₜ Y) :
+    UltraparacompactSpace Y :=
+  Formal.P146.well_defined f h
 
 theorem WellDefined.ultraparacompactSpace : WellDefined UltraparacompactSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.ultraparacompactSpace h.some
 
 end Meta
 

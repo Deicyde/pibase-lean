@@ -2,6 +2,7 @@ module
 
 public import PiBaseLean.AdditionalDefs.Games
 public import PiBaseLean.Properties.Bundled.Defs
+public import PiBaseLean.Properties.P69.Defs
 
 @[expose] public section
 
@@ -19,6 +20,7 @@ namespace PiBase.Formal
 
 def P72 : Property where
   toPred := TwoMarkovMengerSpace
-  well_defined φ h := sorry
+  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h :=
+    ⟨h.two_markov_menger.mengerGame_of_homeomorph φ⟩
 
 end PiBase.Formal

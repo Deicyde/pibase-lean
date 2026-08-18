@@ -15,7 +15,7 @@ variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.hereditarilyCollectionwiseNormalSpace :
     WellDefined HereditarilyCollectionwiseNormalSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Formal.P108.well_defined h.some hX
 
 end Meta
 

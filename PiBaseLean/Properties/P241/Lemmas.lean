@@ -11,10 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.locallyEuclideanHalfLine [h : LocallyEuclideanHalfLine X] (f : X ≃ₜ Y) :
+    LocallyEuclideanHalfLine Y :=
+  Formal.P241.well_defined f h
 
 theorem WellDefined.locallyEuclideanHalfLine : WellDefined LocallyEuclideanHalfLine :=
-  sorry
+  fun {_ _} _ _ h hX ↦ Homeomorph.locallyEuclideanHalfLine h.some
 
 end Meta
 

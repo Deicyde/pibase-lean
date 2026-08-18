@@ -11,10 +11,15 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.locallyCountableSpace [h : LocallyCountableSpace X] (f : X ≃ₜ Y) : LocallyCountableSpace Y :=
+  Formal.P93.well_defined f h
 
 theorem WellDefined.locallyCountableSpace : WellDefined LocallyCountableSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.locallyCountableSpace h.some
 
 end Meta
 

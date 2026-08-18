@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Topology.Homeomorph.Lemmas
 public import PiBaseLean.AdditionalDefs.Constructions
 public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.Bundled.Defs
@@ -21,6 +22,12 @@ namespace PiBase.Formal
 
 def P77 : Property where
   toPred := CorsonCompactSpace
-  well_defined φ h := sorry
+  well_defined φ h := by
+    obtain ⟨α, f, hf⟩ := h.isHomoeo_subset
+    -- preserve compact via φ.compactSpace: need CompactSpace X instance from h
+    exact {
+      toCompactSpace := @Homeomorph.compactSpace _ _ _ _ h.toCompactSpace φ
+      isHomoeo_subset := ⟨α, f ∘ φ.symm, hf.comp φ.symm.isEmbedding⟩
+    }
 
 end PiBase.Formal

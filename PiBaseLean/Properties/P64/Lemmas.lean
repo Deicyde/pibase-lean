@@ -14,7 +14,7 @@ section Meta
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.baireSpace : WellDefined BaireSpace :=
-  sorry
+  fun {_ _} _ _ h _ ↦ Homeomorph.baireSpace h.some
 
 end Meta
 

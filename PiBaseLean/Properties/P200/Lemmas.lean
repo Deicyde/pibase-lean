@@ -32,8 +32,14 @@ theorem SimplyConnectedSpace.presimplyConnectedSpace [h : SimplyConnectedSpace X
 
 section Meta
 
+universe u
+
+theorem Homeomorph.presimplyConnectedSpace {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+    [h : PresimplyConnectedSpace X] (φ : X ≃ₜ Y) : PresimplyConnectedSpace Y :=
+  Formal.P200.well_defined φ h
+
 theorem WellDefined.presimplyConnectedSpace : WellDefined PresimplyConnectedSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.presimplyConnectedSpace h.some
 
 end Meta
 

@@ -11,10 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.hasSigmaLocallyFiniteBasis [h : HasSigmaLocallyFiniteBasis X] (f : X ≃ₜ Y) :
+    HasSigmaLocallyFiniteBasis Y :=
+  Formal.P54.well_defined f h
 
 theorem WellDefined.hasSigmaLocallyFiniteBasis : WellDefined HasSigmaLocallyFiniteBasis :=
-  sorry
+  fun {_ _} _ _ h hX => Formal.P54.well_defined h.some hX
 
 end Meta
 

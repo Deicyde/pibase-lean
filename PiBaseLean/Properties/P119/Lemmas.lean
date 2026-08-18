@@ -11,10 +11,13 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.stoneanSpace [h : StoneanSpace X] (f : X ≃ₜ Y) : StoneanSpace Y :=
+  Formal.P119.well_defined f h
 
 theorem WellDefined.stoneanSpace : WellDefined StoneanSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.stoneanSpace h.some
 
 end Meta
 

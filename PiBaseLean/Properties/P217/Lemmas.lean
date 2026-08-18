@@ -14,7 +14,7 @@ section Meta
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.stronglyZeroDimensionalSpace : WellDefined StronglyZeroDimensionalSpace :=
-  sorry
+  fun hXY hX => Formal.P217.well_defined hXY.some hX
 
 end Meta
 

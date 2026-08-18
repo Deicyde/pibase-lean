@@ -13,8 +13,12 @@ section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
+theorem Homeomorph.locallyConnectedSpace [h : LocallyConnectedSpace X] (f : X ≃ₜ Y) :
+    LocallyConnectedSpace Y :=
+  f.symm.isOpenEmbedding.locallyConnectedSpace
+
 theorem WellDefined.locallyConnectedSpace : WellDefined LocallyConnectedSpace :=
-  sorry
+  fun {_ _} _ _ h hX ↦ Homeomorph.locallyConnectedSpace h.some
 
 end Meta
 

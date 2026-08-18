@@ -11,12 +11,17 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.locallyContractibleSpace [h : LocallyContractibleSpace X]
+    (f : X ≃ₜ Y) : LocallyContractibleSpace Y :=
+  Formal.P223.well_defined f h
 
 theorem WellDefined.locallyContractibleSpace : WellDefined LocallyContractibleSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.locallyContractibleSpace h.some
 
 end Meta
 
 end PiBase
-

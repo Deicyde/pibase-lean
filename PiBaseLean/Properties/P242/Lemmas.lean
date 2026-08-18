@@ -11,10 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.weaklyContractibleSpace [h : WeaklyContractibleSpace X] (f : X ≃ₜ Y) :
+    WeaklyContractibleSpace Y :=
+  Formal.P242.well_defined f h
 
 theorem WellDefined.weaklyContractibleSpace : WellDefined WeaklyContractibleSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Formal.P242.well_defined h.some hX
 
 end Meta
 

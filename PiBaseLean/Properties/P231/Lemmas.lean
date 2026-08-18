@@ -11,11 +11,17 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.weaklyLocallySimplyConnectedSpace [h : WeaklyLocallySimplyConnectedSpace X]
+    (f : X ≃ₜ Y) : WeaklyLocallySimplyConnectedSpace Y :=
+  Formal.P231.well_defined f h
 
 theorem WellDefined.weaklyLocallySimplyConnectedSpace :
     WellDefined WeaklyLocallySimplyConnectedSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.weaklyLocallySimplyConnectedSpace h.some
 
 end Meta
 

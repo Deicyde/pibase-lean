@@ -13,8 +13,12 @@ section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
+theorem Homeomorph.sequentialSpace [h : SequentialSpace X] (f : X ≃ₜ Y) :
+    SequentialSpace Y :=
+  f.isQuotientMap.sequentialSpace
+
 theorem WellDefined.sequentialSpace : WellDefined SequentialSpace :=
-  sorry
+  fun {_ _} _ _ h _ ↦ Homeomorph.sequentialSpace h.some
 
 end Meta
 

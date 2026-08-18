@@ -1,6 +1,7 @@
 module
 
 public import Mathlib.Topology.Connected.TotallyDisconnected
+public import Mathlib.Topology.Homeomorph.Lemmas
 public import Mathlib.Topology.Separation.Hausdorff
 public import PiBaseLean.Properties.Bundled.Defs
 
@@ -22,6 +23,7 @@ namespace PiBase.Formal
 
 def P195 : Property where
   toPred := StoneSpace
-  well_defined φ h := sorry
+  well_defined φ h :=
+    @StoneSpace.mk _ _ φ.compactSpace φ.t2Space φ.totallyDisconnectedSpace
 
 end PiBase.Formal

@@ -33,10 +33,13 @@ lemma metrizableSpace_iff_exists_metric (X : Type u) [τ : TopologicalSpace X] :
     apply @PseudoMetrizableSpace.toMetrizableSpace X
       <| PseudoMetricSpace.toUniformSpace.toTopologicalSpace (α := X)
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.pseudoMetrizableSpace [h : PseudoMetrizableSpace X] (f : X ≃ₜ Y) : PseudoMetrizableSpace Y :=
+  Formal.P121.well_defined f h
 
 theorem WellDefined.pseudoMetrizableSpace : WellDefined PseudoMetrizableSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.pseudoMetrizableSpace h.some
 
 end Meta
 

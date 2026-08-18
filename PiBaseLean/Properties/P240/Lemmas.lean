@@ -11,10 +11,15 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.cWComplexSpace [h : CWComplexSpace X] (f : X ≃ₜ Y) : CWComplexSpace Y :=
+  Formal.P240.well_defined f h
 
 theorem WellDefined.cWComplexSpace : WellDefined CWComplexSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Formal.P240.well_defined h.some hX
 
 end Meta
 

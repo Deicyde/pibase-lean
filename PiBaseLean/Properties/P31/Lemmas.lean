@@ -11,10 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.metacompactSpace [h : MetacompactSpace X] (f : X ≃ₜ Y) :
+    MetacompactSpace Y :=
+  Formal.P31.well_defined f h
 
 theorem WellDefined.metacompactSpace : WellDefined MetacompactSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Formal.P31.well_defined h.some hX
 
 end Meta
 

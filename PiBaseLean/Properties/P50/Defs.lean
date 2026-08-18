@@ -19,6 +19,12 @@ namespace PiBase.Formal
 
 def P50 : Property where
   toPred := ZeroDimensionalSpace
-  well_defined φ h := sorry
+  well_defined φ h := by
+    rcases h.zero_dimensional with ⟨B, Bβ, Bc⟩
+    refine ⟨Set.image φ '' B, Bβ.isQuotientMap φ.isQuotientMap φ.isOpenMap, ?_⟩
+    rintro _ ⟨s, sB, rfl⟩
+    have hc : IsClopen s := Bc s sB
+    -- IsClopen = IsClosed ∧ IsOpen, so order is ⟨closed, open⟩
+    exact ⟨φ.isClosedMap _ hc.1, φ.isOpenMap _ hc.2⟩
 
 end PiBase.Formal

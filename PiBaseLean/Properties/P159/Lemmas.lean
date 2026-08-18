@@ -14,7 +14,7 @@ section Meta
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.kMengerSpace : WellDefined KMengerSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Formal.P159.well_defined h.some hX
 
 end Meta
 

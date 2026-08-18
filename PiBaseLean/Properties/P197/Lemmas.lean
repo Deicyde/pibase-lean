@@ -2,6 +2,9 @@ module
 
 public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P197.Defs
+public import Mathlib.Topology.Homeomorph.Lemmas
+public import Mathlib.Topology.DiscreteSubset
+public import Mathlib.Data.Set.Countable
 
 @[expose] public section
 
@@ -37,10 +40,40 @@ theorem hasCountableSpread_iff_discrete_countable :
     simp only [upperBounds, mem_ofPred_eq, forall_exists_index, and_imp]
     exact fun a s sa sd ↦ sa ▸ le_aleph0_iff_set_countable.mpr (h sd)
 
+universe u
+
 section Meta
 
+variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+
+/-- Discrete subsets are preserved by homeomorphic images via the subtype homeomorph `φ.image`. -/
+private lemma isDiscrete_image_homeomorph {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    (φ : X ≃ₜ Y) {s : Set X} (hs : IsDiscrete s) : IsDiscrete (φ '' s) := by
+  have hDT : DiscreteTopology s := isDiscrete_iff_discreteTopology.mp hs
+  have hDT' : DiscreteTopology (φ '' s) := by
+    haveI := hDT
+    exact (φ.image s).discreteTopology
+  exact isDiscrete_iff_discreteTopology.mpr hDT'
+
+private lemma isDiscrete_preimage_homeomorph {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    (φ : X ≃ₜ Y) {t : Set Y} (ht : IsDiscrete t) : IsDiscrete (φ ⁻¹' t) := by
+  have h_eq : φ ⁻¹' t = φ.symm '' t := by
+    ext x
+    constructor
+    · intro hx
+      exact ⟨φ x, hx, by simp⟩
+    · rintro ⟨y, hy, rfl⟩
+      simp [hy]
+  rw [h_eq]
+  exact isDiscrete_image_homeomorph φ.symm ht
+
+theorem Homeomorph.hasCountableSpread {X Y : Type u} [TopologicalSpace X]
+    [TopologicalSpace Y] [h : HasCountableSpread X] (φ : X ≃ₜ Y) :
+    HasCountableSpread Y :=
+  Formal.P197.well_defined φ h
+
 theorem WellDefined.hasCountableSpread : WellDefined HasCountableSpread :=
-  sorry
+  fun {_ _} _ _ h _ ↦ Homeomorph.hasCountableSpread h.some
 
 end Meta
 

@@ -14,7 +14,7 @@ section Meta
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.hasCofiniteTopology : WellDefined HasCofiniteTopology :=
-  sorry
+  fun {_ _} _ _ h hX => Formal.P222.well_defined h.some hX
 
 end Meta
 

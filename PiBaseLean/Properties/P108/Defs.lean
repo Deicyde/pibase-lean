@@ -19,6 +19,10 @@ namespace PiBase.Formal
 
 def P108 : Property where
   toPred := HereditarilyCollectionwiseNormalSpace
-  well_defined φ h := sorry
+  well_defined φ h := by
+    constructor
+    intro s
+    have hX := h.hereditarily_collectionwise_normal (φ ⁻¹' s)
+    exact Formal.P88.well_defined (IsHomeo.subset_preimage φ s).some hX
 
 end PiBase.Formal

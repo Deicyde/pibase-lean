@@ -3,6 +3,7 @@ module
 public import Mathlib.Topology.Compactness.Paracompact
 public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.Bundled.Defs
+public import PiBaseLean.Properties.P30.Lemmas
 
 @[expose] public section
 
@@ -20,6 +21,7 @@ namespace PiBase.Formal
 
 def P216 : Property where
   toPred := HereditarilyParacompact
-  well_defined φ h := sorry
+  well_defined φ h :=
+    ⟨Hereditarily.wellDefined WellDefined.paracompactSpace ⟨φ⟩ h.subset_paracompact⟩
 
 end PiBase.Formal

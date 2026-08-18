@@ -14,9 +14,8 @@ section Meta
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.stronglyChoquetSpace : WellDefined StronglyChoquetSpace :=
-  sorry
+  fun {X Y} _ _ hXY hX => Formal.P206.well_defined hXY.some hX
 
 end Meta
 
 end PiBase
-

@@ -13,8 +13,11 @@ section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
+theorem Homeomorph.completelyRegularSpace [CompletelyRegularSpace X] (f : X ≃ₜ Y) : CompletelyRegularSpace Y :=
+  f.symm.isInducing.completelyRegularSpace
+
 theorem WellDefined.completelyRegularSpace : WellDefined CompletelyRegularSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.completelyRegularSpace h.some
 
 end Meta
 

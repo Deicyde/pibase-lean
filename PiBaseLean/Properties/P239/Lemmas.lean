@@ -11,10 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.semilocallyContractibleSpace [h : SemilocallyContractibleSpace X]
+    (f : X ≃ₜ Y) : SemilocallyContractibleSpace Y :=
+  Formal.P239.well_defined f h
 
 theorem WellDefined.semilocallyContractibleSpace : WellDefined SemilocallyContractibleSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.semilocallyContractibleSpace h.some
 
 end Meta
 

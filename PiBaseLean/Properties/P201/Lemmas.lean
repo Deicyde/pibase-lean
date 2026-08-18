@@ -11,10 +11,15 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.hasGenericPoint [h : HasGenericPoint X] (φ : X ≃ₜ Y) : HasGenericPoint Y :=
+  Formal.P201.well_defined φ h
 
 theorem WellDefined.hasGenericPoint : WellDefined HasGenericPoint :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.hasGenericPoint h.some
 
 end Meta
 

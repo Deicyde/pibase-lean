@@ -11,12 +11,17 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.strategicallyKMengerSpace [h : StrategicallyKMengerSpace X] (f : X ≃ₜ Y) :
+    StrategicallyKMengerSpace Y :=
+  Formal.P160.well_defined f h
 
 theorem WellDefined.strategicallyKMengerSpace : WellDefined StrategicallyKMengerSpace :=
-  sorry
+  fun {_ _} _ _ hXY _hX => Homeomorph.strategicallyKMengerSpace hXY.some
 
 end Meta
 
 end PiBase
-

@@ -2,6 +2,7 @@ module
 
 public import PiBaseLean.AdditionalDefs.Games
 public import PiBaseLean.Properties.Bundled.Defs
+public import PiBaseLean.Properties.P157.Defs
 
 @[expose] public section
 
@@ -17,8 +18,11 @@ end PiBase
 
 namespace PiBase.Formal
 
+open PiBase
+
 def P158 : Property where
   toPred := MarkovKRothbergerSpace
-  well_defined φ h := sorry
+  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h :=
+    ⟨h.markov_k_rothberger.kRothbergerGame_of_homeomorph φ⟩
 
 end PiBase.Formal

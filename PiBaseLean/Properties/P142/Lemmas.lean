@@ -11,10 +11,13 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.k3Space [h : K3Space X] (f : X ≃ₜ Y) : K3Space Y :=
+  Formal.P142.well_defined f h
 
 theorem WellDefined.k3Space : WellDefined K3Space :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.k3Space h.some
 
 end Meta
 

@@ -16,6 +16,6 @@ namespace PiBase.Formal
 
 def P67 : Property where
   toPred := T6Space
-  well_defined φ h := sorry
+  well_defined φ _ := φ.symm.isEmbedding.t6Space
 
 end PiBase.Formal

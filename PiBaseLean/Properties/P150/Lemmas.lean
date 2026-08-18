@@ -9,12 +9,17 @@ namespace PiBase
 
 open Topology Filter Set Function TopologicalSpace
 
+universe u
+
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.omegaRothberger [h : OmegaRothberger X] (f : X ≃ₜ Y) : OmegaRothberger Y :=
+  Formal.P150.well_defined f h
 
 theorem WellDefined.omegaRothberger : WellDefined OmegaRothberger :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.omegaRothberger h.some
 
 end Meta
 

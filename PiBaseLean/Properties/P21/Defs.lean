@@ -8,6 +8,8 @@ public import PiBaseLean.Properties.Bundled.Defs
 
 open Topology Set Filter
 
+universe u
+
 namespace PiBase
 
 /- 21. Weakly countably compact -/
@@ -20,6 +22,19 @@ namespace PiBase.Formal
 
 def P21 : Property where
   toPred := WeaklyCountablyCompact
-  well_defined φ h := sorry
+  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+    constructor
+    intro s hsInf
+    have hSub : s ⊆ range φ := by
+      rw [φ.range_coe]
+      exact subset_univ _
+    have hInfPre : (φ ⁻¹' s).Infinite := hsInf.preimage hSub
+    obtain ⟨x, hx⟩ := h.weakly_countably_compact _ hInfPre
+    refine ⟨φ x, ?_⟩
+    have hcomap : Filter.comap (φ : X → Y) (𝓟 s) = 𝓟 (φ ⁻¹' s) := Filter.comap_principal
+    have hx_comap : AccPt x (Filter.comap (φ : X → Y) (𝓟 s)) := by
+      rw [hcomap]
+      exact hx
+    exact φ.isOpenEmbedding.accPt_comap_iff.mp hx_comap
 
 end PiBase.Formal

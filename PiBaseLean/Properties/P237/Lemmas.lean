@@ -11,11 +11,17 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.topologicalNManifoldWithBoundary [h : TopologicalNManifoldWithBoundary X]
+    (f : X ≃ₜ Y) : TopologicalNManifoldWithBoundary Y :=
+  Formal.P237.well_defined f h
 
 theorem WellDefined.topologicalNManifoldWithBoundary :
     WellDefined TopologicalNManifoldWithBoundary :=
-  sorry
+  fun {_ _} _ _ h hX ↦ Homeomorph.topologicalNManifoldWithBoundary h.some
 
 end Meta
 

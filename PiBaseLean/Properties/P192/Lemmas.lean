@@ -11,10 +11,15 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.quasiSober [h : QuasiSober X] (φ : X ≃ₜ Y) : QuasiSober Y :=
+  Formal.P192.well_defined φ h
 
 theorem WellDefined.quasiSober : WellDefined QuasiSober :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.quasiSober h.some
 
 end Meta
 

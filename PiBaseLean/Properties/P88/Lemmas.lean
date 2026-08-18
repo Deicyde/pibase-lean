@@ -11,30 +11,16 @@ open Topology Filter Set Function
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem Homeomorph.collectionwiseNormalSpace [h : CollectionwiseNormalSpace X] (f : X ≃ₜ Y) :
-    CollectionwiseNormalSpace Y where
-  collectionwise_normal {ι} F hF Fc := by
-    sorry
+    CollectionwiseNormalSpace Y :=
+  Formal.P88.well_defined f h
 
-theorem WellDefined.collectionwiseNormalSpace : WellDefined CollectionwiseNormalSpace := by
-  intro X Y _ _ f h
-  refine { collectionwise_normal := ?_ }
-  intro ι F Fd Fc
-  replace f := f.some
-  have Fd' : IsDiscreteFamily (fun (i : ι) ↦ f ⁻¹' (F i)) := by
-    intro x
-    obtain ⟨s, xs, hs⟩ := Fd (f x)
-
-    sorry
-  have Fc':  (∀ (i : ι), IsClosed (⇑f ⁻¹' F i)) :=
-    fun i ↦ f.isClosed_preimage.mpr (Fc i)
-  have := h.collectionwise_normal (ι := ι) (fun (i : ι) ↦ f ⁻¹' (F i)) (by sorry) Fc'
-
-
-  sorry
-
+theorem WellDefined.collectionwiseNormalSpace : WellDefined CollectionwiseNormalSpace :=
+  fun {_ _} _ _ h hX => Formal.P88.well_defined h.some hX
 
 end Meta
 

@@ -21,6 +21,10 @@ namespace PiBase.Formal
 
 def P177 : Property where
   toPred := SigmaSpace
-  well_defined φ h := sorry
+  well_defined φ h := by
+    have : T3Space _ := φ.t3Space
+    have : HasSigmaLocallyFiniteNetwork _ :=
+      P117.well_defined φ h.toHasSigmaLocallyFiniteNetwork
+    exact ⟨⟩
 
 end PiBase.Formal

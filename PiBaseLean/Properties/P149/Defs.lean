@@ -2,6 +2,7 @@ module
 
 public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.Bundled.Defs
+public import PiBaseLean.Properties.P18.Lemmas
 
 @[expose] public section
 
@@ -21,6 +22,7 @@ namespace PiBase.Formal
 
 def P149 : Property where
   toPred := OmegaLindelof
-  well_defined φ h := sorry
+  well_defined φ h :=
+    ⟨Omega.wellDefined WellDefined.lindelofSpace ⟨φ⟩ h.omega_lindelof⟩
 
 end PiBase.Formal

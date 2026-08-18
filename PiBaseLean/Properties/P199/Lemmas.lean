@@ -11,10 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.contractibleSpace [h : ContractibleSpace X] (φ : X ≃ₜ Y) :
+    ContractibleSpace Y :=
+  Formal.P199.well_defined φ h
 
 theorem WellDefined.contractibleSpace : WellDefined ContractibleSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.contractibleSpace h.some
 
 end Meta
 

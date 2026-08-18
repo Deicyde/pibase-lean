@@ -9,12 +9,17 @@ namespace PiBase
 
 open Topology Filter Set Function TopologicalSpace
 
+universe u
+
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.cWGH [h : CWGH X] (f : X ≃ₜ Y) : CWGH Y :=
+  Formal.P148.well_defined f h
 
 theorem WellDefined.cWGH : WellDefined CWGH :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.cWGH h.some
 
 end Meta
 

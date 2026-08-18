@@ -11,10 +11,13 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.paraLindelofSpace [h : ParaLindelofSpace X] (f : X ≃ₜ Y) : ParaLindelofSpace Y :=
+  Formal.P105.well_defined f h
 
 theorem WellDefined.paraLindelofSpace : WellDefined ParaLindelofSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Formal.P105.well_defined h.some hX
 
 end Meta
 

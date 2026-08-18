@@ -11,10 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.locallyOneEuclideanSpace [h : LocallyOneEuclideanSpace X] (f : X ≃ₜ Y) :
+    LocallyOneEuclideanSpace Y :=
+  Formal.P155.well_defined f h
 
 theorem WellDefined.locallyOneEuclideanSpace : WellDefined LocallyOneEuclideanSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.locallyOneEuclideanSpace h.some
 
 end Meta
 

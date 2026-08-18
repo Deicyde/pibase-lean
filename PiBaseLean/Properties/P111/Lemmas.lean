@@ -11,10 +11,15 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.hemicompactSpace [h : HemicompactSpace X] (f : X ≃ₜ Y) : HemicompactSpace Y :=
+  Formal.P111.well_defined f h
 
 theorem WellDefined.hemicompactSpace : WellDefined HemicompactSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.hemicompactSpace h.some
 
 end Meta
 

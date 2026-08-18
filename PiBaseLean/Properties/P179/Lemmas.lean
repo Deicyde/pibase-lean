@@ -11,10 +11,15 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.alephZeroSpace [AlephZeroSpace X] (f : X ≃ₜ Y) : AlephZeroSpace Y :=
+  PiBase.Formal.P179.well_defined f ‹_›
 
 theorem WellDefined.alephZeroSpace : WellDefined AlephZeroSpace :=
-  sorry
+  fun {_ _} _ _ h _ ↦ Homeomorph.alephZeroSpace h.some
 
 end Meta
 

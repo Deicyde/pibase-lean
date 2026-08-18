@@ -21,6 +21,10 @@ namespace PiBase.Formal
 
 def P178 : Property where
   toPred := AlephSpace
-  well_defined φ h := sorry
+  well_defined φ h := by
+    have : T3Space _ := φ.t3Space
+    have : HasSigmaLocallyFiniteKNetwork _ :=
+      P118.well_defined φ h.toHasSigmaLocallyFiniteKNetwork
+    exact ⟨⟩
 
 end PiBase.Formal

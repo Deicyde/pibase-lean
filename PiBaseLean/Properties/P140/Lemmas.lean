@@ -11,10 +11,14 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.compactlyCoherentSpace [h : CompactlyCoherentSpace X] (f : X ≃ₜ Y) :
+    CompactlyCoherentSpace Y :=
+  Formal.P140.well_defined f h
 
 theorem WellDefined.compactlyCoherentSpace : WellDefined CompactlyCoherentSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.compactlyCoherentSpace h.some
 
 end Meta
 

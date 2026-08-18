@@ -24,10 +24,16 @@ theorem countableChainCondition_iff_ex_nonempty_chain (X : Type*) [TopologicalSp
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.countableChainCondition [h : CountableChainCondition X] (f : X ≃ₜ Y) :
+    CountableChainCondition Y :=
+  Formal.P29.well_defined f h
 
 theorem WellDefined.countableChainCondition : WellDefined CountableChainCondition :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.countableChainCondition h.some
 
 end Meta
 

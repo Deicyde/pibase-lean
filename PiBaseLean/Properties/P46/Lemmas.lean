@@ -51,7 +51,7 @@ theorem totallyPathDisconnectedSpace_iff_pathComponent_singleton :
 section Meta
 
 theorem WellDefined.totallyPathDisconnectedSpace : WellDefined TotallyPathDisconnectedSpace :=
-  sorry
+  fun {_ _} _ _ h hX ↦ PiBase.Formal.P46.well_defined h.some hX
 
 end Meta
 

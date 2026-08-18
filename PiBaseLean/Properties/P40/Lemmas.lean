@@ -14,7 +14,7 @@ section Meta
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.ultraconnectedSpace : WellDefined UltraconnectedSpace :=
-  sorry
+  fun {X Y} _ _ φ h => Formal.P40.well_defined φ.some h
 
 end Meta
 

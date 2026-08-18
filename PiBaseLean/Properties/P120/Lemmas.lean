@@ -11,10 +11,14 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.locallyOrderableSpace [h : LocallyOrderableSpace X] (f : X ≃ₜ Y) :
+    LocallyOrderableSpace Y :=
+  Formal.P120.well_defined f h
 
 theorem WellDefined.locallyOrderableSpace : WellDefined LocallyOrderableSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.locallyOrderableSpace h.some
 
 end Meta
 

@@ -21,6 +21,9 @@ namespace PiBase.Formal
 
 def P154 : Property where
   toPred := GoSpace
-  well_defined φ h := sorry
+  well_defined φ h := by
+    obtain ⟨Z, f, tZ, hLots, hEmb⟩ := h.subset_lots
+    refine ⟨⟨Z, f ∘ φ.symm, tZ, hLots, ?_⟩⟩
+    exact hEmb.comp φ.symm.isEmbedding
 
 end PiBase.Formal

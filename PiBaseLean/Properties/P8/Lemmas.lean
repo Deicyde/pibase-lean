@@ -13,8 +13,11 @@ section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
+theorem Homeomorph.t5Space [T5Space X] (f : X ≃ₜ Y) : T5Space Y :=
+  f.t5Space
+
 theorem WellDefined.t5Space : WellDefined T5Space :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.t5Space h.some
 
 end Meta
 

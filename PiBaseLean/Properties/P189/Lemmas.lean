@@ -11,10 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.sigmaConnectedSpace [h : SigmaConnectedSpace X] (f : X ≃ₜ Y) :
+    SigmaConnectedSpace Y :=
+  Formal.P189.well_defined f h
 
 theorem WellDefined.sigmaConnectedSpace : WellDefined SigmaConnectedSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.sigmaConnectedSpace h.some
 
 end Meta
 

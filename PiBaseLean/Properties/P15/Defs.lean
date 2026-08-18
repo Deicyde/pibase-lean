@@ -16,6 +16,6 @@ namespace PiBase.Formal
 
 def P15 : Property where
   toPred := PerfectlyNormalSpace
-  well_defined φ h := sorry
+  well_defined φ _ := φ.symm.isInducing.perfectlyNormalSpace
 
 end PiBase.Formal

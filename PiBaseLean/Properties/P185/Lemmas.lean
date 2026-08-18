@@ -77,10 +77,14 @@ theorem PartitionTopology.inseparable_closed (X : Type u) [TopologicalSpace X]
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.partitionTopology [h : PartitionTopology X] (f : X ≃ₜ Y) :
+    PartitionTopology Y :=
+  Formal.P185.well_defined f h
 
 theorem WellDefined.partitionTopology : WellDefined PartitionTopology :=
-  sorry
+  fun {_ _} _ _ h hX => Formal.P185.well_defined h.some hX
 
 end Meta
 

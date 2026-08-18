@@ -14,7 +14,7 @@ section Meta
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.ultraMetrizableSpace : WellDefined UltraMetrizableSpace :=
-  sorry
+  fun hXY hX => Formal.P220.well_defined hXY.some hX
 
 end Meta
 

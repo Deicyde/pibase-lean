@@ -21,6 +21,11 @@ namespace PiBase.Formal
 
 def P164 : Property where
   toPred X := CardLtEveryMeasurableCardinal X
-  well_defined φ h := sorry
+  well_defined φ h := by
+    constructor
+    intro k hk
+    -- transport #X / #Y by Cardinal.mk_congr φ.toEquiv, following P163/P114
+    rw [← Cardinal.mk_congr φ.toEquiv]
+    exact h.card_lt_every_measurable k hk
 
 end PiBase.Formal

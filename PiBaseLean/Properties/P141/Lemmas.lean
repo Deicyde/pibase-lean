@@ -11,10 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.compactlyGeneratedSpace [h : CompactlyGeneratedSpace X] (f : X ≃ₜ Y) :
+    CompactlyGeneratedSpace Y :=
+  Formal.P141.well_defined f h
 
 theorem WellDefined.compactlyGeneratedSpace : WellDefined CompactlyGeneratedSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.compactlyGeneratedSpace h.some
 
 end Meta
 

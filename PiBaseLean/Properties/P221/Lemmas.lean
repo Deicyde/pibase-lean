@@ -14,7 +14,7 @@ section Meta
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.dieudonneCompleteSpace : WellDefined DieudonneCompleteSpace :=
-  sorry
+  fun {_X _Y} _ _ hXY hX => Formal.P221.well_defined hXY.some hX
 
 end Meta
 

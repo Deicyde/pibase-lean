@@ -46,8 +46,12 @@ theorem hasOpenConnectedComponents_iff_ex_connected_nbhd :
 
 section Meta
 
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
 theorem WellDefined.hasOpenConnectedComponents : WellDefined HasOpenConnectedComponents :=
-  sorry
+  fun {X Y} _ _ hXY hX => Formal.P234.well_defined hXY.some hX
 
 end Meta
 

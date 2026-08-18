@@ -23,6 +23,8 @@ namespace PiBase.Formal
 
 def P162 : Property where
   toPred := RealcompactSpace
-  well_defined φ h := sorry
+  well_defined φ h := by
+    obtain ⟨ι, f, hf⟩ := h.homeo_closed
+    exact ⟨⟨ι, f ∘ φ.symm, hf.comp φ.symm.isClosedEmbedding⟩⟩
 
 end PiBase.Formal

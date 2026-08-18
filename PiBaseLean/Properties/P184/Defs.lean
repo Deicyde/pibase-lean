@@ -21,6 +21,8 @@ namespace PiBase.Formal
 
 def P184 : Property where
   toPred := EmbeddableInEuclideanSpace
-  well_defined φ h := sorry
+  well_defined φ h := by
+    rcases h.embeddable with ⟨n, f, hf⟩
+    exact ⟨n, f ∘ φ.symm, hf.comp φ.symm.isEmbedding⟩
 
 end PiBase.Formal

@@ -22,6 +22,8 @@ namespace PiBase.Formal
 
 def P190 : Property where
   toPred := OrdinalSpace
-  well_defined φ h := sorry
+  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+    rcases h.homeo_ordinal with ⟨a, ha⟩
+    exact ⟨a, IsHomeo.trans ⟨φ.symm⟩ ha⟩
 
 end PiBase.Formal

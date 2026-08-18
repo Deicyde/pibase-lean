@@ -9,12 +9,17 @@ namespace PiBase
 
 open Topology Filter Set Function TopologicalSpace
 
+universe u
+
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.pSpace [h : PSpace X] (f : X ≃ₜ Y) : PSpace Y :=
+  Formal.P147.well_defined f h
 
 theorem WellDefined.pSpace : WellDefined PSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.pSpace h.some
 
 end Meta
 

@@ -11,10 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.totallySeparatedSpace [h : TotallySeparatedSpace X] (f : X ≃ₜ Y) :
+    TotallySeparatedSpace Y :=
+  Formal.P48.well_defined f h
 
 theorem WellDefined.totallySeparatedSpace : WellDefined TotallySeparatedSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.totallySeparatedSpace h.some
 
 end Meta
 

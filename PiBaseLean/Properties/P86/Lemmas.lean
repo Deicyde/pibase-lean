@@ -11,10 +11,15 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u
+
+variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+
+theorem Homeomorph.homogeneousSpace [h : HomogeneousSpace X] (f : X ≃ₜ Y) : HomogeneousSpace Y :=
+  Formal.P86.well_defined f h
 
 theorem WellDefined.homogeneousSpace : WellDefined HomogeneousSpace :=
-  sorry
+  fun {_ _} _ _ h hX => Homeomorph.homogeneousSpace h.some
 
 end Meta
 
