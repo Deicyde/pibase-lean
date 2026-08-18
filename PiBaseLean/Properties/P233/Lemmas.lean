@@ -68,10 +68,9 @@ section Meta
 
 universe u
 
-variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
-
-theorem WellDefined.hasOpenPathComponents : WellDefined HasOpenPathComponents :=
-  fun {X Y} _ _ hXY hX => Formal.P233.well_defined hXY.some hX
+theorem WellDefined.hasOpenPathComponents :
+    WellDefined (fun (X : Type u) => HasOpenPathComponents X) :=
+  fun {_ _} _ _ hXY hX => Formal.P233.well_defined hXY.some hX
 
 end Meta
 

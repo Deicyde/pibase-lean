@@ -48,10 +48,9 @@ section Meta
 
 universe u
 
-variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
-
-theorem WellDefined.hasOpenConnectedComponents : WellDefined HasOpenConnectedComponents :=
-  fun {X Y} _ _ hXY hX => Formal.P234.well_defined hXY.some hX
+theorem WellDefined.hasOpenConnectedComponents :
+    WellDefined (fun (X : Type u) => HasOpenConnectedComponents X) :=
+  fun {_ _} _ _ hXY hX => Formal.P234.well_defined hXY.some hX
 
 end Meta
 
