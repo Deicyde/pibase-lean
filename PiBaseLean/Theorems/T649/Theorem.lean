@@ -1,9 +1,9 @@
 module
 
 public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P107.Defs
-public import PiBaseLean.Properties.P126.Defs
-public import PiBaseLean.Properties.P137.Defs
+public import PiBaseLean.Properties.P107.Bundled
+public import PiBaseLean.Properties.P126.Bundled
+public import PiBaseLean.Properties.P137.Bundled
 
 @[expose] public section
 
@@ -39,7 +39,7 @@ end PiBase
 namespace PiBase.Formal
 
 theorem T649 : P126 ⊓ P137ᶜ ≤ P107 :=
-  fun X _ ⟨h1, h2⟩ ↦ haveI : Nonempty X := not_isEmpty_iff.mp h2
+  fun X _ ⟨h1, h2⟩ ↦ have : Nonempty X := not_isEmpty_iff.mp h2
     @instHasClosedPointOfDoorSpaceOfNonempty X _ h1 ‹_›
 
 end PiBase.Formal

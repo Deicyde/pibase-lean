@@ -1,10 +1,13 @@
 module
 
-public import PiBaseLean.Properties.P95.Defs
+public import PiBaseLean.Properties.P95.Bundled
+public import Mathlib.Order.Filter.Bases.Basic
+public import Mathlib.Topology.Homeomorph.Lemmas
+public import Mathlib.Topology.Defs.Filter
 
 @[expose] public section
 
-open Topology Filter TopologicalSpace
+open Topology Set Function Filter
 
 namespace PiBase
 
@@ -14,11 +17,3 @@ class LocallyArcConnectedSpace (X : Type*) [TopologicalSpace X] : Prop where
     x ∈ s ∧ IsOpen s ∧ ArcConnectedSpace s) id
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P96 : Property where
-  toPred := LocallyArcConnectedSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

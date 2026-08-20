@@ -1,7 +1,8 @@
 module
 
+public import Mathlib.Topology.Connected.Basic
 public import Mathlib.Topology.Connected.TotallyDisconnected
-public import PiBaseLean.Properties.Bundled.Defs
+public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
 
@@ -14,11 +15,3 @@ class HasDispersionPoint (X : Type*) [TopologicalSpace X] extends ConnectedSpace
   ex_dispersion_point : ∃ p : X, IsTotallyDisconnected {p}ᶜ
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P45 : Property where
-  toPred := HasDispersionPoint
-  well_defined φ h := sorry
-
-end PiBase.Formal

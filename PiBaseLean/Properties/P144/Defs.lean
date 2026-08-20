@@ -1,7 +1,7 @@
 module
 
 public import Mathlib.Topology.Metrizable.Basic
-public import PiBaseLean.Properties.Bundled.Defs
+public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
 
@@ -16,11 +16,3 @@ class LocallyPseudoMetrizableSpace (X : Type u) [TopologicalSpace X] : Prop wher
   nbhd_pseudometrizable (x : X) : ∃ s ∈ 𝓝 x, PseudoMetrizableSpace s
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P144 : Property where
-  toPred := LocallyPseudoMetrizableSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

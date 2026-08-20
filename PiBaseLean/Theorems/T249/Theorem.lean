@@ -1,8 +1,8 @@
 module
 
 public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P125.Defs
-public import PiBaseLean.Properties.P129.Defs
+public import PiBaseLean.Properties.P125.Bundled
+public import PiBaseLean.Properties.P129.Bundled
 public import Mathlib.Logic.Nontrivial.Defs
 
 @[expose] public section
@@ -23,7 +23,7 @@ end PiBase
 namespace PiBase.Formal
 
 theorem T249 : P125ᶜ ≤ P129 :=
-  fun X _ h ↦ haveI : Subsingleton X := not_nontrivial_iff_subsingleton.mp h
+  fun X _ h ↦ have : Subsingleton X := not_nontrivial_iff_subsingleton.mp h
     @instIndiscreteTopologyOfSubsingleton X _ ‹_›
 
 end PiBase.Formal

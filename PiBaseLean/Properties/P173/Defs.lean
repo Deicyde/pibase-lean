@@ -1,7 +1,6 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Cardinal
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
@@ -16,11 +15,3 @@ class PseudoradialSpace (X : Type u) [TopologicalSpace X] : Prop where
   radiallyClosed_isClosed : ∀ ⦃s : Set X⦄, IsRadiallyClosed s → IsClosed s
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P173 : Property where
-  toPred := PseudoradialSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

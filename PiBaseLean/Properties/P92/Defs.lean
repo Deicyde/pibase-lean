@@ -2,7 +2,7 @@ module
 
 public import Mathlib.Order.BourbakiWitt
 public import Mathlib.Topology.Separation.Hausdorff
-public import PiBaseLean.Properties.Bundled.Defs
+public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
 
@@ -17,11 +17,3 @@ class kω3Space (X : Type*) [TopologicalSpace X] : Prop where
       ∀ s : Set X, IsOpen s ↔ ∀ n : ℕ, IsOpen ((K n) ↓∩ s)
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P92 : Property where
-  toPred := kω3Space
-  well_defined φ h := sorry
-
-end PiBase.Formal

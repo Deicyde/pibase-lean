@@ -11,12 +11,14 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
+
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.markovMengerSpace : WellDefined MarkovMengerSpace :=
-  sorry
+  fun {_ _} _ _ hXY h =>
+    let φ := hXY.some
+    ⟨h.markov_menger.mengerGame_of_homeomorph φ⟩
 
 end Meta
 
 end PiBase
-

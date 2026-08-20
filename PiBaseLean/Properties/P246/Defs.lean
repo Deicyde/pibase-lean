@@ -1,7 +1,8 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Cover
-public import PiBaseLean.Properties.Bundled.Defs
+public import Mathlib.Topology.Homeomorph.Lemmas
+public import Mathlib.Topology.DiscreteSubset
 
 @[expose] public section
 
@@ -16,11 +17,3 @@ class CollectionwiseHausdorffSpace (X : Type u) [TopologicalSpace X] : Prop wher
       ∀ a ∈ s, ∃! x ∈ u, x ∈ a
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P246 : Property where
-  toPred := CollectionwiseHausdorffSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

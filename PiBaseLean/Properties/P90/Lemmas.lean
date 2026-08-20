@@ -11,10 +11,13 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
+
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.alexandrovDiscrete : WellDefined AlexandrovDiscrete :=
-  sorry
+  fun {_ _} _ _ hXY _ =>
+    let φ := hXY.some
+    φ.symm.isInducing.alexandrovDiscrete
 
 end Meta
 

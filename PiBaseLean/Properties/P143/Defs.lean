@@ -1,7 +1,6 @@
 module
 
 public import Mathlib.Topology.Separation.Hausdorff
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
@@ -17,11 +16,3 @@ class WeakT2Space (X : Type u) [TopologicalSpace X] : Prop where
     Continuous f → CompactSpace K → T2Space K → IsClosed (range f)
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P143 : Property where
-  toPred := WeakT2Space
-  well_defined φ h := sorry
-
-end PiBase.Formal

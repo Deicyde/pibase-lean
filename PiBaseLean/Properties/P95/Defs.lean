@@ -1,11 +1,10 @@
 module
 
 public import Mathlib.Topology.Path
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
-open Topology
+open Topology Set Function
 
 namespace PiBase
 
@@ -14,11 +13,3 @@ class ArcConnectedSpace (X : Type*) [TopologicalSpace X] : Prop where
   joined : Pairwise fun x y : X ↦ ∃ f : Path x y, IsEmbedding f
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P95 : Property where
-  toPred := ArcConnectedSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

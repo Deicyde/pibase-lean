@@ -1,11 +1,11 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Games
-public import PiBaseLean.Properties.Bundled.Defs
+public import PiBaseLean.Properties.P151.Defs
 
 @[expose] public section
 
-universe u
+universe u v
 
 namespace PiBase
 
@@ -14,11 +14,3 @@ class StrategicallyKMengerSpace (X : Type u) [TopologicalSpace X] : Prop where
   strategically_k_menger : HasWinningStrategyB (kMengerGame X)
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P160 : Property where
-  toPred := StrategicallyKMengerSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

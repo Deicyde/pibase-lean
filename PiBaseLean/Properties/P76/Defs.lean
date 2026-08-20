@@ -1,8 +1,8 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Games
-public import PiBaseLean.Properties.Bundled.Defs
-public import Mathlib.Topology.UniformSpace.Uniformizable
+public import Mathlib.Topology.UniformSpace.Basic
+public import Mathlib.Topology.UniformSpace.UniformEmbedding
 
 @[expose] public section
 
@@ -16,11 +16,3 @@ class ProximalSpace (X : Type u) [τ : TopologicalSpace X] : Prop where
     ∃ t : UniformSpace X, t.toTopologicalSpace = τ ∧ HasWinningStrategyA (@proximalGame X t h)
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P76 : Property where
-  toPred := ProximalSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

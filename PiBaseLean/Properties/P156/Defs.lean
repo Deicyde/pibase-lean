@@ -1,7 +1,6 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Games
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
@@ -17,11 +16,3 @@ class KRothbergerSpace (X : Type u) [TopologicalSpace X] : Prop where
     ∃ j : ℕ → ι, IsKCover'' (fun n ↦ (U n) (j n))
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P156 : Property where
-  toPred := KRothbergerSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

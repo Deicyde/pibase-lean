@@ -1,8 +1,8 @@
 module
 
 public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P26.Lemmas
-public import PiBaseLean.Properties.P29.Lemmas
+public import PiBaseLean.Properties.P26.Bundled
+public import PiBaseLean.Properties.P29.Bundled
 
 @[expose] public section
 
@@ -12,7 +12,7 @@ open Topology Set Function TopologicalSpace
 
 namespace PiBase
 
---proof can probably be golfed a lot
+--TODO: proof can probably be golfed a lot
 /-- Theorem T21: P26 (SeparableSpace) => P29 (CountableChainCondition) -/
 instance instCountableChainConditionOfSeparableSpace (X : Type u)
     [TopologicalSpace X] [h : SeparableSpace X] : CountableChainCondition X := by
@@ -23,7 +23,7 @@ instance instCountableChainConditionOfSeparableSpace (X : Type u)
     contrapose! h0
     rw [← countable_coe_iff] at rc ⊢
     let f : S → r := fun ⟨i, iS⟩ ↦
-      letI hi := not_disjoint_iff_nonempty_inter.1 (h0 i iS)
+      let hi := not_disjoint_iff_nonempty_inter.1 (h0 i iS)
       ⟨hi.choose, mem_of_mem_inter_right hi.choose_spec⟩
     apply Injective.countable (f := f)
     intro ⟨a, ha⟩ ⟨b, hb⟩ ab

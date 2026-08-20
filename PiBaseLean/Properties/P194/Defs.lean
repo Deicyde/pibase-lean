@@ -1,7 +1,6 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Cover
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
@@ -18,11 +17,3 @@ class SubmetacompactSpace (X : Type u) [TopologicalSpace X] : Prop where
         ⋃ a, t n a = univ ∧ ∀ (b : ω n), ∃ (a : α), t n b ⊆ s a) ∧ ∀ x, ∃ n, PointFiniteAt (t n) x
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P194 : Property where
-  toPred := SubmetacompactSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

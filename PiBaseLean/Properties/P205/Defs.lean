@@ -1,7 +1,8 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Constructions
-public import PiBaseLean.Properties.Bundled.Defs
+public import Mathlib.Topology.Connected.Basic
+public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
 
@@ -15,11 +16,3 @@ class CutPointSpace (X : Type*)
   all_cut (p : X) : IsCutPoint p
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P205 : Property where
-  toPred := CutPointSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

@@ -1,8 +1,8 @@
 module
 
+public import PiBaseLean.AdditionalDefs.Meta
 public import Mathlib.Data.Setoid.Partition
 public import Mathlib.Topology.Defs.Basic
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
@@ -20,11 +20,3 @@ class UltraparacompactSpace (X : Type u) [TopologicalSpace X] : Prop where
         (∀ b, IsOpen (t b)) ∧ (Setoid.IsPartition (range t)) ∧ ∀ b : β, ∃ a : α, t b ⊆ s a
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P146 : Property where
-  toPred := UltraparacompactSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

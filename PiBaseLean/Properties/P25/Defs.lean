@@ -1,7 +1,7 @@
 module
 
 public import Mathlib.Topology.Compactness.SigmaCompact
-public import PiBaseLean.Properties.Bundled.Defs
+public import Mathlib.Topology.Homeomorph.Defs
 
 @[expose] public section
 
@@ -14,11 +14,3 @@ class ExhaustibleByCompacts (X : Type*) [TopologicalSpace X] : Prop where
   exhaustion : Nonempty (CompactExhaustion X)
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P25 : Property where
-  toPred := ExhaustibleByCompacts
-  well_defined φ h := sorry
-
-end PiBase.Formal

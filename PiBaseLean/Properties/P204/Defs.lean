@@ -1,7 +1,8 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Constructions
-public import PiBaseLean.Properties.Bundled.Defs
+public import Mathlib.Topology.Connected.Basic
+public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
 
@@ -15,11 +16,3 @@ class HasACutPoint (X : Type*)
   ex_cut : ∃ p : X, IsCutPoint p
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P204 : Property where
-  toPred := HasACutPoint
-  well_defined φ h := sorry
-
-end PiBase.Formal

@@ -14,11 +14,3 @@ class HereditarilyCollectionwiseNormalSpace (X : Type*) [TopologicalSpace X] : P
   hereditarily_collectionwise_normal : Hereditarily CollectionwiseNormalSpace X
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P108 : Property where
-  toPred := HereditarilyCollectionwiseNormalSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

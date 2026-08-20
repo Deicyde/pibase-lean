@@ -1,7 +1,7 @@
 module
 
+public import PiBaseLean.AdditionalDefs.Meta
 public import Mathlib.Topology.Defs.Filter
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
@@ -17,11 +17,3 @@ class WellBasedSpace (X : Type u) [TopologicalSpace X] : Prop where
     HasBasis (𝓝 x) (fun _ ↦ True) s ∧ ∀ (i j : ι), s i ⊆ s j ∨ s j ⊆ s i
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P174 : Property where
-  toPred := WellBasedSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

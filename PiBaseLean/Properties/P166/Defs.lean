@@ -1,13 +1,12 @@
 module
 
 public import Mathlib.Topology.MetricSpace.Basic
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
 open Topology Set Filter TopologicalSpace
 
-universe u
+universe u v
 
 namespace PiBase
 
@@ -17,11 +16,3 @@ class HasCoarserSeparableMetrizableTopology (X : Type u) [τ : TopologicalSpace 
     τ ≤ m.toUniformSpace.toTopologicalSpace ∧ @SeparableSpace X m.toUniformSpace.toTopologicalSpace
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P166 : Property where
-  toPred := HasCoarserSeparableMetrizableTopology
-  well_defined φ h := sorry
-
-end PiBase.Formal

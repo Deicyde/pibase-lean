@@ -13,8 +13,12 @@ section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
+theorem Homeomorph.completelyNormalSpace [CompletelyNormalSpace X] (f : X ≃ₜ Y) :
+    CompletelyNormalSpace Y :=
+  f.symm.isEmbedding.completelyNormalSpace
+
 theorem WellDefined.completelyNormalSpace : WellDefined CompletelyNormalSpace :=
-  sorry
+  fun {_ _} _ _ h _ => Homeomorph.completelyNormalSpace h.some
 
 end Meta
 

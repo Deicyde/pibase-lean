@@ -11,10 +11,17 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
+
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.doorSpace : WellDefined DoorSpace :=
-  sorry
+  fun {_ _} _ _ hXY h =>
+    let φ := hXY.some
+    ⟨fun s => by
+        have hs := h.isOpen_or_isClosed (φ ⁻¹' s)
+        rcases hs with ho | hc
+        · left; exact φ.isOpen_preimage.mp ho
+        · right; exact φ.isClosed_preimage.mp hc⟩
 
 end Meta
 

@@ -1,7 +1,7 @@
 module
 
+public import Mathlib.Order.Filter.Map
 public import Mathlib.Topology.Defs.Filter
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
@@ -14,11 +14,3 @@ class HasPointWithUniqueNeighborhood (X : Type*) [TopologicalSpace X] : Prop whe
   ex_point_unique_nbhd : ∃ p : X, 𝓝 p = ⊤
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P202 : Property where
-  toPred := HasPointWithUniqueNeighborhood
-  well_defined φ h := sorry
-
-end PiBase.Formal

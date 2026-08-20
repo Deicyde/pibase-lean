@@ -1,7 +1,7 @@
 module
 
 public import Mathlib.Topology.Compactness.CompactlyCoherentSpace
-public import PiBaseLean.Properties.Bundled.Defs
+public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
 
@@ -17,11 +17,3 @@ namespace PiBase
 #check CompactlyCoherentSpace
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P140 : Property where
-  toPred := CompactlyCoherentSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

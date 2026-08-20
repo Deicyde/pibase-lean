@@ -1,7 +1,6 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Games
-public import PiBaseLean.Properties.Bundled.Defs
 public import PiBaseLean.Properties.P87.Defs
 public import PiBaseLean.Properties.P187.Defs
 
@@ -17,11 +16,3 @@ class EmbedsInTopologicalWGroupSpace (X : Type u) [TopologicalSpace X] : Prop wh
     WSpace Y ∧ HasGroupTopology Y ∧ Topology.IsEmbedding f
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P186 : Property where
-  toPred := EmbedsInTopologicalWGroupSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

@@ -1,7 +1,6 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Cover
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
@@ -19,11 +18,3 @@ class MetaLindelofSpace (X : Type u) [TopologicalSpace X] : Prop where
         (∀ b, IsOpen (t b)) ∧ (⋃ b, t b = univ) ∧ PointCountable t ∧ ∀ b, ∃ a, t b ⊆ s a
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P83 : Property where
-  toPred := MetaLindelofSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

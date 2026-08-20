@@ -13,8 +13,12 @@ section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
+theorem Homeomorph.isCompletelyMetrizableSpace [h : IsCompletelyMetrizableSpace X]
+    (f : X ≃ₜ Y) : IsCompletelyMetrizableSpace Y :=
+  f.symm.isClosedEmbedding.IsCompletelyMetrizableSpace
+
 theorem WellDefined.isCompletelyMetrizableSpace : WellDefined IsCompletelyMetrizableSpace :=
-  sorry
+  fun {_ _} _ _ h _ ↦ Homeomorph.isCompletelyMetrizableSpace h.some
 
 end Meta
 

@@ -2,6 +2,9 @@ module
 
 public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P198.Defs
+public import Mathlib.Topology.Homeomorph.Lemmas
+public import Mathlib.Topology.DiscreteSubset
+public import Mathlib.Data.Set.Countable
 
 @[expose] public section
 
@@ -37,10 +40,84 @@ theorem hasCountableExtent_iff_discrete_countable :
     simp only [upperBounds, mem_ofPred_eq, forall_exists_index, and_imp]
     exact fun a s sa sc sd ↦ sa ▸ le_aleph0_iff_set_countable.mpr (h sd sc)
 
+universe u
+
 section Meta
 
+variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+
+private lemma isDiscrete_image_homeomorph {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    (φ : X ≃ₜ Y) {s : Set X} (hs : IsDiscrete s) : IsDiscrete (φ '' s) := by
+  have hDT : DiscreteTopology s := isDiscrete_iff_discreteTopology.mp hs
+  have hDT' : DiscreteTopology (φ '' s) := by
+    have := hDT
+    exact (φ.image s).discreteTopology
+  exact isDiscrete_iff_discreteTopology.mpr hDT'
+
+private lemma isDiscrete_preimage_homeomorph {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    (φ : X ≃ₜ Y) {t : Set Y} (ht : IsDiscrete t) : IsDiscrete (φ ⁻¹' t) := by
+  have h_eq : φ ⁻¹' t = φ.symm '' t := by
+    ext x
+    constructor
+    · intro hx
+      exact ⟨φ x, hx, by simp⟩
+    · rintro ⟨y, hy, rfl⟩
+      simp [hy]
+  rw [h_eq]
+  exact isDiscrete_image_homeomorph φ.symm ht
+
 theorem WellDefined.hasCountableExtent : WellDefined HasCountableExtent :=
-  sorry
+  fun {X Y} _ _ hXY h => by
+    let φ := hXY.some
+    rcases h with ⟨h_eq_X⟩
+    have hDiscImage : ∀ {s : Set _} (_ : IsDiscrete s), IsDiscrete (φ '' s) := by
+      intro s hs
+      have hDT : DiscreteTopology s := isDiscrete_iff_discreteTopology.mp hs
+      have hDT' : DiscreteTopology (φ '' s) := by
+        have := hDT
+        exact (φ.image s).discreteTopology
+      exact isDiscrete_iff_discreteTopology.mpr hDT'
+    have hDiscPre : ∀ {t : Set _} (_ : IsDiscrete t), IsDiscrete (φ ⁻¹' t) := by
+      intro t ht
+      have h_pre_eq : φ ⁻¹' t = φ.symm '' t := by
+        ext x
+        constructor
+        · intro hx
+          exact ⟨φ x, hx, by simp⟩
+        · rintro ⟨y, hy, rfl⟩
+          simp [hy]
+      rw [h_pre_eq]
+      have hDT : DiscreteTopology t := isDiscrete_iff_discreteTopology.mp ht
+      have hDT' : DiscreteTopology (φ.symm '' t) := by
+        have := hDT
+        exact (φ.symm.image t).discreteTopology
+      exact isDiscrete_iff_discreteTopology.mpr hDT'
+    have hExtent_eq : Extent X = Extent Y := by
+      unfold Extent
+      congr 1
+      apply congrArg sSup
+      ext c
+      constructor
+      · rintro ⟨D, hDc, hCl, hDisc⟩
+        exact ⟨φ '' D, by rw [mk_image_eq φ.injective, hDc], φ.isClosed_image.mpr hCl,
+          hDiscImage hDisc⟩
+      · rintro ⟨D, hDc, hCl, hDisc⟩
+        have hDisc' : IsDiscrete (φ ⁻¹' D) := hDiscPre hDisc
+        have hCl' : IsClosed (φ ⁻¹' D) := φ.isClosed_preimage.mpr hCl
+        have hCard : #(φ ⁻¹' D) = #D := by
+          have h_eq : φ ⁻¹' D = φ.symm '' D := by
+            ext x
+            constructor
+            · intro hx
+              exact ⟨φ x, hx, by simp⟩
+            · rintro ⟨y, hy, rfl⟩
+              simp [hy]
+          rw [h_eq, mk_image_eq φ.symm.injective]
+        exact ⟨φ ⁻¹' D, by rw [hCard, hDc], hCl', hDisc'⟩
+    constructor
+    calc
+      Extent Y = Extent X := hExtent_eq.symm
+      _ = ℵ₀ := h_eq_X
 
 end Meta
 

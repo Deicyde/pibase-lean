@@ -11,10 +11,14 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
+
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.ordinalSpace : WellDefined OrdinalSpace :=
-  sorry
+  fun {_ _} _ _ hXY h => by
+    let φ := hXY.some
+    rcases h.homeo_ordinal with ⟨a, ha⟩
+    exact ⟨a, IsHomeo.trans ⟨φ.symm⟩ ha⟩
 
 end Meta
 

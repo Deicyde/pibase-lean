@@ -16,11 +16,3 @@ class GoSpace (X : Type u) [TopologicalSpace X] : Prop where
     Lots Z ∧ IsEmbedding f
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P154 : Property where
-  toPred := GoSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

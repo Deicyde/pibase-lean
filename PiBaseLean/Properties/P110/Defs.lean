@@ -3,7 +3,6 @@ module
 public import Mathlib.Data.Countable.Defs
 public import Mathlib.Topology.Defs.Filter
 public import PiBaseLean.AdditionalDefs.Cover
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
@@ -25,11 +24,3 @@ class DevelopableSpace (X : Type u) [TopologicalSpace X] : Prop where
   developable : Nonempty (Development X)
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P110 : Property where
-  toPred := DevelopableSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

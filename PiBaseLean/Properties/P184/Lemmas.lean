@@ -11,10 +11,14 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
+
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.embeddableInEuclideanSpace : WellDefined EmbeddableInEuclideanSpace :=
-  sorry
+  fun {_ _} _ _ hXY h => by
+    let φ := hXY.some
+    rcases h.embeddable with ⟨n, f, hf⟩
+    exact ⟨n, f ∘ φ.symm, hf.comp φ.symm.isEmbedding⟩
 
 end Meta
 

@@ -1,7 +1,7 @@
 module
 
 public import Mathlib.Topology.Homotopy.Contractible
-public import PiBaseLean.Properties.Bundled.Defs
+public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
 
@@ -17,11 +17,3 @@ class SemilocallyContractibleSpace (X : Type u) [TopologicalSpace X] : Prop wher
     Continuous (Function.uncurry f) ∧ f 0 = Subtype.val ∧ ∀ a b : s, f 1 a = f 1 b
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P239 : Property where
-  toPred := SemilocallyContractibleSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

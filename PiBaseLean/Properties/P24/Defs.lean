@@ -2,7 +2,7 @@ module
 
 public import Mathlib.Order.Filter.Bases.Basic
 public import Mathlib.Topology.Defs.Filter
-public import PiBaseLean.Properties.Bundled.Defs
+public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
 
@@ -15,11 +15,3 @@ class LocallyRelativelyCompactSpace (X : Type*) [TopologicalSpace X] : Prop wher
   locally_relatively_compact : ∀ x : X, (𝓝 x).HasBasis (fun s => s ∈ 𝓝 x ∧ IsCompact (closure s)) id
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P24 : Property where
-  toPred := LocallyRelativelyCompactSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

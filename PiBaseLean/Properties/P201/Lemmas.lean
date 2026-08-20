@@ -11,10 +11,16 @@ open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
+
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.hasGenericPoint : WellDefined HasGenericPoint :=
-  sorry
+  fun {_ _} _ _ hXY h => by
+    let φ := hXY.some
+    rcases h.ex_generic_point with ⟨x, xg⟩
+    refine ⟨φ x, ?_⟩
+    simp only [IsGenericPoint] at xg ⊢
+    simpa [φ.image_closure] using congrArg (Set.image φ) xg
 
 end Meta
 

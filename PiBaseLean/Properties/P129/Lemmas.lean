@@ -39,8 +39,12 @@ theorem TopologicalSpace.bot_le (X : Type u) [τ : TopologicalSpace X] :
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
+theorem Homeomorph.indiscreteTopology [h : IndiscreteTopology X] (f : X ≃ₜ Y) :
+    IndiscreteTopology Y :=
+  f.indiscreteTopology
+
 theorem WellDefined.indiscreteTopology : WellDefined IndiscreteTopology :=
-  sorry
+  fun {_ _} _ _ h _ ↦ Homeomorph.indiscreteTopology h.some
 
 end Meta
 

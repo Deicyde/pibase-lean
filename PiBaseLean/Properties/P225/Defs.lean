@@ -1,8 +1,8 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Games
-public import PiBaseLean.Properties.Bundled.Defs
 public import Mathlib.Topology.UnitInterval
+public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
 
@@ -20,11 +20,3 @@ class LCSpace (X : Type u) [TopologicalSpace X] : Prop where
         (∀ i, f (i, 0) = i.val) ∧  (∀ i, f (i, 1) = x)
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P225 : Property where
-  toPred := LCSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

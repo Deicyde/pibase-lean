@@ -16,11 +16,3 @@ class SigmaSpace (X : Type u) [TopologicalSpace X] : Prop extends
     T3Space X, HasSigmaLocallyFiniteNetwork X
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P177 : Property where
-  toPred := SigmaSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

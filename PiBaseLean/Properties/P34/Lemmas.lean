@@ -7,14 +7,20 @@ public import PiBaseLean.Properties.P34.Defs
 
 namespace PiBase
 
-open TopologicalSpace
+open Topology Filter Set Function TopologicalSpace
 
 section Meta
 
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+universe u v
+
+variable {X : Type u} {Y : Type v} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.fullyNormalSpace : WellDefined FullyNormalSpace :=
-  sorry
+  fun {_ _} _ _ φ _ =>
+    @FullyNormalSpace.mk _ _ φ.some.symm.isClosedEmbedding.paracompactSpace φ.some.normalSpace
+
+theorem Homeomorph.fullyNormalSpace [FullyNormalSpace X] (f : X ≃ₜ Y) : FullyNormalSpace Y :=
+  @FullyNormalSpace.mk _ _ f.symm.isClosedEmbedding.paracompactSpace f.normalSpace
 
 end Meta
 

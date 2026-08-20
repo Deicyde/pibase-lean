@@ -1,11 +1,11 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Games
-public import PiBaseLean.Properties.Bundled.Defs
+public import PiBaseLean.Properties.P151.Defs
 
 @[expose] public section
 
-universe u
+universe u v
 
 namespace PiBase
 
@@ -14,11 +14,3 @@ class StrategicallyKRothbergerSpace (X : Type u) [TopologicalSpace X] : Prop whe
   strategically_k_rothberger : HasWinningStrategyB (kRothbergerGame X)
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P157 : Property where
-  toPred := StrategicallyKRothbergerSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

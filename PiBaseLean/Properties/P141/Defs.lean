@@ -1,7 +1,6 @@
 module
 
 public import Mathlib.Topology.Compactness.CompactlyGeneratedSpace
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
@@ -15,11 +14,3 @@ namespace PiBase
 #check CompactlyGeneratedSpace
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P141 : Property where
-  toPred := CompactlyGeneratedSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

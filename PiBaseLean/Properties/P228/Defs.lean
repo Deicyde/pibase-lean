@@ -2,7 +2,6 @@ module
 
 public import Mathlib.Order.ConditionallyCompleteLattice.Basic
 public import Mathlib.Topology.Defs.Basic
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
@@ -15,11 +14,3 @@ class WeaklyFirstCountableSpace (X : Type*) [TopologicalSpace X] : Prop where
       ∧ ∀ O : Set X, IsOpen O ↔ ∀ x ∈ O, ∃ k : ℕ, V x k ⊆ O
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P228 : Property where
-  toPred := WeaklyFirstCountableSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

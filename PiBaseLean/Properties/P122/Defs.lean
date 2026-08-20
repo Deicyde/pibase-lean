@@ -1,7 +1,7 @@
 module
 
+public import Mathlib.Topology.Homeomorph.Lemmas
 public import Mathlib.Topology.MetricSpace.Pseudo.Defs
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
@@ -16,11 +16,3 @@ class LocallyEuclideanSpace (X : Type u) [TopologicalSpace X] : Prop where
   locally_homeomorph (x : X) : ∃ n : ℕ, ∃ s ∈ 𝓝 x, Nonempty (s ≃ₜ (Fin n → ℝ))
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P122 : Property where
-  toPred := LocallyEuclideanSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

@@ -1,9 +1,9 @@
 module
 
 public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P51.Lemmas
-public import PiBaseLean.Properties.P137.Defs
-public import PiBaseLean.Properties.P139.Lemmas
+public import PiBaseLean.Properties.P51.Bundled
+public import PiBaseLean.Properties.P137.Bundled
+public import PiBaseLean.Properties.P139.Bundled
 
 @[expose] public section
 
@@ -31,7 +31,7 @@ end PiBase
 namespace PiBase.Formal
 
 theorem T306 : P51 ⊓ P137ᶜ ≤ P139 :=
-  fun X _ ⟨h1, h2⟩ ↦ haveI : Nonempty X := not_isEmpty_iff.mp h2
+  fun X _ ⟨h1, h2⟩ ↦ have : Nonempty X := not_isEmpty_iff.mp h2
     @instHasAnIsolatedPointOfScatteredSpaceOfNonempty X _ h1 ‹_›
 
 end PiBase.Formal

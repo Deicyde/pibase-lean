@@ -2,7 +2,6 @@ module
 
 public import PiBaseLean.AdditionalDefs.Cover
 public import PiBaseLean.AdditionalDefs.Meta
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
@@ -20,11 +19,3 @@ class SubparacompactSpace (X : Type u) [TopologicalSpace X] : Prop where
         (∀ b, IsClosed (t b)) ∧ (⋃ b, t b = univ) ∧ Sigma LocallyFinite t ∧ ∀ b, ∃ a, t b ⊆ s a
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P115 : Property where
-  toPred := SubparacompactSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal
