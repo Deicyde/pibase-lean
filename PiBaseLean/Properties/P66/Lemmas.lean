@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P66.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-
-section Meta
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -34,7 +31,5 @@ theorem WellDefined.mengerSpace : WellDefined MengerSpace :=
       _ = ⋃ n, ⋃ i ∈ s n, U n i := by
           have h_eq : ∀ n i, φ '' (U' n i) = U n i := fun n i => φ.image_preimage (U n i)
           simp_rw [h_eq]
-
-end Meta
 
 end PiBase

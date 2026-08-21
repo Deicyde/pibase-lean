@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P82.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Topology TopologicalSpace
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -30,7 +27,5 @@ theorem WellDefined.locallyMetrizableSpace : WellDefined LocallyMetrizableSpace 
       have : MetrizableSpace C := hC_met
       exact e.symm.isEmbedding.metrizableSpace
     exact ⟨φ '' C, h_img_mem, h_met⟩
-
-end Meta
 
 end PiBase

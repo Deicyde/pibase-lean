@@ -7,10 +7,6 @@ public import PiBaseLean.Properties.P196.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem Homeomorph.hereditarilyConnected [HereditarilyConnected X] (φ : X ≃ₜ Y) :
@@ -22,7 +18,5 @@ theorem Homeomorph.hereditarilyConnected [HereditarilyConnected X] (φ : X ≃�
 
 theorem WellDefined.hereditarilyConnected : WellDefined HereditarilyConnected :=
   fun {_ _} _ _ h _ => Homeomorph.hereditarilyConnected h.some
-
-end Meta
 
 end PiBase

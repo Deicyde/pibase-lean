@@ -7,10 +7,6 @@ public import PiBaseLean.Properties.P203.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.almostDiscreteSpace : WellDefined AlmostDiscreteSpace :=
@@ -58,7 +54,5 @@ theorem Homeomorph.almostDiscreteSpace [AlmostDiscreteSpace X]
   calc x ≠ f p ↔ f.symm x ≠ p := h_ne_iff
     _ ↔ IsOpen {f.symm x} := hp (f.symm x)
     _ ↔ IsOpen {x} := h_isOpen_iff
-
-end Meta
 
 end PiBase

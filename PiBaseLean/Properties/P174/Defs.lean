@@ -1,11 +1,10 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Meta
-public import Mathlib.Topology.Defs.Filter
 
 @[expose] public section
 
-open Topology Set Function Filter TopologicalSpace
+open Topology Filter
 
 universe u
 

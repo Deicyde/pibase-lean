@@ -7,11 +7,6 @@ public import PiBaseLean.Properties.P154.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.goSpace : WellDefined GoSpace :=
@@ -20,7 +15,5 @@ theorem WellDefined.goSpace : WellDefined GoSpace :=
     obtain ⟨Z, f, tZ, hLots, hEmb⟩ := h.subset_lots
     refine ⟨⟨Z, f ∘ φ.symm, tZ, hLots, ?_⟩⟩
     exact hEmb.comp φ.symm.isEmbedding
-
-end Meta
 
 end PiBase

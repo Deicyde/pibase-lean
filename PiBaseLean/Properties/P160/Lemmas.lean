@@ -9,10 +9,6 @@ universe u v
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-open Set
-
 /-! ### Transporting the k-Menger game along a homeomorphism
 
 The k-Menger game is the `gFinGame` played with k-covers, so the transport machinery of
@@ -45,18 +41,11 @@ theorem HasMarkovKWinningStrategyB.kMengerGame_of_homeomorph {k : ℕ} (φ : X �
 
 end KMenger
 
-open PiBase
-
-section Meta
-
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.strategicallyKMengerSpace : WellDefined StrategicallyKMengerSpace :=
   fun {_ _} _ _ hXY h =>
     let φ := hXY.some
     ⟨h.strategically_k_menger.kMengerGame_of_homeomorph φ⟩
-
-end Meta
 
 end PiBase

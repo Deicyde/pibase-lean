@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P118.Bundled
 public import PiBaseLean.Properties.P178.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P178.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T182: P178 (AlephSpace) => P118 (HasSigmaLocallyFiniteKNetwork) -/
-theorem instHasSigmaLocallyFiniteKNetworkOfAlephSpace (X : Type u)
+theorem instHasSigmaLocallyFiniteKNetworkOfAlephSpace {X : Type u}
     [TopologicalSpace X] [AlephSpace X] :
     HasSigmaLocallyFiniteKNetwork X := by infer_instance
 

@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P15.Bundled
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P132.Bundled
+public import PiBaseLean.Properties.P15.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T256: P15 (PerfectlyNormalSpace) => P132 (GδSpace) -/
-instance instGδSpaceOfPerfectlyNormalSpace (X : Type u)
+instance instGδSpaceOfPerfectlyNormalSpace {X : Type u}
     [TopologicalSpace X] [h : PerfectlyNormalSpace X] :
     GδSpace X where
   closed_gdelta := h.closed_gdelta

@@ -7,9 +7,7 @@ public import PiBaseLean.Properties.P194.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -57,7 +55,5 @@ theorem WellDefined.submetacompactSpace : WellDefined SubmetacompactSpace :=
       change {i | y ∈ φ '' (t n i)}.Finite
       rw [h_equiv]
       exact hn
-
-end Meta
 
 end PiBase

@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P2.Bundled
 public import PiBaseLean.Properties.P34.Bundled
 public import PiBaseLean.Properties.P35.Bundled
@@ -9,12 +9,10 @@ public import PiBaseLean.Properties.P35.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T105: P2 (T1Space) + P34 (FullyNormalSpace) => P35 (FullyT4Space) -/
-theorem instFullyT4SpaceOfT1SpaceOfFullyNormalSpace (X : Type u)
+theorem instFullyT4SpaceOfT1SpaceOfFullyNormalSpace {X : Type u}
     [TopologicalSpace X] [T1Space X] [FullyNormalSpace X] :
     FullyT4Space X := by tauto
 

@@ -1,11 +1,8 @@
 module
 
-public import Mathlib.Topology.Separation.Hausdorff
 public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
-
-open Topology Set Function Filter TopologicalSpace
 
 universe u
 

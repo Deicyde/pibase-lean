@@ -1,11 +1,8 @@
 module
 
-public import Mathlib.Topology.Constructions
 public import Mathlib.Topology.DiscreteSubset
 
 @[expose] public section
-
-open Topology Set Function Filter TopologicalSpace
 
 universe u
 

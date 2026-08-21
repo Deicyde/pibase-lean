@@ -1,18 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P23.Bundled
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P140.Bundled
+public import PiBaseLean.Properties.P23.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /- Theorem T58: P23 (WeaklyLocallyCompactSpace) => P140 (CompactlyCoherentSpace) -/
+#guard_msgs (drop info) in
 #check CompactlyCoherentSpace.of_weaklyLocallyCompactSpace
 
 end PiBase

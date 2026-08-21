@@ -1,12 +1,10 @@
 module
 
-public import Mathlib.Order.Filter.Bases.Basic
-public import Mathlib.Topology.Defs.Filter
 public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
 
-open Function Set Filter Topology TopologicalSpace
+open Topology
 
 namespace PiBase
 

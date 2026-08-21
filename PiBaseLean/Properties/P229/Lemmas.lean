@@ -7,7 +7,7 @@ public import PiBaseLean.Properties.P229.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
+open Topology
 
 section FundGroupImage
 
@@ -57,10 +57,6 @@ theorem semilocallySimplyConnectedSpace_of_homeomorph {X Y : Type*} [Topological
     rw [← hcomp]
     exact hasTrivialFundGroupImageAt_comp r iU eC _ hUtriv
 
-open PiBase
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem Homeomorph.semilocallySimplyConnectedSpace (f : X ≃ₜ Y)
@@ -69,7 +65,5 @@ theorem Homeomorph.semilocallySimplyConnectedSpace (f : X ≃ₜ Y)
 
 theorem WellDefined.semilocallySimplyConnectedSpace : WellDefined SemilocallySimplyConnectedSpace :=
   fun {_ _} _ _ h _ => Homeomorph.semilocallySimplyConnectedSpace h.some
-
-end Meta
 
 end PiBase

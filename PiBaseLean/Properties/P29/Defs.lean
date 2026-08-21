@@ -1,12 +1,9 @@
 module
 
 public import Mathlib.Data.Set.Countable
-public import Mathlib.Order.BourbakiWitt
 public import Mathlib.Topology.Defs.Basic
 
 @[expose] public section
-
-open Topology Set Function TopologicalSpace
 
 namespace PiBase
 

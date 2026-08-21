@@ -7,9 +7,7 @@ public import PiBaseLean.Properties.P204.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -41,7 +39,5 @@ theorem WellDefined.hasACutPoint : WellDefined HasACutPoint :=
       rw [← h_eq]
       exact hpc.image _ φ.symm.continuous.continuousOn
     exact hp this
-
-end Meta
 
 end PiBase

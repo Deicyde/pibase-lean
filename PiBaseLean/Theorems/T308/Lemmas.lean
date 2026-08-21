@@ -1,18 +1,13 @@
 module
 
-public import PiBaseLean.Properties.P125.Bundled
-public import PiBaseLean.Properties.P135.Bundled
-public import PiBaseLean.Properties.P139.Bundled
-public import PiBaseLean.Properties.P36.Bundled
 public import PiBaseLean.AdditionalDefs.Constructions
+public import PiBaseLean.Properties.P139.Defs
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
-open scoped Inseparable
+open Set
 
 namespace PiBase
 

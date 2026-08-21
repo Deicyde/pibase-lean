@@ -7,9 +7,7 @@ public import PiBaseLean.Properties.P207.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -35,7 +33,5 @@ theorem WellDefined.stronglyCollectionwiseNormalSpace :
     have hmem : (φ.symm y₁, φ.symm y₂) ∈ Prod.map (φ : X → Y) φ ⁻¹' sY :=
       htX_comp ⟨φ.symm y, hy₁, hy₂⟩
     simpa using hmem
-
-end Meta
 
 end PiBase

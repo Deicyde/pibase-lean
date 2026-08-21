@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P102.Bundled
 public import PiBaseLean.Properties.P104.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P104.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T624: P102 (SemimetrizableSpace) => P104 (SymmetrizableSpace) -/
-instance instSymmetrizableSpaceOfSemimetrizableSpace (X : Type u)
+instance instSymmetrizableSpaceOfSemimetrizableSpace {X : Type u}
     [TopologicalSpace X] [h : SemimetrizableSpace X] :
     SymmetrizableSpace X where
   nonempty_symmetric := .intro h.nonempty_semimetric.some.symmetricSpace

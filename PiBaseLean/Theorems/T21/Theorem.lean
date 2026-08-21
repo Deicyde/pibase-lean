@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P26.Bundled
 public import PiBaseLean.Properties.P29.Bundled
 
@@ -8,13 +8,13 @@ public import PiBaseLean.Properties.P29.Bundled
 
 universe u
 
-open Topology Set Function TopologicalSpace
+open Set Function TopologicalSpace
 
 namespace PiBase
 
 --TODO: proof can probably be golfed a lot
 /-- Theorem T21: P26 (SeparableSpace) => P29 (CountableChainCondition) -/
-instance instCountableChainConditionOfSeparableSpace (X : Type u)
+instance instCountableChainConditionOfSeparableSpace {X : Type u}
     [TopologicalSpace X] [h : SeparableSpace X] : CountableChainCondition X := by
   refine (countableChainCondition_iff_ex_nonempty_chain X).mpr (fun S Sd So Sn ↦ ?_)
   obtain ⟨r, rc, dr⟩ := h.exists_countable_dense

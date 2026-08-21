@@ -1,16 +1,15 @@
 module
 
 public import Mathlib.Topology.Sets.OpenCover
-public import Mathlib.Data.Set.Card
-
-@[expose] public section
 
 /-! This file contains additional definitions and statements around covers of topological spaces
 which are useful for properties and theorems. -/
 
+@[expose] public section
+
 namespace PiBase
 
-open Function Set Topology TopologicalSpace
+open Set Topology TopologicalSpace
 
 variable {X ι : Type*}
 

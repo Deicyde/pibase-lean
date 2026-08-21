@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P25.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -29,7 +26,5 @@ theorem WellDefined.exhaustibleByCompacts : WellDefined ExhaustibleByCompacts :=
             rw [← Set.image_iUnion]
         _ = φ '' univ := by rw [K.iUnion_eq]
         _ = univ := Set.image_univ_of_surjective φ.surjective
-
-end Meta
 
 end PiBase

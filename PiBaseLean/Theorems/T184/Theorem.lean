@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P79.Bundled
 public import PiBaseLean.Properties.P80.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P80.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T184: P80 (FrechetUrysohnSpace) => P79 (SequentialSpace) -/
-theorem instSequentialSpaceOfFrechetUrysohnSpace (X : Type u)
+theorem instSequentialSpaceOfFrechetUrysohnSpace {X : Type u}
     [TopologicalSpace X] [FrechetUrysohnSpace X] : SequentialSpace X := by infer_instance
 
 end PiBase

@@ -1,11 +1,8 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Meta
-public import PiBaseLean.Properties.P18.Bundled
 
 @[expose] public section
-
-open Topology Set Filter TopologicalSpace
 
 universe u
 

@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P172.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Topology Filter Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -39,7 +36,5 @@ theorem WellDefined.radialSpace : WellDefined RadialSpace :=
         simp only [φ.apply_symm_apply] at h
         exact h
       exact h_comp
-
-end Meta
 
 end PiBase

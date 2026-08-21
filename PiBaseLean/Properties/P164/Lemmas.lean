@@ -7,11 +7,6 @@ public import PiBaseLean.Properties.P164.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-open Cardinal
-
-section Meta
-
 universe u
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
@@ -25,7 +20,5 @@ theorem WellDefined.cardLtEveryMeasurableCardinal :
     -- transport #X / #Y by Cardinal.mk_congr φ.toEquiv, following P163/P114
     rw [← Cardinal.mk_congr φ.toEquiv]
     exact h.card_lt_every_measurable k hk
-
-end Meta
 
 end PiBase

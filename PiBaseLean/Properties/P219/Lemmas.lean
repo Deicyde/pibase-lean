@@ -7,9 +7,7 @@ public import PiBaseLean.Properties.P219.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -26,7 +24,5 @@ theorem WellDefined.torontoSpace : WellDefined TorontoSpace :=
       (Cardinal.mk_congr e.toEquiv).trans (hcard.trans (Cardinal.mk_congr φ.toEquiv).symm)
     obtain ⟨eX⟩ := h.toronto hcardX
     exact ⟨e.symm.trans (eX.trans φ)⟩
-
-end Meta
 
 end PiBase

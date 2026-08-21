@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P172.Bundled
 public import PiBaseLean.Properties.P173.Bundled
 
@@ -8,13 +8,13 @@ public import PiBaseLean.Properties.P173.Bundled
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 /-- Theorem T205: P172 (RadialSpace) => P173 (PseudoradialSpace)
 TODO: Shorten this by using alternative def for PseudoRadial -/
-instance instPseudoradialSpaceOfRadialSpace (X : Type u)
+instance instPseudoradialSpaceOfRadialSpace {X : Type u}
     [TopologicalSpace X] [h : RadialSpace X] :
     PseudoradialSpace X where
   radiallyClosed_isClosed s hs := by

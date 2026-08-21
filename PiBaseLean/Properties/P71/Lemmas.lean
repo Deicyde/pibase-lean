@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P71.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -39,7 +36,5 @@ theorem WellDefined.sigmaRelativelyCompactSpace : WellDefined SigmaRelativelyCom
       simp only [Set.mem_iUnion] at hx'
       obtain ⟨i, hi, hxi⟩ := hx'
       exact Set.mem_iUnion.mpr ⟨i, Set.mem_iUnion.mpr ⟨hi, hxi⟩⟩
-
-end Meta
 
 end PiBase

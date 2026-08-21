@@ -1,11 +1,8 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Cover
-public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
-
-open Topology Set Function Filter TopologicalSpace
 
 universe u
 

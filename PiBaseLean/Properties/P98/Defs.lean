@@ -1,12 +1,10 @@
 module
 
-public import Mathlib.Order.BourbakiWitt
-public import Mathlib.Topology.Defs.Induced
 public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
 
-open Topology Set Function Filter TopologicalSpace Set.Notation
+open Set Set.Notation
 
 namespace PiBase
 

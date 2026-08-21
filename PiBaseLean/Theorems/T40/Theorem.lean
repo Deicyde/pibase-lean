@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P36.Bundled
 public import PiBaseLean.Properties.P37.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P37.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T40: P37 (PrepathConnectedSpace) => P36 (PreconnectedSpace) -/
-instance instPreconnectedSpaceOfPrepathConnectedSpace (X : Type u)
+instance instPreconnectedSpaceOfPrepathConnectedSpace {X : Type u}
     [TopologicalSpace X] [PrepathConnectedSpace X] :
     PreconnectedSpace X := by
   by_cases! IsEmpty X

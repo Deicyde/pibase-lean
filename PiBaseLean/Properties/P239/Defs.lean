@@ -1,7 +1,6 @@
 module
 
 public import Mathlib.Topology.Homotopy.Contractible
-public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
 
@@ -9,7 +8,7 @@ universe u
 
 namespace PiBase
 
-open Topology Filter
+open Topology
 
 /- 239. Semilocally contractible -/
 class SemilocallyContractibleSpace (X : Type u) [TopologicalSpace X] : Prop where

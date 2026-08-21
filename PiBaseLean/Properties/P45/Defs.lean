@@ -1,12 +1,8 @@
 module
 
-public import Mathlib.Topology.Connected.Basic
-public import Mathlib.Topology.Connected.TotallyDisconnected
 public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
-
-open Topology Set Function Filter TopologicalSpace
 
 namespace PiBase
 

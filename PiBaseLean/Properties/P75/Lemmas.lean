@@ -1,16 +1,11 @@
 module
 
-public import Mathlib.Topology.Homeomorph.Lemmas
 public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P75.Defs
 
 @[expose] public section
 
 namespace PiBase
-
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -20,7 +15,5 @@ theorem Homeomorph.spectralSpace [h : SpectralSpace X] (f : X ≃ₜ Y) :
 
 theorem WellDefined.spectralSpace : WellDefined SpectralSpace :=
   fun {_ _} _ _ h _ ↦ Homeomorph.spectralSpace h.some
-
-end Meta
 
 end PiBase

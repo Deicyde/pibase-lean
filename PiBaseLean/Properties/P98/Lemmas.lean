@@ -5,14 +5,9 @@ public import PiBaseLean.Properties.P98.Defs
 
 @[expose] public section
 
-open scoped Set
-
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -35,7 +30,5 @@ theorem WellDefined.kω1Space : WellDefined kω1Space :=
       · intro hs
         exact φ.isOpen_preimage.mp <| (hOpen _).mpr fun n =>
           (φ.image (K n)).isOpen_preimage.mpr (hs n)
-
-end Meta
 
 end PiBase

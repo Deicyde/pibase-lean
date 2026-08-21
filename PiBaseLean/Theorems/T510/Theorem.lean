@@ -1,20 +1,18 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P52.Bundled
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P147.Bundled
 public import PiBaseLean.Properties.P191.Bundled
+public import PiBaseLean.Properties.P52.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T510: P147 (P space) + P191 (Has points Gδ) => P52 (Discrete) -/
-instance instDiscreteTopologyOfPSpaceOfHasGδSingletons (X : Type u)
+instance instDiscreteTopologyOfPSpaceOfHasGδSingletons {X : Type u}
     [TopologicalSpace X] [h : PSpace X] [h' : HasGδSingletons X] : DiscreteTopology X :=
   discreteTopology_iff_isOpen_singleton.mpr (fun a ↦ h.isGδ_open <| h'.isGδ_singleton a)
 

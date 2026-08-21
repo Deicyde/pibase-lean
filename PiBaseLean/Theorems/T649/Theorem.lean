@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P107.Bundled
 public import PiBaseLean.Properties.P126.Bundled
 public import PiBaseLean.Properties.P137.Bundled
@@ -9,12 +9,12 @@ public import PiBaseLean.Properties.P137.Bundled
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 /-- Theorem T649: P126 (DoorSpace) + P137ᶜ (Nonempty) => P107 (HasClosedPoint) -/
-instance instHasClosedPointOfDoorSpaceOfNonempty (X : Type u)
+instance instHasClosedPointOfDoorSpaceOfNonempty {X : Type u}
     [TopologicalSpace X] [h : DoorSpace X] [h' : Nonempty X] :
     HasClosedPoint X where
   has_closed_point := by

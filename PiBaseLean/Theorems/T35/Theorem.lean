@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P11.Bundled
 public import PiBaseLean.Properties.P12.Bundled
 
@@ -8,11 +8,10 @@ public import PiBaseLean.Properties.P12.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /- Theorem T35: P12 (CompletelyRegularSpace) => P11 (RegularSpace) -/
+#guard_msgs (drop info) in
 #check CompletelyRegularSpace.instRegularSpace
 
 end PiBase

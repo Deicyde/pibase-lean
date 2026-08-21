@@ -1,14 +1,10 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Cover
-public import Mathlib.Data.Set.Countable
-public import Mathlib.Topology.Homeomorph.Defs
 
 @[expose] public section
 
 universe u
-
-open Topology Set Function Filter TopologicalSpace
 
 namespace PiBase
 

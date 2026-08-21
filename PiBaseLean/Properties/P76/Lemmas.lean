@@ -3,16 +3,13 @@ module
 public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P76.Defs
 
+import Mathlib.Topology.UniformSpace.Basic
+
 @[expose] public section
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
 open Set Filter Topology
-
-section Meta
-
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -68,7 +65,5 @@ theorem WellDefined.proximalSpace : WellDefined ProximalSpace :=
             (proximalMoveEquiv φ (b (2 * n + 1))).2) = ∅)
       simp only [proximalMoveEquiv_fst, proximalMoveEquiv_snd, slice_preimage_prodMap,
         ← preimage_iInter, preimage_eq_empty_iff_of_homeomorph, exists_tendsto_comp_iff]
-
-end Meta
 
 end PiBase

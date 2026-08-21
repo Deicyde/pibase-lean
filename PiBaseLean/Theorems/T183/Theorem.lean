@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P28.Bundled
 public import PiBaseLean.Properties.P80.Bundled
 
@@ -8,11 +8,10 @@ public import PiBaseLean.Properties.P80.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /- Theorem T183: P28 (FirstCountableTopology) => P80 (FrechetUrysohnSpace) -/
+#guard_msgs (drop info) in
 #check FirstCountableTopology.frechetUrysohnSpace
 
 end PiBase

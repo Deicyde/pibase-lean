@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P61.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Set Function
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -80,7 +77,5 @@ theorem WellDefined.cozeroComplementedSpace : WellDefined CozeroComplementedSpac
           rw [h_pre_closure_univ, Set.preimage_univ]
         exact h_inj_pre this
       exact dense_iff_closure_eq.mpr h_closure_univ
-
-end Meta
 
 end PiBase

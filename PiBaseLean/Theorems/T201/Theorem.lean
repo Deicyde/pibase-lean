@@ -1,20 +1,20 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P116.Bundled
 public import PiBaseLean.Properties.P26.Bundled
 public import PiBaseLean.Properties.P55.Bundled
-public import PiBaseLean.Properties.P116.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function TopologicalSpace
+open TopologicalSpace
 
 namespace PiBase
 
 /-- Theorem T201: P26 (SeparableSpace) + P55 (IsCompletelyMetrizableSpace) => P116 (PolishSpace) -/
-theorem instPolishSpaceOfSeparableSpaceOfIsCompletelyMetrizableSpace (X : Type u)
+theorem instPolishSpaceOfSeparableSpaceOfIsCompletelyMetrizableSpace {X : Type u}
     [TopologicalSpace X] [SeparableSpace X] [IsCompletelyMetrizableSpace X] :
     PolishSpace X := by tauto
 

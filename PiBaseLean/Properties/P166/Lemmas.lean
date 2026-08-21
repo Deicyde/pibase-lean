@@ -9,7 +9,7 @@ universe u v
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
+open TopologicalSpace
 
 namespace Formal
 
@@ -58,15 +58,11 @@ end P166
 
 end Formal
 
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.hasCoarserSeparableMetrizableTopology :
     WellDefined HasCoarserSeparableMetrizableTopology :=
   fun {_ _} _ _ hXY hX =>
     Formal.hasCoarserSeparableMetrizableTopology_of_homeomorph hXY.some hX
-
-end Meta
 
 end PiBase

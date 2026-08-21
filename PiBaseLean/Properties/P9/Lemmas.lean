@@ -3,13 +3,11 @@ module
 public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P9.Defs
 
+import Mathlib.Logic.Equiv.Pairwise
+
 @[expose] public section
 
 namespace PiBase
-
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
 
 universe u v
 
@@ -30,7 +28,5 @@ theorem Homeomorph.functionallyT2Space [h : FunctionallyT2Space X] (f : X ≃ₜ
   intro x y hxy
   rcases h.functionally_t2 hxy with ⟨g, g₀, g₁⟩
   refine ⟨g.comp (f.symm : C(Y, X)), ?_, ?_⟩ <;> simpa
-
-end Meta
 
 end PiBase

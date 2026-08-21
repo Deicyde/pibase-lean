@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P145.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-
-section Meta
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -55,7 +52,5 @@ theorem WellDefined.stronglyParacompactSpace : WellDefined StronglyParacompactSp
       calc t' b = φ '' (t b) := rfl
       _ ⊆ φ '' (φ ⁻¹' (s a)) := image_mono h_sub
       _ ⊆ s a := image_preimage_subset _ _
-
-end Meta
 
 end PiBase

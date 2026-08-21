@@ -1,15 +1,10 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Meta
-public import PiBaseLean.Properties.P36.Defs
 
 @[expose] public section
 
 namespace PiBase
-
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
 
 universe u v
 
@@ -25,7 +20,5 @@ theorem Homeomorph.preconnectedSpace [PreconnectedSpace X] (f : X ≃ₜ Y) : Pr
   constructor
   convert isPreconnected_range f.continuous
   simp only [EquivLike.range_eq_univ]
-
-end Meta
 
 end PiBase

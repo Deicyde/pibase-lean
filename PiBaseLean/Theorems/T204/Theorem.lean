@@ -1,7 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import Mathlib.Topology.Homeomorph.Lemmas
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P52.Bundled
 public import PiBaseLean.Properties.P86.Bundled
 
@@ -9,13 +8,11 @@ public import PiBaseLean.Properties.P86.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T204: P52 (DiscreteTopology) => P86 (HomogeneousSpace)
 Note the use of `classical` -/
-instance instHomogeneousSpaceOfDiscreteTopology (X : Type u)
+instance instHomogeneousSpaceOfDiscreteTopology {X : Type u}
     [TopologicalSpace X] [h : DiscreteTopology X] :
     HomogeneousSpace X where
   homogeneous x y := by

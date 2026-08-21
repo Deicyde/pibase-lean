@@ -7,9 +7,7 @@ public import PiBaseLean.Properties.P99.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open Topology Filter
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -23,7 +21,5 @@ theorem Homeomorph.usSpace [h : UsSpace X] (f : X ≃ₜ Y) : UsSpace Y where
 
 theorem WellDefined.usSpace : WellDefined UsSpace :=
   fun {_ _} _ _ h _ => Homeomorph.usSpace h.some
-
-end Meta
 
 end PiBase

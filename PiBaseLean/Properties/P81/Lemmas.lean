@@ -7,10 +7,6 @@ public import PiBaseLean.Properties.P81.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem Homeomorph.countablyTightSpace [CountablyTightSpace X] (f : X ≃ₜ Y) :
@@ -35,7 +31,5 @@ theorem Homeomorph.countablyTightSpace [CountablyTightSpace X] (f : X ≃ₜ Y) 
 
 theorem WellDefined.countablyTightSpace : WellDefined CountablyTightSpace :=
   fun {_ _} _ _ h _ ↦ Homeomorph.countablyTightSpace h.some
-
-end Meta
 
 end PiBase

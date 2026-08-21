@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P68.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-
-section Meta
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -33,7 +30,5 @@ theorem WellDefined.rothbergerSpace : WellDefined RothbergerSpace :=
       _ = ⋃ n, U n (j n) := by
           have h_eq : ∀ n, φ '' (U' n (j n)) = U n (j n) := fun n => φ.image_preimage (U n (j n))
           simp_rw [h_eq]
-
-end Meta
 
 end PiBase

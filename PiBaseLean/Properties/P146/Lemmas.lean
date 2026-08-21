@@ -1,16 +1,12 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P146.Defs
 
 @[expose] public section
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-
-section Meta
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -59,7 +55,5 @@ theorem WellDefined.ultraparacompactSpace : WellDefined UltraparacompactSpace :=
         _ ⊆ φ '' (φ ⁻¹' (s a)) := image_mono ha
         _ ⊆ s a := image_preimage_subset _ _
       exact ⟨a, h_sub⟩
-
-end Meta
 
 end PiBase

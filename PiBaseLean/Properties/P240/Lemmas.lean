@@ -9,13 +9,9 @@ universe u
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-open Topology Set
+open Set
 
 namespace Formal
-
-open Topology Set
 
 /-- Images under a partial equivalence postcomposed with an equivalence. -/
 theorem image_transEquiv {α β γ : Type*} (e : PartialEquiv α β) (g : β ≃ γ) (s : Set α) :
@@ -23,9 +19,6 @@ theorem image_transEquiv {α β γ : Type*} (e : PartialEquiv α β) (g : β ≃
   rw [PartialEquiv.coe_transEquiv, Set.image_comp]
 
 end Formal
-
-section Meta
-
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -76,7 +69,5 @@ theorem WellDefined.cWComplexSpace : WellDefined CWComplexSpace :=
           _ = φ '' (univ : Set _) := by rw [hX.union']
           _ = univ := by rw [Set.image_univ, φ.surjective.range_eq]
     }
-
-end Meta
 
 end PiBase

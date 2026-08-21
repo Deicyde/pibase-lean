@@ -7,10 +7,6 @@ public import PiBaseLean.Properties.P10.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.semiregularSpace : WellDefined SemiregularSpace :=
@@ -27,7 +23,5 @@ theorem Homeomorph.semiregularSpace [SemiregularSpace X] (f : X ≃ₜ Y) : Semi
   rintro _ ⟨s, hs, rfl⟩
   unfold IsRegularOpen
   rw [← f.image_closure, ← f.image_interior, hR s hs]
-
-end Meta
 
 end PiBase

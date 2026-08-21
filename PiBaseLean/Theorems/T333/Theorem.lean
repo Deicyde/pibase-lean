@@ -1,20 +1,18 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P3.Bundled
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P124.Bundled
+public import PiBaseLean.Properties.P3.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 -- Most likely redundant
 /-- Theorem T333: P124 (TopologicalNManifold) => P3 (T2Space) -/
-theorem instT2SpaceOfTopologicalNManifold (X : Type u)
+theorem instT2SpaceOfTopologicalNManifold {X : Type u}
     [TopologicalSpace X] [TopologicalNManifold X] :
     T2Space X := by infer_instance
 

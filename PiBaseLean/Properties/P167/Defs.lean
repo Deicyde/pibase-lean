@@ -1,12 +1,10 @@
 module
 
-public import Mathlib.Order.Filter.AtTopBot.Defs
-public import Mathlib.Topology.Defs.Filter
 public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
 
-open Topology Set Function Filter TopologicalSpace
+open Topology Filter
 
 universe u
 

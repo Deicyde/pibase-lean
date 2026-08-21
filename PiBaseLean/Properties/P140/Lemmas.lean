@@ -1,15 +1,11 @@
 module
 
+public import Mathlib.Topology.Compactness.CompactlyCoherentSpace
 public import PiBaseLean.AdditionalDefs.Meta
-public import PiBaseLean.Properties.P140.Defs
 
 @[expose] public section
 
 namespace PiBase
-
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -43,7 +39,5 @@ theorem WellDefined.compactlyCoherentSpace : WellDefined CompactlyCoherentSpace 
       rw [h_eq]
       exact e.isOpen_preimage.mpr hY
     exact φ.isOpen_preimage.mp h_pre_open
-
-end Meta
 
 end PiBase

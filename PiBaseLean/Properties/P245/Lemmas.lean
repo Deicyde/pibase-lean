@@ -7,9 +7,7 @@ public import PiBaseLean.Properties.P245.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open TopologicalSpace
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -32,7 +30,5 @@ theorem Homeomorph.hasFinitelyManyOpenSets [HasFinitelyManyOpenSets X] (f : X â‰
 
 theorem WellDefined.hasFinitelyManyOpenSets : WellDefined HasFinitelyManyOpenSets :=
   fun {_ _} _ _ h _ => Homeomorph.hasFinitelyManyOpenSets h.some
-
-end Meta
 
 end PiBase

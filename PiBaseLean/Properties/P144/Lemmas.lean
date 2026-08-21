@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P144.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Topology TopologicalSpace
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -29,7 +26,5 @@ theorem WellDefined.locallyPseudoMetrizableSpace : WellDefined LocallyPseudoMetr
       have : PseudoMetrizableSpace s := hs_pseudo
       exact e.symm.isInducing.pseudoMetrizableSpace
     exact ⟨φ '' s, h_img_mem, h_pseudo⟩
-
-end Meta
 
 end PiBase

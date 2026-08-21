@@ -1,22 +1,19 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P234.Bundled
 public import PiBaseLean.Properties.P47.Bundled
 public import PiBaseLean.Properties.P52.Bundled
-public import PiBaseLean.Properties.P234.Bundled
-public import PiBaseLean.Properties.P234.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function Filter
-
 namespace PiBase
 
 /-- Theorem T108: P234 (HasOpenConnectedComponents) + P47 (TotallyDisconnectedSpace) =>
 P52 (DiscreteTopology) -/
-instance instDiscreteTopologyOfHasOpenConnectedComponentsOfTotallyDisconnectedSpace (X : Type u)
+instance instDiscreteTopologyOfHasOpenConnectedComponentsOfTotallyDisconnectedSpace {X : Type u}
     [TopologicalSpace X] [h : HasOpenConnectedComponents X] [h' : TotallyDisconnectedSpace X] :
       DiscreteTopology X := by
   apply discreteTopology_iff_isOpen_singleton.mpr (fun x ↦ ?_)

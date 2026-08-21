@@ -1,15 +1,12 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P118.Defs
 
 @[expose] public section
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open Topology Filter Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -60,7 +57,5 @@ theorem WellDefined.hasSigmaLocallyFiniteKNetwork : WellDefined HasSigmaLocallyF
       · calc (⋃ i ∈ s, φ '' f i : Set Y) = φ '' (⋃ i ∈ s, f i) := by rw [image_iUnion₂]
           _ ⊆ φ '' (φ ⁻¹' U) := by exact image_mono hsUniv
           _ ⊆ U := by exact image_preimage_subset φ _
-
-end Meta
 
 end PiBase

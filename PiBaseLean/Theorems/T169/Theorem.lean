@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P1.Bundled
 public import PiBaseLean.Properties.P51.Bundled
 
@@ -8,13 +8,13 @@ public import PiBaseLean.Properties.P51.Bundled
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 -- Most likely redundant
 /-- Theorem T169: P51 (ScatteredSpace) => P1 (T0Space) -/
-instance instT0SpaceOfScatteredSpace (X : Type u)
+instance instT0SpaceOfScatteredSpace {X : Type u}
     [TopologicalSpace X] [h : ScatteredSpace X] :
     T0Space X := by
   apply (t0Space_iff_inseparable X).mpr (fun x y xy ↦ ?_)

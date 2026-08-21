@@ -7,9 +7,7 @@ public import PiBaseLean.Properties.P101.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -25,7 +23,5 @@ theorem WellDefined.hasClosedRetract : WellDefined HasClosedRetract :=
     · simp only [ContinuousMap.comp_assoc, ContinuousMap.coe_comp, ContinuousMap.coe_coe,
         range_comp, EquivLike.range_eq_univ, image_univ, ← rf]
       exact (φ.toEquiv.image_symm_eq_preimage s).symm
-
-end Meta
 
 end PiBase

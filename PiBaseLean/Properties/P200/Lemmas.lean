@@ -1,13 +1,11 @@
 module
 
-public import PiBaseLean.Properties.P200.Defs
 public import PiBaseLean.AdditionalDefs.Meta
+public import PiBaseLean.Properties.P200.Defs
 
 @[expose] public section
 
 namespace PiBase
-
-open Topology Filter
 
 variable (X : Type*) [TopologicalSpace X]
 
@@ -30,17 +28,11 @@ theorem SimplyConnectedSpace.presimplyConnectedSpace [h : SimplyConnectedSpace X
     PresimplyConnectedSpace X where
   presimplyconnected := .inr h
 
-section Meta
-
-universe u
-
 theorem WellDefined.presimplyConnectedSpace : WellDefined PresimplyConnectedSpace :=
   fun {_ _} _ _ hXY h => by
     let φ := hXY.some
     refine ⟨h.presimplyconnected.imp ?_ ?_⟩
     · exact fun _ ↦ φ.symm.toEquiv.isEmpty
     · exact fun _ ↦ φ.symm.toHomotopyEquiv.simplyConnectedSpace
-
-end Meta
 
 end PiBase

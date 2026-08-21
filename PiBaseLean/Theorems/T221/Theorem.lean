@@ -1,21 +1,20 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P2.Bundled
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P168.Bundled
-public import Mathlib.Topology.DiscreteSubset
+public import PiBaseLean.Properties.P2.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 -- Most likely redundant
 /-- Theorem T221: P168 (CountableSetsDiscrete) => P2 (T1Space) -/
-instance instT1SpaceOfCountableSetsDiscrete (X : Type u)
+instance instT1SpaceOfCountableSetsDiscrete {X : Type u}
     [TopologicalSpace X] [h : CountableSetsDiscrete X] :
     T1Space X := by
   refine t1Space_iff_exists_open.mpr (fun x y xy ↦ ?_)

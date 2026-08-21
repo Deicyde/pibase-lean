@@ -7,11 +7,7 @@ public import PiBaseLean.Properties.P95.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-open PiBase
-
-section Meta
+open Topology
 
 universe u v
 
@@ -67,7 +63,5 @@ theorem WellDefined.arcConnectedSpace : WellDefined ArcConnectedSpace :=
       rw [heq]
       exact h_map
     exact ⟨q, h_q⟩
-
-end Meta
 
 end PiBase

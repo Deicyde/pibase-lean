@@ -1,18 +1,20 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P191.Bundled
+public import PiBaseLean.Properties.P2.Bundled
 public import PiBaseLean.Theorems.T500.Lemmas
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 /-- Theorem T500: P191 (HasGδSingletons) => P2 (T1Space) -/
-instance instT1SpaceOfHasGδSingletons (X : Type u)
+instance instT1SpaceOfHasGδSingletons {X : Type u}
     [TopologicalSpace X] [h : HasGδSingletons X] : T1Space X := by
   refine t1Space_iff_exists_open.mpr (fun x y xy ↦ ?_)
   have : y ∉ ({x} : Set X) := by exact notMem_singleton_iff.mpr (Ne.symm xy)
@@ -24,3 +26,9 @@ instance instT1SpaceOfHasGδSingletons (X : Type u)
     exact interior_subset sy
 
 end PiBase
+
+namespace PiBase.Formal
+
+theorem T500 : P191 ≤ P2 := fun X _ h ↦ @instT1SpaceOfHasGδSingletons X _ h
+
+end PiBase.Formal

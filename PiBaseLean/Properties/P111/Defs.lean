@@ -1,12 +1,10 @@
 module
 
-public import Mathlib.Data.Countable.Defs
 public import Mathlib.Topology.Compactness.Compact
-public import Mathlib.Topology.Defs.Filter
 
 @[expose] public section
 
-open Topology Set
+open Set
 
 universe u
 

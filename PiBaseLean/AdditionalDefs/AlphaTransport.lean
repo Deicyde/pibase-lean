@@ -1,12 +1,15 @@
 module
 
-public import Mathlib.Topology.Metrizable.Basic
+public import Mathlib.Topology.Homeomorph.Defs
+
+/-! This file contains (AI generated) lemmas to help show
+the αᵢ properties are preserved by homeomorphisms. -/
 
 @[expose] public section
 
 universe u v
 
-open Topology Set Filter Function
+open Topology Set Filter
 
 namespace PiBase.AlphaTransport
 

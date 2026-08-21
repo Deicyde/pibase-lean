@@ -1,15 +1,12 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P117.Defs
 
 @[expose] public section
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open Topology Filter Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -49,7 +46,5 @@ theorem WellDefined.hasSigmaLocallyFiniteNetwork : WellDefined HasSigmaLocallyFi
         obtain ⟨z, hz, rfl⟩ := hy
         have : z ∈ φ ⁻¹' s := hsub hz
         exact this
-
-end Meta
 
 end PiBase

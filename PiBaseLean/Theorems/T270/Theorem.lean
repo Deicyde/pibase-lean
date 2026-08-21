@@ -1,19 +1,19 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P27.Bundled
 public import PiBaseLean.Properties.P28.Bundled
-public import Mathlib.Topology.Bases
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function TopologicalSpace
+open TopologicalSpace
 
 namespace PiBase
 
 /- Theorem T270: P27 (SecondCountableTopology) => P28 (FirstCountableTopology) -/
+#guard_msgs (drop info) in
 #check SecondCountableTopology.to_firstCountableTopology
 
 end PiBase

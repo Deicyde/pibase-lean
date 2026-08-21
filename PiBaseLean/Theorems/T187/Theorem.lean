@@ -1,7 +1,6 @@
 module
 
-public import Mathlib.Data.Countable.Defs
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P57.Bundled
 public import PiBaseLean.Properties.P78.Bundled
 
@@ -10,6 +9,7 @@ public import PiBaseLean.Properties.P78.Bundled
 namespace PiBase
 
 /- Theorem 187: a finite space is countable -/
+#guard_msgs (drop info) in
 #check Finite.to_countable
 
 end PiBase

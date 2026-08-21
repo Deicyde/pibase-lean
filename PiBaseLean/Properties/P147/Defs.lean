@@ -1,11 +1,8 @@
 module
 
-public import Mathlib.Data.Countable.Defs
 public import Mathlib.Topology.GDelta.Basic
 
 @[expose] public section
-
-open Topology Set Function Filter TopologicalSpace
 
 universe u
 

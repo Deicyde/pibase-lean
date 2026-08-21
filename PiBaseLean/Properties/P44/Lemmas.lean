@@ -1,16 +1,10 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P44.Defs
 
 @[expose] public section
 
 namespace PiBase
-
-open Topology Filter Set Function TopologicalSpace
-
-
-section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -31,7 +25,5 @@ theorem WellDefined.biconnectedSpace : WellDefined BiconnectedSpace :=
     obtain ⟨x, hxs, hxv⟩ :=
       h.no_partition _ _ hCsX (hNs.preimage φ.surjective) hCvX (hNv.preimage φ.surjective)
     exact ⟨φ x, hxs, hxv⟩
-
-end Meta
 
 end PiBase

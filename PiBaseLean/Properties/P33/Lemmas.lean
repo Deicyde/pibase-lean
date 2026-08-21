@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P33.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -47,7 +44,5 @@ theorem WellDefined.countablyMetacompactSpace : WellDefined CountablyMetacompact
       intro y hy
       obtain ⟨x, hxt, rfl⟩ := hy
       exact ha hxt
-
-end Meta
 
 end PiBase

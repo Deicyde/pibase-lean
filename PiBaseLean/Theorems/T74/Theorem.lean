@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P17.Bundled
 public import PiBaseLean.Properties.P57.Bundled
 
@@ -8,12 +8,12 @@ public import PiBaseLean.Properties.P57.Bundled
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 /-- Theorem T74: P57 (Countable) => P17 (SigmaCompactSpace) -/
-instance instSigmaCompactSpaceOfCountable (X : Type u)
+instance instSigmaCompactSpaceOfCountable {X : Type u}
     [TopologicalSpace X] [h : Countable X] : SigmaCompactSpace X := by
   by_cases! IsEmpty X
   · infer_instance

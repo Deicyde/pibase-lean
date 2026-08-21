@@ -1,20 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P125.Bundled
 public import PiBaseLean.Properties.P129.Bundled
-public import Mathlib.Logic.Nontrivial.Defs
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T249: ¬P125 (Nontrivial) => P129 (IndiscreteTopology) -/
-theorem instIndiscreteTopologyOfSubsingleton (X : Type u)
+theorem instIndiscreteTopologyOfSubsingleton {X : Type u}
     [TopologicalSpace X] [Subsingleton X] : IndiscreteTopology X := by
   infer_instance
 

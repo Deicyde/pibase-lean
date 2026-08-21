@@ -1,16 +1,12 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P174.Defs
 
 @[expose] public section
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Topology
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -28,7 +24,5 @@ theorem WellDefined.wellBasedSpace : WellDefined WellBasedSpace :=
       rcases hs_ord i j with hij | hij
       · exact Or.inl (Set.image_mono hij)
       · exact Or.inr (Set.image_mono hij)
-
-end Meta
 
 end PiBase

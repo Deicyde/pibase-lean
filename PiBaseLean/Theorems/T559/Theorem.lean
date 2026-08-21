@@ -1,22 +1,21 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P198.Bundled
 public import PiBaseLean.Properties.P52.Bundled
 public import PiBaseLean.Properties.P57.Bundled
-public import PiBaseLean.Properties.P198.Bundled
-public import PiBaseLean.Properties.P198.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 -- Most likely redundant
 /-- Theorem T559: P198 (HasCountableExtent) + P52 (DiscreteTopology) => P57 (Countable) -/
-instance instCountableOfHasCountableExtentOfDiscreteTopology (X : Type u)
+instance instCountableOfHasCountableExtentOfDiscreteTopology {X : Type u}
     [TopologicalSpace X] [h : HasCountableExtent X] [h' : DiscreteTopology X] :
     Countable X := by
   rw [hasCountableExtent_iff_discrete_countable] at h

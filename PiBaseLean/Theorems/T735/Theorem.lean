@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P212.Bundled
 public import PiBaseLean.Properties.P213.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P213.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T735: P212 (α2Space) => P213 (α3Space) -/
-instance instα3SpaceOfα2Space (X : Type u)
+instance instα3SpaceOfα2Space {X : Type u}
     [TopologicalSpace X] [h : α2Space X] :
     α3Space X where
   subset_converge := by

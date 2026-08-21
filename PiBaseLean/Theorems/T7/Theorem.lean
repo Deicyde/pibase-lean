@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P23.Bundled
 public import PiBaseLean.Properties.P24.Bundled
 
@@ -8,12 +8,12 @@ public import PiBaseLean.Properties.P24.Bundled
 
 universe u
 
-open Topology Set Function Filter
+open Topology Set Filter
 
 namespace PiBase
 
 /-- Theorem T7: P24 (LocallyRelativelyCompactSpace) => P23 (WeaklyLocallyCompactSpace) -/
-instance instWeaklyLocallyCompactSpaceOfLocallyRelativelyCompactSpace (X : Type u)
+instance instWeaklyLocallyCompactSpaceOfLocallyRelativelyCompactSpace {X : Type u}
     [TopologicalSpace X] [h : LocallyRelativelyCompactSpace X] : WeaklyLocallyCompactSpace X where
   exists_compact_mem_nhds x :=
     let ⟨t, ⟨tx, tc⟩, _⟩ := (hasBasis_iff.mp (h.locally_relatively_compact x) univ).mp univ_mem

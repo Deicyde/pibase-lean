@@ -7,10 +7,6 @@ public import PiBaseLean.Properties.P56.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem Homeomorph.meagreSpace [h : MeagreSpace X] (f : X ≃ₜ Y) : MeagreSpace Y where
@@ -22,7 +18,5 @@ theorem Homeomorph.meagreSpace [h : MeagreSpace X] (f : X ≃ₜ Y) : MeagreSpac
 
 theorem WellDefined.meagreSpace : WellDefined MeagreSpace :=
   fun {_ _} _ _ h _ ↦ Homeomorph.meagreSpace h.some
-
-end Meta
 
 end PiBase

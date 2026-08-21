@@ -1,16 +1,11 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Constructions
 public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P73.Defs
 
 @[expose] public section
 
 namespace PiBase
-
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -39,7 +34,5 @@ theorem Homeomorph.soberSpace [h : SoberSpace X] (f : X ≃ₜ Y) : SoberSpace Y
 
 theorem WellDefined.soberSpace : WellDefined SoberSpace :=
   fun {_ _} _ _ h _ ↦ Homeomorph.soberSpace h.some
-
-end Meta
 
 end PiBase

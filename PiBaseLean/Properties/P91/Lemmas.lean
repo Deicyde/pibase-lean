@@ -7,11 +7,6 @@ public import PiBaseLean.Properties.P91.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.eberleinCompactSpace : WellDefined EberleinCompactSpace :=
@@ -22,7 +17,5 @@ theorem WellDefined.eberleinCompactSpace : WellDefined EberleinCompactSpace :=
       toCompactSpace := @Homeomorph.compactSpace _ _ _ _ h.toCompactSpace φ
       eberlein_compact := ⟨E, hNAG, hNS, f ∘ φ.symm, hComp, hEmb.comp φ.symm.isEmbedding⟩
     }
-
-end Meta
 
 end PiBase

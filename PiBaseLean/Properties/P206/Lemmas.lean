@@ -7,11 +7,7 @@ public import PiBaseLean.Properties.P206.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
 open Set
-
-section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -134,7 +130,5 @@ theorem WellDefined.stronglyChoquetSpace : WellDefined StronglyChoquetSpace :=
         exact ⟨n, (S_transfer' _).not.mp hn⟩
       · right
         exact hIInter_transfer.mpr hIInterY
-
-end Meta
 
 end PiBase

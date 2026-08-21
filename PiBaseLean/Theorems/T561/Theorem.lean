@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P197.Bundled
 public import PiBaseLean.Properties.P198.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P198.Bundled
 
 universe u
 
-open Topology Set Function Filter Cardinal
-
 namespace PiBase
 
 /-- Theorem T561: P197 (HasCountableSpread) => P198 (HasCountableExtent) -/
-instance instHasCountableExtentOfHasCountableSpread (X : Type u)
+instance instHasCountableExtentOfHasCountableSpread {X : Type u}
     [TopologicalSpace X] [h : HasCountableSpread X] :
     HasCountableExtent X where
   extent_eq := le_antisymm (h.spread_eq ▸ extent_le_spread X) (aleph_zero_le_extent X)

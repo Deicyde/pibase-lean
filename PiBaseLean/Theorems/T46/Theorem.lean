@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P47.Bundled
 public import PiBaseLean.Properties.P48.Bundled
 
@@ -8,11 +8,10 @@ public import PiBaseLean.Properties.P48.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /- Theorem T46: P48 (TotallySeparatedSpace) => P47 (TotallyDisconnectedSpace) -/
+#guard_msgs (drop info) in
 #check TotallySeparatedSpace.totallyDisconnectedSpace
 
 end PiBase

@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P31.Bundled
 public import PiBaseLean.Properties.P83.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P83.Bundled
 
 universe u
 
-open Topology Set Function Filter
-
 namespace PiBase
 
 /-- Theorem T586: P31 (MetacompactSpace) => P83 (MetaLindelofSpace) -/
-instance instMetaLindelofSpaceOfMetacompactSpace (X : Type u)
+instance instMetaLindelofSpaceOfMetacompactSpace {X : Type u}
     [TopologicalSpace X] [h : MetacompactSpace X] :
     MetaLindelofSpace X where
   meta_lindelof ι s s_open s_cover :=

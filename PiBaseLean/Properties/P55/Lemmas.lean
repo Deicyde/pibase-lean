@@ -7,9 +7,7 @@ public import PiBaseLean.Properties.P55.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open TopologicalSpace
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -19,7 +17,5 @@ theorem Homeomorph.isCompletelyMetrizableSpace [h : IsCompletelyMetrizableSpace 
 
 theorem WellDefined.isCompletelyMetrizableSpace : WellDefined IsCompletelyMetrizableSpace :=
   fun {_ _} _ _ h _ ↦ Homeomorph.isCompletelyMetrizableSpace h.some
-
-end Meta
 
 end PiBase

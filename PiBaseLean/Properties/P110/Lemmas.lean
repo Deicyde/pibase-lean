@@ -7,9 +7,7 @@ public import PiBaseLean.Properties.P110.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open Topology Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -50,7 +48,5 @@ theorem WellDefined.developableSpace : WellDefined DevelopableSpace :=
           exact ⟨x, ⟨i, by simpa using hz_mem, hx_mem⟩, rfl⟩
       simp_rw [hStarEq] at hBasisY
       exact hBasisY
-
-end Meta
 
 end PiBase

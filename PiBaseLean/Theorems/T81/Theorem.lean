@@ -1,14 +1,13 @@
 module
 
-public import Mathlib.Topology.Compactness.Compact
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P100.Bundled
 public import PiBaseLean.Properties.P23.Bundled
 public import PiBaseLean.Properties.P24.Bundled
-public import PiBaseLean.Properties.P100.Bundled
 
 @[expose] public section
 
-open Topology Set Function TopologicalSpace Filter
+open Set Filter
 
 namespace PiBase
 

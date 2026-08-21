@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P196.Bundled
 public import PiBaseLean.Properties.P204.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P204.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T620: P196 (HereditarilyConnected) => P204 (¬HasACutPoint) -/
-theorem not_HasACutPointOfHereditarilyConnected (X : Type u)
+theorem not_HasACutPointOfHereditarilyConnected {X : Type u}
     [TopologicalSpace X] [h : HereditarilyConnected X] :
     ¬ HasACutPoint X := by
   intro h0

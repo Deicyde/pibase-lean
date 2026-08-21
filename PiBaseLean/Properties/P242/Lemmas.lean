@@ -9,10 +9,6 @@ universe u
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-open scoped unitInterval Topology Topology.Homotopy
-
 namespace Formal
 
 open scoped unitInterval Topology Topology.Homotopy
@@ -51,9 +47,6 @@ theorem homotopyGroupMap_surjective (φ : X ≃ₜ Y) (y : Y) :
 
 end Formal
 
-section Meta
-
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.weaklyContractibleSpace : WellDefined WeaklyContractibleSpace :=
@@ -64,7 +57,5 @@ theorem WellDefined.weaklyContractibleSpace : WellDefined WeaklyContractibleSpac
         have hSub : Subsingleton (HomotopyGroup N X (φ.symm y)) :=
           h.homotopically_trivial (φ.symm y) N hFin
         exact (Formal.homotopyGroupMap_surjective (N := N) φ y).subsingleton }
-
-end Meta
 
 end PiBase

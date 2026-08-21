@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P2.Bundled
 public import PiBaseLean.Properties.P52.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P52.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T42: P52 (DiscreteTopology) => P2 (T1Space) -/
-theorem instT1SpaceOfDiscreteTopology (X : Type u)
+theorem instT1SpaceOfDiscreteTopology {X : Type u}
     [TopologicalSpace X] [DiscreteTopology X] :
     T1Space X := by infer_instance
 

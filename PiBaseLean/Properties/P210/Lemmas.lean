@@ -7,10 +7,6 @@ public import PiBaseLean.Properties.P210.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.α1Space : WellDefined α1Space :=
@@ -25,7 +21,5 @@ theorem WellDefined.α1Space : WellDefined α1Space :=
     exact ⟨φ ∘ T, φ.injective.comp hT_inj, AlphaTransport.tendsto_comp_of_symm φ hT_tend,
       AlphaTransport.range_comp_subset φ S T hT_sub,
       fun n => (AlphaTransport.finite_diff_iff φ (S n) T).2 (hT_fin n)⟩
-
-end Meta
 
 end PiBase

@@ -1,12 +1,9 @@
 module
 
 public import PiBaseLean.Properties.P183.Defs
-public import Mathlib.Topology.Separation.Regular
-public import Mathlib.Topology.Homeomorph.Lemmas
+public import PiBaseLean.Properties.P5.Defs
 
 @[expose] public section
-
-open Topology Set Function Filter TopologicalSpace
 
 universe u
 

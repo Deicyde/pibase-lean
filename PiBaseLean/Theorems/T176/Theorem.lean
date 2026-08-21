@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P73.Bundled
 public import PiBaseLean.Properties.P75.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P75.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T176: P75 (SpectralSpace) => P73 (SoberSpace) -/
-theorem instSoberSpaceOfSpectralSpace (X : Type u)
+theorem instSoberSpaceOfSpectralSpace {X : Type u}
     [TopologicalSpace X] [SpectralSpace X] :
     SoberSpace X := by tauto
 

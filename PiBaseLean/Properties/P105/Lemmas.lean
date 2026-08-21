@@ -7,9 +7,7 @@ public import PiBaseLean.Properties.P105.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open Topology Filter Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -52,7 +50,5 @@ theorem WellDefined.paraLindelofSpace : WellDefined ParaLindelofSpace :=
       exact ⟨a, fun y hy => by
         obtain ⟨x, hxt, rfl⟩ := hy
         exact ha hxt⟩
-
-end Meta
 
 end PiBase

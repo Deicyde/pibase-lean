@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P224.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Topology
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -30,7 +27,4 @@ theorem WellDefined.weaklyLocallyContractibleSpace : WellDefined WeaklyLocallyCo
       exact e.symm.contractibleSpace
     exact ⟨φ '' s, h_img_mem, h_contr⟩
 
-end Meta
-
 end PiBase
-

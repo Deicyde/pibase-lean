@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P38.Bundled
 public import PiBaseLean.Properties.P95.Bundled
 
@@ -8,12 +8,12 @@ public import PiBaseLean.Properties.P95.Bundled
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 /-- Theorem T703: P95 (ArcConnectedSpace) => P38 (InjPathConnectedSpace) -/
-instance instInjPathConnectedSpaceOfArcConnectedSpace (X : Type u)
+instance instInjPathConnectedSpaceOfArcConnectedSpace {X : Type u}
     [TopologicalSpace X] [h : ArcConnectedSpace X] :
     InjPathConnectedSpace X where
   joined x y xy _ _ := by

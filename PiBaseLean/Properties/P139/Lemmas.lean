@@ -7,10 +7,6 @@ public import PiBaseLean.Properties.P139.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem Homeomorph.hasAnIsolatedPoint [h : HasAnIsolatedPoint X] (f : X ≃ₜ Y) :
@@ -23,7 +19,5 @@ theorem Homeomorph.hasAnIsolatedPoint [h : HasAnIsolatedPoint X] (f : X ≃ₜ Y
 
 theorem WellDefined.hasAnIsolatedPoint : WellDefined HasAnIsolatedPoint :=
   fun {_ _} _ _ h _ ↦ Homeomorph.hasAnIsolatedPoint h.some
-
-end Meta
 
 end PiBase

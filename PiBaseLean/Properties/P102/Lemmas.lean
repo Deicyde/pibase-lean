@@ -7,9 +7,7 @@ public import PiBaseLean.Properties.P102.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open Topology
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -49,7 +47,5 @@ theorem WellDefined.semimetrizableSpace : WellDefined SemimetrizableSpace :=
         exact ⟨f y', hy, φ.apply_symm_apply y'⟩
     simp_rw [hBallEq] at hMap
     exact hMap
-
-end Meta
 
 end PiBase

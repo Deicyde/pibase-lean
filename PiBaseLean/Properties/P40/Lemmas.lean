@@ -7,10 +7,6 @@ public import PiBaseLean.Properties.P40.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.ultraconnectedSpace : WellDefined UltraconnectedSpace :=
@@ -37,7 +33,5 @@ theorem WellDefined.ultraconnectedSpace : WellDefined UltraconnectedSpace :=
     obtain ⟨x, hx⟩ := h.ultraconnected _ _ hs_pre ht_pre hsN_pre htN_pre
     have hx_inter : x ∈ φ ⁻¹' s ∩ φ ⁻¹' t := hx
     exact ⟨φ x, hx_inter.1, hx_inter.2⟩
-
-end Meta
 
 end PiBase

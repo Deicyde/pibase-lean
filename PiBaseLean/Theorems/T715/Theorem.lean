@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P110.Bundled
 public import PiBaseLean.Properties.P113.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P113.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T715: P113 (MooreSpace) => P110 (DevelopableSpace) -/
-theorem instDevelopableSpaceOfMooreSpace (X : Type u)
+theorem instDevelopableSpaceOfMooreSpace {X : Type u}
     [TopologicalSpace X] [MooreSpace X] :
     DevelopableSpace X := by infer_instance
 

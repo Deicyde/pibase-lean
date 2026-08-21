@@ -2,13 +2,10 @@ module
 
 public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P133.Defs
-public import Mathlib.Topology.Connected.PathConnected
 
 @[expose] public section
 
 namespace PiBase
-
-open Topology Filter Set TopologicalSpace
 
 variable {X Y : Type*} [t : TopologicalSpace X] [s : TopologicalSpace Y]
 
@@ -29,13 +26,9 @@ theorem Homeomorph.lots {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
     rw [f.symm.range_coe]
     exact Set.ordConnected_univ
 
-section Meta
-
 theorem WellDefined.lots : WellDefined Lots :=
   fun {_ _} _ _ hXY h =>
     let φ := hXY.some
     Homeomorph.lots (h := h) φ
-
-end Meta
 
 end PiBase

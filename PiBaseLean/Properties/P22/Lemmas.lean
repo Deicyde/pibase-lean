@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P22.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -24,7 +21,5 @@ theorem WellDefined.pseudocompactSpace : WellDefined PseudocompactSpace :=
     have hRange : range (f ∘ φ) = range f := by
       rw [Set.range_comp, EquivLike.range_eq_univ, Set.image_univ]
     exact ⟨hRange ▸ hBddBelow, hRange ▸ hBddAbove⟩
-
-end Meta
 
 end PiBase

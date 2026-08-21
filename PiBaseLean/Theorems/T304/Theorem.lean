@@ -1,20 +1,20 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P136.Bundled
 public import PiBaseLean.Properties.P17.Bundled
 public import PiBaseLean.Properties.P57.Bundled
-public import PiBaseLean.Properties.P136.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 /-- Theorem T304: P136 (AnticompactSpace) + P17 (SigmaCompactSpace) => P57 (Countable) -/
-instance instCountableOfAnticompactSpaceOfSigmaCompactSpace (X : Type u)
+instance instCountableOfAnticompactSpaceOfSigmaCompactSpace {X : Type u}
     [TopologicalSpace X] [h : AnticompactSpace X] [h' : SigmaCompactSpace X] :
     Countable X := by
   obtain ⟨S, Sc, hS⟩ := h'.isSigmaCompact_univ

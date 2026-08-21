@@ -1,13 +1,11 @@
 module
 
-public import PiBaseLean.Properties.P37.Defs
 public import PiBaseLean.AdditionalDefs.Meta
+public import PiBaseLean.Properties.P37.Defs
 
 @[expose] public section
 
 namespace PiBase
-
-open Topology Filter
 
 variable (X : Type*) [TopologicalSpace X]
 
@@ -21,7 +19,6 @@ instance instPathConnectedSpaceOfPrepathConnectedSpaceOfNonempty [h : PrepathCon
 theorem PathconnectedSpace.PrepathConnectedSpace [h : PathConnectedSpace X] :
     PrepathConnectedSpace X where
   joined := h.joined
-section Meta
 
 universe u v
 
@@ -36,7 +33,5 @@ theorem Homeomorph.prepathConnectedSpace [h : PrepathConnectedSpace X] (f : X �
     PrepathConnectedSpace Y := by
   refine ⟨fun x y => (h.joined (f.symm x) (f.symm y)).elim fun p => ⟨?_⟩⟩
   convert p.map f.continuous <;> simp only [Homeomorph.apply_symm_apply]
-
-end Meta
 
 end PiBase

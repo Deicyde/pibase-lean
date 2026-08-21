@@ -1,20 +1,19 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P52.Bundled
 public import PiBaseLean.Properties.P55.Bundled
-public import Mathlib.Topology.Metrizable.CompletelyMetrizable
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function TopologicalSpace
+open TopologicalSpace
 
 namespace PiBase
 
 /-- Theorem T85: P52 (DiscreteTopology) => P55 (IsCompletelyMetrizableSpace) -/
-theorem instIsCompletelyMetrizableSpaceOfDiscreteTopology (X : Type u)
+theorem instIsCompletelyMetrizableSpaceOfDiscreteTopology {X : Type u}
     [TopologicalSpace X] [DiscreteTopology X] : IsCompletelyMetrizableSpace X := by
   infer_instance
 

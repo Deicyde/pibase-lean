@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P231.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Topology
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -30,7 +27,5 @@ theorem WellDefined.weaklyLocallySimplyConnectedSpace :
       have : SimplyConnectedSpace s := hs_sc
       exact e.symm.toHomotopyEquiv.simplyConnectedSpace
     exact ⟨φ '' s, h_img_mem, h_sc⟩
-
-end Meta
 
 end PiBase

@@ -1,11 +1,9 @@
 module
 
-public import PiBaseLean.Properties.P32.Defs
 public import Mathlib.Topology.Separation.Regular
+public import PiBaseLean.Properties.P32.Defs
 
 @[expose] public section
-
-open Topology Set Function Filter TopologicalSpace
 
 universe u
 

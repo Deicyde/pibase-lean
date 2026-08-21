@@ -7,7 +7,7 @@ public import PiBaseLean.Properties.P29.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
+open Set Function
 
 lemma Set.countable_of_setminus_singleton {α : Type*} {s : Set α} {a : α}
     (h : (s \ {a}).Countable) : s.Countable :=
@@ -21,9 +21,6 @@ theorem countableChainCondition_iff_ex_nonempty_chain (X : Type*) [TopologicalSp
   apply Set.countable_of_setminus_singleton (a := ∅)
   apply h (PairwiseDisjoint.subset Sd sdiff_subset) fun _ h ↦ So _ h.1
   simp
-
-section Meta
-
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -48,7 +45,5 @@ theorem WellDefined.countableChainCondition : WellDefined CountableChainConditio
     have hT_countable : T.Countable :=
       h.countable_chain_condition hT_disj hT_open
     exact Set.countable_of_injective_of_countable_image hPreInj.injOn hT_countable
-
-end Meta
 
 end PiBase

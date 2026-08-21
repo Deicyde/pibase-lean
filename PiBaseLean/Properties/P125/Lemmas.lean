@@ -1,15 +1,10 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P125.Defs
 
 @[expose] public section
 
 namespace PiBase
-
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -18,7 +13,5 @@ theorem Homeomorph.nontrivial [Nontrivial X] (f : X ≃ₜ Y) : Nontrivial Y :=
 
 theorem WellDefined.nontrivial : WellDefined (fun X => Nontrivial X) :=
   fun {_ _} _ _ h _ ↦ Homeomorph.nontrivial h.some
-
-end Meta
 
 end PiBase

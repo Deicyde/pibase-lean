@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P30.Bundled
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P105.Bundled
+public import PiBaseLean.Properties.P30.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T653: P30 (ParacompactSpace) => P105 (ParaLindelofSpace) -/
-instance instParaLindelofSpaceOfParacompactSpace (X : Type u)
+instance instParaLindelofSpaceOfParacompactSpace {X : Type u}
     [TopologicalSpace X] [h : ParacompactSpace X] :
     ParaLindelofSpace X where
   para_lindelof α s so sc :=

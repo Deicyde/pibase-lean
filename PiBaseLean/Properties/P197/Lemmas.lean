@@ -2,15 +2,14 @@ module
 
 public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P197.Defs
-public import Mathlib.Topology.Homeomorph.Lemmas
-public import Mathlib.Topology.DiscreteSubset
-public import Mathlib.Data.Set.Countable
+
+import Mathlib.Tactic.Order
 
 @[expose] public section
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace Cardinal
+open Set Cardinal
 
 variable (X Y : Type*) [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -41,8 +40,6 @@ theorem hasCountableSpread_iff_discrete_countable :
     exact fun a s sa sd ↦ sa ▸ le_aleph0_iff_set_countable.mpr (h sd)
 
 universe u
-
-section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -119,7 +116,5 @@ theorem WellDefined.hasCountableSpread : WellDefined HasCountableSpread :=
     calc
       Spread Y = Spread X := hSpread_eq.symm
       _ = ℵ₀ := h_eq_X
-
-end Meta
 
 end PiBase

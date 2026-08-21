@@ -1,7 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import Mathlib.Order.Filter.AtTopBot.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P213.Bundled
 public import PiBaseLean.Properties.P214.Bundled
 
@@ -9,12 +8,12 @@ public import PiBaseLean.Properties.P214.Bundled
 
 universe u
 
-open Topology Set Function Filter
+open Set
 
 namespace PiBase
 
 /-- Theorem T736: P213 (α3Space) => P214 (α4Space) -/
-instance instα4SpaceOfα3Space (X : Type u) [TopologicalSpace X] [h : α3Space X] :
+instance instα4SpaceOfα3Space {X : Type u} [TopologicalSpace X] [h : α3Space X] :
     α4Space X where
   subset_converge := by
     intro x S S_inj hS

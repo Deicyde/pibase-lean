@@ -1,7 +1,6 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Meta
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P123.Bundled
 public import PiBaseLean.Properties.P155.Bundled
 
@@ -9,12 +8,10 @@ public import PiBaseLean.Properties.P155.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T759: P155 (LocallyOneEuclideanSpace) => P123 (LocallyNEuclideanSpace) -/
-instance instLocallyNEuclideanSpaceOfLocallyOneEuclideanSpace (X : Type u)
+instance instLocallyNEuclideanSpaceOfLocallyOneEuclideanSpace {X : Type u}
     [TopologicalSpace X] [h : LocallyOneEuclideanSpace X] :
     LocallyNEuclideanSpace X where
   locally_homeomorph := by

@@ -7,9 +7,7 @@ public import PiBaseLean.Properties.P21.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open Filter Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -31,7 +29,5 @@ theorem Homeomorph.weaklyCountablyCompact [WeaklyCountablyCompact X] (f : X ≃�
 
 theorem WellDefined.weaklyCountablyCompact : WellDefined WeaklyCountablyCompact :=
   fun {_ _} _ _ h _ ↦ Homeomorph.weaklyCountablyCompact h.some
-
-end Meta
 
 end PiBase

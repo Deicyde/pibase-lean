@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P51.Bundled
 public import PiBaseLean.Properties.P73.Bundled
 
@@ -8,12 +8,12 @@ public import PiBaseLean.Properties.P73.Bundled
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 /-- Theorem T865: P51 (ScatteredSpace) => P73 (SoberSpace) -/
-instance instSoberSpaceOfScatteredSpace (X : Type u)
+instance instSoberSpaceOfScatteredSpace {X : Type u}
     [TopologicalSpace X] [h : ScatteredSpace X] : SoberSpace X := by
   refine soberSpace_iff_ex_unique_generic.mpr (fun S Si Sc ↦ ?_)
   obtain ⟨⟨p, pS⟩, hp⟩ := h.scattered S (IsIrreducible.nonempty Si)

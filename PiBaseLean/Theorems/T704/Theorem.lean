@@ -1,21 +1,21 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P38.Bundled
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P43.Bundled
 public import PiBaseLean.Properties.P96.Bundled
-public import PiBaseLean.Theorems.T703.Theorem
+
+import PiBaseLean.Theorems.T703.Theorem
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function Filter
+open Topology Filter
 
 namespace PiBase
 
 /-- Theorem T704: P96 (LocallyArcConnectedSpace) => P43 (LocallyInjPathConnectedSpace) -/
-instance instLocallyInjPathConnectedSpaceOfLocallyArcConnectedSpace (X : Type u)
+instance instLocallyInjPathConnectedSpaceOfLocallyArcConnectedSpace {X : Type u}
   [TopologicalSpace X] [h : LocallyArcConnectedSpace X] :
     LocallyInjPathConnectedSpace X where
   inj_path_connected_basis x := by

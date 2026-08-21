@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P193.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -40,7 +37,5 @@ theorem WellDefined.shrinkingSpace : WellDefined ShrinkingSpace :=
       calc closure (φ '' (t a)) = φ '' closure (t a) := (φ.image_closure (t a)).symm
         _ ⊆ φ '' (φ ⁻¹' (s a)) := by exact Set.image_mono (ht_closure a)
         _ ⊆ s a := by exact image_preimage_subset _ _
-
-end Meta
 
 end PiBase

@@ -1,13 +1,10 @@
 module
 
 public import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
-public import Mathlib.Order.Filter.Bases.Basic
-public import Mathlib.Topology.Defs.Filter
-public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
 
-open Topology Set Function Filter
+open Topology
 
 namespace PiBase
 

@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P93.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Topology
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -23,7 +20,5 @@ theorem WellDefined.locallyCountableSpace : WellDefined LocallyCountableSpace :=
     rw [← φ.apply_symm_apply y, ← φ.map_nhds_eq (φ.symm y)]
     change φ ⁻¹' (φ '' U) ∈ 𝓝 (φ.symm y)
     simpa
-
-end Meta
 
 end PiBase

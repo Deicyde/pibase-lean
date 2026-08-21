@@ -1,20 +1,18 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P14.Bundled
 public import PiBaseLean.Properties.P2.Bundled
 public import PiBaseLean.Properties.P8.Bundled
-public import PiBaseLean.Properties.P14.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T101: P2 (T1Space) + P14 (CompletelyNormalSpace) => P8 (T5Space) -/
-theorem instT5SpaceOfT1SpaceOfCompletelyNormalSpace (X : Type u)
+theorem instT5SpaceOfT1SpaceOfCompletelyNormalSpace {X : Type u}
     [TopologicalSpace X] [T1Space X] [CompletelyNormalSpace X] :
     T5Space X := by tauto
 

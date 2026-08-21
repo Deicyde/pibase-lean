@@ -1,23 +1,19 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P233.Bundled
 public import PiBaseLean.Properties.P36.Bundled
 public import PiBaseLean.Properties.P37.Bundled
-public import PiBaseLean.Properties.P233.Bundled
-public import PiBaseLean.Properties.P233.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function Filter
-
 namespace PiBase
 
 /-- Theorem T95: P36 (PreconnectedSpace) + P233 (HasOpenPathComponents) =>
 P37 (PrepathConnectedSpace) -/
---TODO: golf
-instance instPrepathconnectedSpaceOfPreconnectedSpaceOfHasOpenPathComponents (X : Type u)
+instance instPrepathconnectedSpaceOfPreconnectedSpaceOfHasOpenPathComponents {X : Type u}
     [TopologicalSpace X] [h : PreconnectedSpace X] [h' : HasOpenPathComponents X] :
       PrepathConnectedSpace X where
     joined x y := by

@@ -7,9 +7,7 @@ public import PiBaseLean.Properties.P167.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open Topology Filter
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -23,7 +21,5 @@ theorem Homeomorph.seqDiscreteSpace [h : SeqDiscreteSpace X] (f : X ≃ₜ Y) :
 
 theorem WellDefined.seqDiscreteSpace : WellDefined SeqDiscreteSpace :=
   fun {_ _} _ _ h _ => Homeomorph.seqDiscreteSpace h.some
-
-end Meta
 
 end PiBase

@@ -2,7 +2,6 @@ module
 
 public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P162.Defs
-public import Mathlib.Topology.Connected.PathConnected
 
 @[expose] public section
 
@@ -10,13 +9,9 @@ universe u v
 
 namespace PiBase
 
-open Topology Filter Set TopologicalSpace
-
 variable {X : Type u} {Y : Type v} [t : TopologicalSpace X] [s : TopologicalSpace Y]
 
 /- Most likely true but difficult - proof omitted -/
-
-section Meta
 
 /-
 theorem Homeomorph.realcompactSpace [h : RealcompactSpace X] (g : X ≃ₜ Y) : RealcompactSpace Y := by
@@ -31,7 +26,5 @@ theorem WellDefined.realcompactSpace : WellDefined RealcompactSpace :=
     let φ := hXY.some
     obtain ⟨ι, f, hf⟩ := h.homeo_closed
     exact ⟨⟨ι, f ∘ φ.symm, hf.comp φ.symm.isClosedEmbedding⟩⟩
-
-end Meta
 
 end PiBase

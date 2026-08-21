@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P58.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
 open Cardinal
-
-section Meta
 
 universe u v
 
@@ -29,7 +26,5 @@ theorem WellDefined.cardLtContinuum :
     WellDefined (fun (X : Type u) => CardLtContinuum X) :=
   fun {X Y} [TopologicalSpace X] [TopologicalSpace Y] h _ ↦
     Homeomorph.cardLtContinuum (X := X) h.some
-
-end Meta
 
 end PiBase

@@ -1,11 +1,10 @@
 module
 
 public import Mathlib.Topology.Metrizable.Basic
-public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
 
-open Topology Set Function Filter TopologicalSpace
+open Topology TopologicalSpace
 
 namespace PiBase
 

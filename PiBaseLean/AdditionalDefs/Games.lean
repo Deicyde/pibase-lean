@@ -1,9 +1,10 @@
 module
 
 public import Mathlib.Algebra.Ring.Parity
-public import Mathlib.Topology.Homeomorph.Lemmas
 public import Mathlib.Topology.UniformSpace.Defs
 public import PiBaseLean.AdditionalDefs.Cover
+
+import Mathlib.Topology.Homeomorph.Lemmas
 
 /-! This file builds up defs and basic theory about Gale-Stewart games. This has been done
 previously in Lean, for example here https://afm.episciences.org/17712/pdf
@@ -108,15 +109,37 @@ on the round number and the k most recent moves by the opponent. -/
 def HasMarkovKWinningStrategyB (k : ℕ) : Prop :=
   ∃ f : ℕ → List X → X, MarkovKWinningStrategyB G f k
 
--- TODO: don't hide the transformation behind existential quantifier
-theorem HasMarkovKWinningStrategyA.hasWinningStrategyA {k : ℕ}
-    (h : HasMarkovKWinningStrategyA G k) :
-    HasWinningStrategyA G := by
-  obtain ⟨f, hf⟩ := h
-  refine ⟨fun l ↦ f (l.length / 2) (l.rtakeHalf k), ?_⟩
+def MarkovKStrategy.toStrategy (f : ℕ → List X → X) (k : ℕ) : List X → X :=
+  fun l ↦ f (l.length / 2) (l.rtakeHalf k)
+
+theorem MarkovKWinningStrategyA.winningStrategyA
+    {f : ℕ → List X → X} {k : ℕ}
+    (hf : MarkovKWinningStrategyA G f k) :
+    WinningStrategyA G (MarkovKStrategy.toStrategy f k) := by
   intro _ h
   apply hf
-  simp [h]
+  simp [h, MarkovKStrategy.toStrategy]
+
+theorem HasMarkovKWinningStrategyA.hasWinningStrategyA {k : ℕ}
+    (h : HasMarkovKWinningStrategyA G k) :
+    HasWinningStrategyA G :=
+  let ⟨f, hf⟩ := h
+  ⟨MarkovKStrategy.toStrategy f k, MarkovKWinningStrategyA.winningStrategyA G hf⟩
+
+theorem MarkovKWinningStrategyA.winningStrategyB
+    {f : ℕ → List X → X} {k : ℕ}
+    (hf : MarkovKWinningStrategyB G f k) :
+    WinningStrategyB G (MarkovKStrategy.toStrategy f k) := by
+  intro _ h
+  apply hf
+  simp only [h, MarkovKStrategy.toStrategy, List.ofFun_length]
+  grind
+
+theorem HasMarkovKWinningStrategyB.hasWinningStrategyB {k : ℕ}
+    (h : HasMarkovKWinningStrategyB G k) :
+    HasWinningStrategyB G :=
+  let ⟨f, hf⟩ := h
+  ⟨MarkovKStrategy.toStrategy f k, MarkovKWinningStrategyA.winningStrategyB G hf⟩
 
 abbrev AllowedMoves (X : Type u) := List X → Prop
 
@@ -201,7 +224,7 @@ end
 
 section AIGenerated
 
-/-! ### Transporting games along a relabelling of the moves -/
+/- Transporting games along a relabelling of the moves -/
 
 section Transport
 
@@ -284,7 +307,7 @@ theorem HasMarkovKWinningStrategyB.of_equiv {G : Game A} {H : Game B} {k : ℕ} 
 
 end Transport
 
-/-! ### Transporting families of moves -/
+/- Transporting families of moves -/
 
 section FamilyTransport
 
@@ -495,7 +518,7 @@ theorem preimageFamilyEquiv_isKCover' (φ : X ≃ₜ Y) (S : Set (Set Y)) :
 
 end CoverTransport
 
-/-! ### Transporting the Menger game -/
+/- Transporting the Menger game -/
 
 section MengerTransport
 
@@ -541,7 +564,7 @@ theorem HasMarkovKWinningStrategyB.mengerGame_of_homeomorph {k : ℕ} (φ : X �
 
 end MengerTransport
 
-/-! ### Generic proximal-game transport helpers -/
+/- Generic proximal-game transport helpers -/
 
 section ProximalTransport
 

@@ -1,16 +1,10 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P150.Defs
 
 @[expose] public section
 
 namespace PiBase
-
-open Topology Filter Set Function TopologicalSpace
-
-
-section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -41,7 +35,5 @@ theorem WellDefined.omegaRothberger.{u} : WellDefined OmegaRothberger.{u} :=
     have h_n : RothbergerSpace (Fin n → _) := h.omega_rothberger n
     let e : (Fin n → _) ≃ₜ (Fin n → _) := Homeomorph.piCongrRight (fun _ => φ)
     exact roth_pres e h_n
-
-end Meta
 
 end PiBase

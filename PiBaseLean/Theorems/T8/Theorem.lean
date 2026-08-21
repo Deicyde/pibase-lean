@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P23.Bundled
 public import PiBaseLean.Properties.P25.Bundled
 
@@ -8,12 +8,12 @@ public import PiBaseLean.Properties.P25.Bundled
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 /-- Theorem T8: P25 (ExhaustibleByCompacts) => P23 (WeaklyLocallyCompactSpace) -/
-instance instWeaklyLocallyCompactSpaceOfExhaustibleByCompacts (X : Type u)
+instance instWeaklyLocallyCompactSpaceOfExhaustibleByCompacts {X : Type u}
     [TopologicalSpace X] [h : ExhaustibleByCompacts X] :
     WeaklyLocallyCompactSpace X where
   exists_compact_mem_nhds x := by

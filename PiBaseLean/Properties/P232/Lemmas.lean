@@ -7,7 +7,7 @@ public import PiBaseLean.Properties.P232.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
+open Topology
 
 section FundGroupImage
 
@@ -63,10 +63,6 @@ theorem lC1_of_homeomorph {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y
       rw [← hcomp]
       exact hasTrivialFundGroupImageAt_comp r iU eC _ hUtriv
 
-open PiBase
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem Homeomorph.lC1 (f : X ≃ₜ Y) [LC1 X] : LC1 Y :=
@@ -74,7 +70,5 @@ theorem Homeomorph.lC1 (f : X ≃ₜ Y) [LC1 X] : LC1 Y :=
 
 theorem WellDefined.lC1 : WellDefined LC1 :=
   fun {_ _} _ _ h _ => Homeomorph.lC1 h.some
-
-end Meta
 
 end PiBase

@@ -1,16 +1,10 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P153.Defs
 
 @[expose] public section
 
 namespace PiBase
-
-open Topology Filter Set Function TopologicalSpace
-
-
-section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -40,7 +34,5 @@ theorem WellDefined.omegaMengerSpace.{u} : WellDefined OmegaMengerSpace.{u} :=
     have h_n : MengerSpace (Fin n → _) := h.omega_menger n
     let e : (Fin n → _) ≃ₜ (Fin n → _) := Homeomorph.piCongrRight (fun _ => φ)
     exact menger_pres e h_n
-
-end Meta
 
 end PiBase

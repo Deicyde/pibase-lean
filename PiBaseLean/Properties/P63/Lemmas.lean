@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P63.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -50,7 +47,5 @@ theorem WellDefined.cechCompleteSpace : WellDefined CechCompleteSpace :=
           _ = z := hGH z
     rw [hrange]
     exact h.is_gδ.preimage hcH
-
-end Meta
 
 end PiBase

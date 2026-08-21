@@ -1,16 +1,13 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Meta
+public import PiBaseLean.Properties.P38.Lemmas
 public import PiBaseLean.Properties.P43.Defs
 
 @[expose] public section
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Topology Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -44,7 +41,5 @@ theorem WellDefined.locallyInjPathConnectedSpace : WellDefined LocallyInjPathCon
       · intro t ht
         exact IsOpen.mem_nhds ht.2.1 ht.1
     exact h_target
-
-end Meta
 
 end PiBase

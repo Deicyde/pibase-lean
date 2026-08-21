@@ -1,17 +1,11 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Meta
+public import PiBaseLean.Properties.P236.Lemmas
 public import PiBaseLean.Properties.P237.Defs
-public import PiBaseLean.Properties.P236.Bundled
 
 @[expose] public section
 
 namespace PiBase
-
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -24,7 +18,5 @@ theorem WellDefined.topologicalNManifoldWithBoundary :
     let hL : LocallyNEuclideanHalfSpace _ :=
       WellDefined.locallyNEuclideanHalfSpace.homeo φ h.toLocallyNEuclideanHalfSpace
     @TopologicalNManifoldWithBoundary.mk _ _ hSC hT2 hL
-
-end Meta
 
 end PiBase

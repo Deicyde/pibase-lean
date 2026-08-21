@@ -1,12 +1,10 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P16.Bundled
 public import PiBaseLean.Properties.P19.Bundled
 
 @[expose] public section
-
-open Topology Set Function TopologicalSpace
 
 namespace PiBase
 

@@ -1,16 +1,11 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P120.Defs
-public import PiBaseLean.Properties.P133.Bundled
+public import PiBaseLean.Properties.P133.Lemmas
 
 @[expose] public section
 
 namespace PiBase
-
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -25,7 +20,5 @@ theorem WellDefined.locallyOrderableSpace : WellDefined LocallyOrderableSpace :=
       exact Filter.mem_map.mpr (Filter.mem_of_superset hs_mem (Set.subset_preimage_image φ s))
     · have hHomeo : s ≃ₜ φ '' s := φ.image s
       exact WellDefined.lots.homeo hHomeo hs_lots
-
-end Meta
 
 end PiBase

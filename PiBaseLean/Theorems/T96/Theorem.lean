@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P39.Bundled
 public import PiBaseLean.Properties.P49.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P49.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T96: P39 (PreirreducibleSpace) => P49 (ExtremallyDisconnected) -/
-instance instExtremallyDisconnectedOfPreirreducibleSpace (X : Type u)
+instance instExtremallyDisconnectedOfPreirreducibleSpace {X : Type u}
     [TopologicalSpace X] [h : PreirreducibleSpace X] : ExtremallyDisconnected X where
   open_closure U hU := by
     by_cases! Un : U = ∅

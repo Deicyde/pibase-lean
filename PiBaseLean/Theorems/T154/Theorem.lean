@@ -1,18 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P8.Bundled
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P67.Bundled
+public import PiBaseLean.Properties.P8.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /- Theorem T154: P67 (T6Space) => P8 (T5Space) -/
+#guard_msgs (drop info) in
 #check T6Space.toT5Space
 
 end PiBase

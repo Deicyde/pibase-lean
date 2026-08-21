@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P6.Bundled
 public import PiBaseLean.Properties.P63.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P63.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T610: P63 (CechCompleteSpace) => P6 (T35Space) -/
-theorem instT35SpaceOfCechCompleteSpace (X : Type u)
+theorem instT35SpaceOfCechCompleteSpace {X : Type u}
     [TopologicalSpace X] [CechCompleteSpace X] :
     T35Space X := by tauto
 

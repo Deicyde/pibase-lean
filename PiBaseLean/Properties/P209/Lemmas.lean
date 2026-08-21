@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P209.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace Cardinal
-
-section Meta
-
+open Cardinal
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -29,7 +26,5 @@ theorem WellDefined.densityLeContinuum : WellDefined DensityLeContinuum :=
     · have hEq : #(φ '' s) = #s := Cardinal.mk_image_eq φ.injective
       calc #(φ '' s) = #s := hEq
         _ ≤ 𝔠 := hLe
-
-end Meta
 
 end PiBase

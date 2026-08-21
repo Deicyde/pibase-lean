@@ -1,19 +1,19 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P53.Bundled
 public import PiBaseLean.Properties.P55.Bundled
-public import Mathlib.Topology.Metrizable.Basic
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function TopologicalSpace
+open TopologicalSpace
 
 namespace PiBase
 
 /- Theorem T77: P55 (IsCompletelyMetrizableSpace) => P53 (MetrizableSpace) -/
+#guard_msgs (drop info) in
 #check PseudoMetrizableSpace.toMetrizableSpace
 
 end PiBase

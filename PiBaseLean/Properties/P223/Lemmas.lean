@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P223.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Topology Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -44,7 +41,5 @@ theorem WellDefined.locallyContractibleSpace : WellDefined LocallyContractibleSp
       · intro t ht
         exact IsOpen.mem_nhds ht.1 ht.2.1
     exact h_target
-
-end Meta
 
 end PiBase

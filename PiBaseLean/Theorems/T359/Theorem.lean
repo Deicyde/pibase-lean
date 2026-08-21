@@ -1,20 +1,19 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P153.Bundled
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P150.Bundled
-public import PiBaseLean.Theorems.T160.Theorem
+public import PiBaseLean.Properties.P153.Bundled
+
+import PiBaseLean.Theorems.T160.Theorem
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T359: P150 (OmegaRothberger) => P153 (OmegaMengerSpace) -/
-instance instOmegaMengerSpaceOfOmegaRothberger (X : Type u)
+instance instOmegaMengerSpaceOfOmegaRothberger {X : Type u}
     [TopologicalSpace X] [h : OmegaRothberger X] :
     OmegaMengerSpace X where
     omega_menger := by

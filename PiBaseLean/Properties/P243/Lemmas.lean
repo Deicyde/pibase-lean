@@ -1,20 +1,10 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P243.Defs
-public import Mathlib.Topology.Homeomorph.Lemmas
-public import Mathlib.Data.Set.Countable
 
 @[expose] public section
 
 namespace PiBase
-
-open Topology Filter Set Function TopologicalSpace
-
-open Set
-
-section Meta
-
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -49,7 +39,5 @@ theorem WellDefined.hasCountablePiWeight : WellDefined HasCountablePiWeight :=
       calc φ '' a ⊆ φ '' (φ ⁻¹' o) := Set.image_mono haSub
         _ ⊆ o := Set.image_preimage_subset _ _
     exact ⟨s', hsCount', hsEmpty', hsOpen', hsSub'⟩
-
-end Meta
 
 end PiBase

@@ -1,14 +1,12 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P23.Bundled
 public import PiBaseLean.Properties.P90.Bundled
 
 @[expose] public section
 
 universe u
-
-open Topology Set Function
 
 namespace PiBase.Formal
 

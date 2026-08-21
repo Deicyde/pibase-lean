@@ -7,12 +7,7 @@ public import PiBaseLean.Properties.P225.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-open Topology Filter Set Function
-
-section Meta
-
+open Topology Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -48,7 +43,5 @@ theorem WellDefined.lCSpace : WellDefined LCSpace :=
       change φ (fX (e i, (1 : unitInterval))) = y
       rw [hfX_one (e i), hφx]
     exact ⟨φ.symm ⁻¹' tX, htY, fY, hfY_cont, hfY_range, hfY_zero, hfY_one⟩
-
-end Meta
 
 end PiBase

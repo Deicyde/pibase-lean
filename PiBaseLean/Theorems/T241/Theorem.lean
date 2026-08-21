@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P74.Bundled
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P179.Bundled
+public import PiBaseLean.Properties.P74.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T241: P179 (AlephZeroSpace) => P74 (CosmicSpace) -/
-instance instCosmicSpaceOfAlephZeroSpace (X : Type u)
+instance instCosmicSpaceOfAlephZeroSpace {X : Type u}
     [TopologicalSpace X] [h : AlephZeroSpace X] :
     CosmicSpace X where
   has_countable_network :=

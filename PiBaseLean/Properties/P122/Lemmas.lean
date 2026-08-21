@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P122.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Topology
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -27,7 +24,5 @@ theorem WellDefined.locallyEuclideanSpace : WellDefined LocallyEuclideanSpace :=
     have e1 : s ≃ₜ φ '' s := φ.image s
     obtain ⟨e2⟩ := hs_homeo
     exact ⟨n, φ '' s, h_img_mem, ⟨e1.symm.trans e2⟩⟩
-
-end Meta
 
 end PiBase

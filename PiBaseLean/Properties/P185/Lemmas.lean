@@ -9,7 +9,7 @@ namespace PiBase
 
 universe u
 
-open Topology Filter Set Function TopologicalSpace
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -93,15 +93,11 @@ def separationQuotientCongr {X Y : Type*} [TopologicalSpace X] [TopologicalSpace
 
 end Formal
 
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.partitionTopology : WellDefined PartitionTopology :=
   fun {_ _} _ _ hXY h =>
     let φ := hXY.some
     ⟨(Formal.separationQuotientCongr φ).discreteTopology_iff.mp h.quotient_discrete⟩
-
-end Meta
 
 end PiBase

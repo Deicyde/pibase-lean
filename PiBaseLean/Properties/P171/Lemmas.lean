@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P171.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -34,7 +31,5 @@ theorem WellDefined.k2T2Space : WellDefined K2T2Space :=
         change φ.symm (f k).1 = φ.symm (f k).2
         rw [hk']
     exact h_eq ▸ hclosed
-
-end Meta
 
 end PiBase

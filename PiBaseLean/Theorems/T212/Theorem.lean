@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P27.Bundled
 public import PiBaseLean.Properties.P28.Bundled
 public import PiBaseLean.Properties.P57.Bundled
@@ -9,12 +9,10 @@ public import PiBaseLean.Properties.P57.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T212: P57 (Countable) + P28 (FirstCountableTopology) => P27 (SecondCountableTopology) -/
-theorem instSecondCountableTopologyOfCountableOfFirstCountableTopology (X : Type u)
+theorem instSecondCountableTopologyOfCountableOfFirstCountableTopology {X : Type u}
     [TopologicalSpace X] [Countable X] [FirstCountableTopology X] :
     SecondCountableTopology X := by infer_instance
 

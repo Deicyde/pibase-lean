@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P84.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Topology
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -32,7 +29,5 @@ theorem WellDefined.locallyT2Space : WellDefined LocallyT2Space :=
       rwa [h_eq] at h3
     · have : T2Space C := hC_t2
       exact (φ.image C).t2Space
-
-end Meta
 
 end PiBase

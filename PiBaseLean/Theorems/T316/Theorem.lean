@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P42.Bundled
 public import PiBaseLean.Properties.P90.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P90.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T316: P90 (AlexandrovDiscrete) => P42 (LocallyPathConnectedSpace) -/
-instance instLoallycPathConnectedSpaceOfAlexandrovDiscrete (X : Type u)
+instance instLoallycPathConnectedSpaceOfAlexandrovDiscrete {X : Type u}
     [TopologicalSpace X] [h : AlexandrovDiscrete X] : LocallyPathConnectedSpace X :=
   AlexandrovDiscrete.locallyPathConnectedSpace
 

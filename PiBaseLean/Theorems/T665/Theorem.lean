@@ -1,20 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P88.Bundled
-public import PiBaseLean.Properties.P88.Bundled
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P108.Bundled
+public import PiBaseLean.Properties.P88.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T665: P108 (HereditarilyCollectionwiseNormalSpace) => P88 (CollectionwiseNormalSpace) -/
-instance instCollectionwiseNormalSpaceOfHereditarilyCollectionwiseNormalSpace (X : Type u)
+instance instCollectionwiseNormalSpaceOfHereditarilyCollectionwiseNormalSpace {X : Type u}
     [TopologicalSpace X] [h : HereditarilyCollectionwiseNormalSpace X] :
     CollectionwiseNormalSpace X :=
   h.hereditarily_collectionwise_normal.toProperty WellDefined.collectionwiseNormalSpace

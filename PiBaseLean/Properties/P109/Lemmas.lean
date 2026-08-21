@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P109.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Set TopologicalSpace
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -81,7 +78,5 @@ theorem WellDefined.monotonicallyNormalSpace : WellDefined MonotonicallyNormalSp
         change y2 ∈ (u : Set Y)
         change φ.symm y2 ∈ φ ⁻¹' (u : Set Y) at h2
         simpa only [mem_preimage, φ.apply_symm_apply] using h2
-
-end Meta
 
 end PiBase

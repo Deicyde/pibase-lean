@@ -1,16 +1,10 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Meta
-public import PiBaseLean.Properties.P48.Defs
 
 @[expose] public section
 
 namespace PiBase
-
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -35,7 +29,5 @@ theorem WellDefined.totallySeparatedSpace : WellDefined TotallySeparatedSpace :=
         _ = φ.symm y := by rw [huEq]
     rw [this] at huU
     exact (Set.mem_compl_iff _ _).mp hyU huU
-
-end Meta
 
 end PiBase

@@ -1,11 +1,8 @@
 module
 
-public import Mathlib.Algebra.Group.TransferInstance
 public import Mathlib.Topology.Algebra.Group.Defs
 
 @[expose] public section
-
-open Topology Set Function Filter TopologicalSpace
 
 namespace PiBase
 

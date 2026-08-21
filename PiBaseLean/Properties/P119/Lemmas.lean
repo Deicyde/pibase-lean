@@ -7,10 +7,6 @@ public import PiBaseLean.Properties.P119.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.stoneanSpace : WellDefined StoneanSpace :=
@@ -18,7 +14,5 @@ theorem WellDefined.stoneanSpace : WellDefined StoneanSpace :=
     let φ := hXY.some
     @StoneanSpace.mk _ _ φ.compactSpace
         (extremallyDisconnected_of_homeo φ) φ.t2Space
-
-end Meta
 
 end PiBase

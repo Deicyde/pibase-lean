@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P24.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Topology Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -45,7 +42,5 @@ theorem WellDefined.locallyRelativelyCompactSpace : WellDefined LocallyRelativel
       · intro t ht
         exact ht.1
     exact h_target
-
-end Meta
 
 end PiBase

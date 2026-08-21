@@ -7,10 +7,7 @@ public import PiBaseLean.Properties.P173.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
+open Topology Filter Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -36,7 +33,5 @@ theorem WellDefined.pseudoradialSpace : WellDefined PseudoradialSpace :=
     have h_symm_pre : IsClosed (φ.symm ⁻¹' (φ ⁻¹' s)) :=
       h_pre_closed.preimage φ.symm.continuous
     simpa [Set.preimage_preimage] using h_symm_pre
-
-end Meta
 
 end PiBase

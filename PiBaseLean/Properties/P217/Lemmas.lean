@@ -7,9 +7,7 @@ public import PiBaseLean.Properties.P217.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -35,7 +33,5 @@ theorem WellDefined.stronglyZeroDimensionalSpace : WellDefined StronglyZeroDimen
     · calc t = φ '' (φ ⁻¹' t) := (φ.image_preimage t).symm
         _ ⊆ φ '' tX' := image_mono htXsub
     · rw [← image_inter φ.injective, hXdisj, image_empty]
-
-end Meta
 
 end PiBase

@@ -1,17 +1,11 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Meta
 public import PiBaseLean.Properties.P179.Defs
-public import PiBaseLean.Properties.P183.Bundled
+public import PiBaseLean.Properties.P183.Lemmas
 
 @[expose] public section
 
 namespace PiBase
-
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
@@ -24,7 +18,5 @@ theorem WellDefined.alephZeroSpace : WellDefined AlephZeroSpace :=
     have hK : HasCountableKNetwork _ :=
       WellDefined.hasCountableKNetwork.homeo φ h.toHasCountableKNetwork
     exact { hK with }
-
-end Meta
 
 end PiBase

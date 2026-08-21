@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P119.Bundled
 public import PiBaseLean.Properties.P195.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P195.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T802: P119 (StoneanSpace) => P195 (StoneSpace) -/
-theorem instStoneSpaceOfStoneanSpace (X : Type u)
+theorem instStoneSpaceOfStoneanSpace {X : Type u}
     [TopologicalSpace X] [StoneanSpace X] :
     StoneSpace X := by tauto
 

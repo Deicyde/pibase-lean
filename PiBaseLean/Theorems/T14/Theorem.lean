@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P30.Bundled
 public import PiBaseLean.Properties.P31.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P31.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T14: P30 (ParacompactSpace) => P31 (MetacompactSpace) -/
-instance instMetacompactSpaceOfParacompactSpace (X : Type u)
+instance instMetacompactSpaceOfParacompactSpace {X : Type u}
     [TopologicalSpace X] [h : ParacompactSpace X] :
     MetacompactSpace X where
   metacompact α s sp sc :=

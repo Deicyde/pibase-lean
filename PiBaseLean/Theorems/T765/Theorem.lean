@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P13.Bundled
 public import PiBaseLean.Properties.P218.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P218.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T765: P218 (UltranormalSpace) => P13 (NormalSpace) -/
-instance instNormalSpaceOfUltranormalSpace (X : Type u)
+instance instNormalSpaceOfUltranormalSpace {X : Type u}
     [TopologicalSpace X] [h : UltranormalSpace X] :
     NormalSpace X where
   normal s t hs ht st := by

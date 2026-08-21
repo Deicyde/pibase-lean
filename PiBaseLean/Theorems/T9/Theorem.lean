@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P16.Bundled
 public import PiBaseLean.Properties.P25.Bundled
 
@@ -8,12 +8,10 @@ public import PiBaseLean.Properties.P25.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T9: P16 (CompactSpace) => P25 (ExhaustibleByCompacts) -/
-instance instExhaustibleByCompactsOfCompactSpace (X : Type u)
+instance instExhaustibleByCompactsOfCompactSpace {X : Type u}
     [TopologicalSpace X] [CompactSpace X] :
     ExhaustibleByCompacts X where
   exhaustion := by

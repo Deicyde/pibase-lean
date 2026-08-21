@@ -1,6 +1,6 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P17.Bundled
 public import PiBaseLean.Properties.P18.Bundled
 
@@ -8,11 +8,10 @@ public import PiBaseLean.Properties.P18.Bundled
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /- Theorem T122: P17 (SigmaCompactSpace) => P18 (LindelofSpace) -/
+#guard_msgs (drop info) in
 #check instLindelofSpaceOfSigmaCompactSpace
 
 end PiBase

@@ -7,10 +7,6 @@ public import PiBaseLean.Properties.P100.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.kcSpace : WellDefined KcSpace :=
@@ -18,7 +14,5 @@ theorem WellDefined.kcSpace : WellDefined KcSpace :=
     let φ := hXY.some
     refine ⟨fun s Ks ↦ ?_⟩
     simpa only [Homeomorph.isClosed_image] using h.kc (φ.symm '' s) (Ks.image φ.symm.continuous)
-
-end Meta
 
 end PiBase

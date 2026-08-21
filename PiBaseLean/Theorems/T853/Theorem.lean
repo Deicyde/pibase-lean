@@ -1,12 +1,12 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
+public import PiBaseLean.Bundled.Basic
 public import PiBaseLean.Properties.P230.Bundled
 public import PiBaseLean.Properties.P231.Bundled
 
 @[expose] public section
 
-open Topology Set Function Filter
+open Set Filter
 
 namespace PiBase
 
