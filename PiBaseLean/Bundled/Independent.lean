@@ -61,7 +61,9 @@ theorem NotContinuumHypothesis.independent : Independent.{u} ContinuumHypothesis
 theorem not_independent_of_true {P : Prop} (h : P) : ¬ Independent.{u} P := by
   sorry
 
-However if for every `Q : Prop` that we can actually prove under the standard axioms in Lean,
+However for every `Q : Prop` that we can actually unconditionally
+prove under the standard axioms in Lean (or be able to prove its negation)
+(think `True`, `2 = 0`, Fermat's last Theorem, ...),
 `Independent Q` will not be provable.
 
 Similarly, for any `Q : Prop`, `¬ Independent Q` will likely never be unconditionally be provable.
