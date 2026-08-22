@@ -18,7 +18,13 @@ A small set of axioms that are independent of ZFC (and Lean's slightly stronger 
 This list is critical. Some of them are redudant, but worth including for clarity.
 
 Any change/expansion to it needs to come with a discussion and in particular a reason for
-expanding it. -/
+expanding it.
+
+For a justification that this list makes sense, see i.e.
+
+https://math.stackexchange.com/questions/3764313/why-is-ma-not-provable-from-zfc and
+https://en.wikipedia.org/wiki/Continuum_hypothesis
+-/
 def IndependenceSet : Set Prop :=
   {ContinuumHypothesis, NotContinuumHypothesis,
     GeneralizedContinuumHypothesis.{u}, ¬ GeneralizedContinuumHypothesis.{u}, MartinsAxiom,
