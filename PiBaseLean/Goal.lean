@@ -271,8 +271,10 @@ def allProperties : List Property.{u} :=
    P226, P227, P228, P229, P230, P231, P232, P233, P234, P235, P236, P237, P238, P239, P240, P241,
    P242, P243, P244, P245, P246]
 
-/- The goal of the prject is to find `a b c : Set Prop` such that
-`DecidesPropertySet (propertyPairToLe '' (implicationSet allProperties)) a b c` holds.
+/- The goal of the prject is to construct a witness of
+`ClassificationFor (implicationSet allProperties)`.
+Meaning a complete classification of true, false and independent binary implication between π-base's
+properties (or negations of properties).
 
 (note this will require further API so Lean can handle this)
 -/
