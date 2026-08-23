@@ -107,9 +107,13 @@ theorem ne_le_iff (p q : Property.{u}) :
     ¬ p ≤ q ↔ (∃ (X : Type u) (_ : TopologicalSpace X), p.toPred X ∧ ¬ q.toPred X) := by
   simp [le_iff]
 
+end PiBase.Formal.Property
+
+namespace PiBase.Formal
+
 @[ext]
-protected theorem ext
+protected theorem Property.ext
     {p q : Property.{u}} (h : ∀ (X : Type u) (_ : TopologicalSpace X), p X ↔ q X) : p = q :=
   le_antisymm ((le_iff p q).mp fun X _ ↦ (h X _).mp) ((le_iff q p).mp fun X _ ↦ (h X _).mpr)
 
-end PiBase.Formal.Property
+end PiBase.Formal
