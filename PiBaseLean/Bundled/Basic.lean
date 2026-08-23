@@ -99,21 +99,21 @@ instance : CompleteAtomicBooleanAlgebra Property :=
 @[simp]
 theorem compl_toPred (p : Property.{u}) : pᶜ.toPred = p.toPredᶜ := rfl
 
-theorem le_iff (p q : Property.{u}) :
+end PiBase.Formal.Property
+namespace PiBase.Formal
+
+protected theorem Property.le_iff (p q : Property.{u}) :
     p ≤ q ↔ (∀ (X : Type u) (_ : TopologicalSpace X), p.toPred X → q.toPred X) := by
   rfl
 
-theorem ne_le_iff (p q : Property.{u}) :
+protected theorem Property.ne_le_iff (p q : Property.{u}) :
     ¬ p ≤ q ↔ (∃ (X : Type u) (_ : TopologicalSpace X), p.toPred X ∧ ¬ q.toPred X) := by
-  simp [le_iff]
-
-end PiBase.Formal.Property
-
-namespace PiBase.Formal
+  simp [Property.le_iff]
 
 @[ext]
 protected theorem Property.ext
     {p q : Property.{u}} (h : ∀ (X : Type u) (_ : TopologicalSpace X), p X ↔ q X) : p = q :=
-  le_antisymm ((le_iff p q).mp fun X _ ↦ (h X _).mp) ((le_iff q p).mp fun X _ ↦ (h X _).mpr)
+  le_antisymm
+    ((Property.le_iff p q).mp fun X _ ↦ (h X _).mp) ((Property.le_iff q p).mp fun X _ ↦ (h X _).mpr)
 
 end PiBase.Formal
