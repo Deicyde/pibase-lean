@@ -16,3 +16,8 @@ scope = "leanprover-community"
 
 [[lean_lib]]
 name = "PiBaseLean"
+
+[[lean_exe]]
+name = "spaceAudit"
+root = "PiBaseLean.Audit.Spaces.Main"
+supportInterpreter = true
