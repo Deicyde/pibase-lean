@@ -6,8 +6,6 @@ public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
-universe u
-
 open Set
 
 open scoped SetRel
@@ -25,7 +23,7 @@ namespace PiBase.Formal
 
 def P207 : Property where
   toPred := StronglyCollectionwiseNormalSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined := fun {X Y} _ _ φ h => by
     constructor
     intro sY hsY_diag hsY_open
     -- Transport along the homeomorphism `φ ×ₜ φ` by taking preimages, which keeps both

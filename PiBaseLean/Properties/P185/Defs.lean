@@ -35,7 +35,7 @@ def separationQuotientCongr {X Y : Type*} [TopologicalSpace X] [TopologicalSpace
 
 def P185 : Property where
   toPred := PartitionTopology
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h :=
+  well_defined φ h :=
     ⟨(separationQuotientCongr φ).discreteTopology_iff.mp h.quotient_discrete⟩
 
 end PiBase.Formal

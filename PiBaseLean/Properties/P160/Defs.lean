@@ -60,7 +60,7 @@ open PiBase
 
 def P160 : Property where
   toPred := StrategicallyKMengerSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h :=
+  well_defined φ h :=
     ⟨h.strategically_k_menger.kMengerGame_of_homeomorph φ⟩
 
 end PiBase.Formal

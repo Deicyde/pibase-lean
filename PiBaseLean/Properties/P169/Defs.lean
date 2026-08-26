@@ -21,7 +21,7 @@ namespace PiBase.Formal
 
 def P169 : Property where
   toPred := SemiT2Space
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined φ h := by
     refine ⟨fun y₁ y₂ hne => ?_⟩
     obtain ⟨s, hs_reg, hs_mem, hs_nmem⟩ :=
       h.ex_regular_open (φ.symm.injective.ne hne)

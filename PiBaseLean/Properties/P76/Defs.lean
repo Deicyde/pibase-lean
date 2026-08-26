@@ -25,7 +25,7 @@ open Set Filter Topology
 
 def P76 : Property where
   toPred := ProximalSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined := fun {X Y} _ _ φ h => by
     constructor
     intro hY
     -- The default point of `X` has to stay reducible, so it is introduced with `let`.

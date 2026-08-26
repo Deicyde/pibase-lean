@@ -6,8 +6,6 @@ public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
-universe u
-
 open Cardinal Set
 
 namespace PiBase
@@ -22,7 +20,7 @@ namespace PiBase.Formal
 
 def P219 : Property where
   toPred := TorontoSpace
-  well_defined {X Z : Type u} [TopologicalSpace X] [TopologicalSpace Z] (φ : X ≃ₜ Z) h := by
+  well_defined := fun {X Z} _ _ φ h => by
     constructor
     intro Y hcard
     -- Pull `Y` back along `φ`; the preimage is homeomorphic to `Y` and has the same cardinality.

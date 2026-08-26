@@ -24,7 +24,7 @@ namespace PiBase.Formal
 
 def P54 : Property where
   toPred := HasSigmaLocallyFiniteBasis
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined φ h := by
     obtain ⟨ι, f, ⟨ω, r, hω_count, hω_cover, hω_lf⟩, hf_open, hf_basis⟩ := h.ex_basis
     refine ⟨ι, fun i => φ '' f i, ?_, ?_, ?_⟩
     · refine ⟨ω, r, hω_count, hω_cover, ?_⟩

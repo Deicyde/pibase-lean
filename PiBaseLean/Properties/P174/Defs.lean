@@ -22,7 +22,7 @@ namespace PiBase.Formal
 
 def P174 : Property where
   toPred := WellBasedSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined φ h := by
     refine ⟨fun y => ?_⟩
     obtain ⟨ι, s, hs_mem, hs_basis, hs_ord⟩ := h.basis_ordered (φ.symm y)
     refine ⟨ι, fun i => φ '' (s i), fun i => ⟨φ.symm y, hs_mem i, by simp⟩, ?_, ?_⟩

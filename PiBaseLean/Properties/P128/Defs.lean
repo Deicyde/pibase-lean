@@ -24,7 +24,7 @@ namespace PiBase.Formal
 
 def P128 : Property where
   toPred := KLindelofSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined := fun {X Y} _ _ φ h => by
     constructor
     intro ι f hf
     have h_open_pre : ∀ i, IsOpen (φ ⁻¹' (↑(f i) : Set Y)) :=

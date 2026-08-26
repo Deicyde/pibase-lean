@@ -20,7 +20,7 @@ namespace PiBase.Formal
 
 def P72 : Property where
   toPred := TwoMarkovMengerSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h :=
+  well_defined φ h :=
     ⟨h.two_markov_menger.mengerGame_of_homeomorph φ⟩
 
 end PiBase.Formal

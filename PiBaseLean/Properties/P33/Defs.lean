@@ -24,7 +24,7 @@ namespace PiBase.Formal
 
 def P33 : Property where
   toPred := CountablyMetacompactSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined := fun {X Y} _ _ φ h => by
     constructor
     intro α s hOpen hCover hCount
     let sX : α → Set X := fun a => φ ⁻¹' s a

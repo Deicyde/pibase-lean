@@ -16,12 +16,9 @@ end PiBase
 
 namespace PiBase.Formal
 
-universe u
-
 def P226 : Property where
   toPred := ArtinianSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
-      (φ : X ≃ₜ Y) (h : ArtinianSpace X) : ArtinianSpace Y := by
+  well_defined := fun {X Y} _ _ φ h => by
     unfold ArtinianSpace at *
     let f : Closeds Y → Closeds X := fun s =>
       ⟨φ ⁻¹' (s : Set Y), φ.isClosed_preimage.mpr s.isClosed⟩

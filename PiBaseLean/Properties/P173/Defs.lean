@@ -21,7 +21,7 @@ namespace PiBase.Formal
 
 def P173 : Property where
   toPred := PseudoradialSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined φ h := by
     constructor
     intro s hs
     have h_pre_radially : IsRadiallyClosed (φ ⁻¹' s) := by

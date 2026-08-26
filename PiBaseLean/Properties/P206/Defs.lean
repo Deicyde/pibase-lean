@@ -22,7 +22,7 @@ open Set
 
 def P206 : Property where
   toPred := StronglyChoquetSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined := fun {X Y} _ _ φ h => by
     constructor
     intro hY_inh
     letI : Inhabited Y := hY_inh

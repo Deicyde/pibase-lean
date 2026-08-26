@@ -6,8 +6,6 @@ public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
-universe u
-
 namespace PiBase
 
 /- 220. Ultrametrizable -/
@@ -21,7 +19,7 @@ namespace PiBase.Formal
 
 def P220 : Property where
   toPred := UltraMetrizableSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined := fun {X Y} _ _ φ h => by
     obtain ⟨mX, hUltraX, hTopX⟩ := h.ex_ultrametric
     -- Pull the ultrametric back along the injection `φ.symm : Y → X`.
     let mY : MetricSpace Y := MetricSpace.induced φ.symm φ.symm.injective mX

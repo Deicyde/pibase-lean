@@ -23,7 +23,7 @@ namespace PiBase.Formal
 
 def P63 : Property where
   toPred := CechCompleteSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined := fun {X Y} _ _ φ h => by
     have hT35X : T35Space X := h.toT35Space
     have hT35Y : T35Space Y := φ.symm.isEmbedding.t35Space
     refine ⟨?_⟩

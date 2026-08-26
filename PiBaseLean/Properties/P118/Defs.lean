@@ -22,7 +22,7 @@ namespace PiBase.Formal
 
 def P118 : Property where
   toPred := HasSigmaLocallyFiniteKNetwork
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined := fun {X Y} _ _ φ h => by
     obtain ⟨ι, f, ⟨ω, r, hCount, hUniv, hLF⟩, hKNet⟩ := h.ex_network
     refine ⟨⟨ι, fun i => φ '' f i, ?_, ?_⟩⟩
     · refine ⟨ω, r, hCount, hUniv, ?_⟩

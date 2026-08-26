@@ -5,8 +5,6 @@ public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
-universe u
-
 namespace PiBase
 
 /- 218. Ultranormal -/
@@ -20,7 +18,7 @@ namespace PiBase.Formal
 
 def P218 : Property where
   toPred := UltranormalSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined φ h := by
     constructor
     intro s t hdisj hs ht
     have hsX : IsClosed (φ ⁻¹' s) := φ.isClosed_preimage.mpr hs

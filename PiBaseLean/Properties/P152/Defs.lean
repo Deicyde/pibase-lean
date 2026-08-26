@@ -22,7 +22,7 @@ open PiBase
 
 def P152 : Property where
   toPred := MarkovRothbergerSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h :=
+  well_defined φ h :=
     ⟨fun hY ↦ (h.markov_rothberger ⟨φ.symm hY.some⟩).rothbergerGame_of_homeomorph φ⟩
 
 end PiBase.Formal

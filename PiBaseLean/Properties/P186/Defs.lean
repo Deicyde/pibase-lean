@@ -22,7 +22,7 @@ namespace PiBase.Formal
 
 def P186 : Property where
   toPred := EmbedsInTopologicalWGroupSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined φ h := by
     obtain ⟨Z, tZ, f, hW, hG, hEmb⟩ := h.embeds_in_topological_w_group
     exact ⟨Z, tZ, f ∘ φ.symm, hW, hG, hEmb.comp φ.symm.isEmbedding⟩
 

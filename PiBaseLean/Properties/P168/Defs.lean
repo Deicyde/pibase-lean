@@ -22,7 +22,7 @@ namespace PiBase.Formal
 
 def P168 : Property where
   toPred := CountableSetsDiscrete
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined φ h := by
     refine ⟨fun {s} hs => ?_⟩
     have hdisc : IsDiscrete (φ ⁻¹' s) :=
       h.countable_discrete (hs.preimage φ.injective)

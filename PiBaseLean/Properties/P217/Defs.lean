@@ -5,8 +5,6 @@ public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
-universe u
-
 open Topology Set Filter Function
 
 namespace PiBase
@@ -22,7 +20,7 @@ namespace PiBase.Formal
 
 def P217 : Property where
   toPred := StronglyZeroDimensionalSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined := fun {X Y} _ _ φ h => by
     constructor
     intro s t hs ht hdisj
     have key : ∀ {r : Set Y}, IsZero r → IsZero (φ ⁻¹' r) := by

@@ -22,7 +22,7 @@ namespace PiBase.Formal
 
 def P172 : Property where
   toPred := RadialSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined := fun {X Y} _ _ φ h => by
     constructor
     intro A x hx
     -- x ∈ closure A in Y, so φ⁻¹ x ∈ closure (φ⁻¹ A) in X because φ is homeomorph

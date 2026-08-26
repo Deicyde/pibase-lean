@@ -8,8 +8,6 @@ public import PiBaseLean.AdditionalDefs.Meta
 
 open Topology Set Function Filter TopologicalSpace
 
-universe u
-
 namespace PiBase
 
 /- 44. Biconnected -/
@@ -23,7 +21,7 @@ namespace PiBase.Formal
 
 def P44 : Property where
   toPred := BiconnectedSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined := fun {X Y} _ _ φ h => by
     have hpX : PreconnectedSpace X := h.toPreconnectedSpace
     have hpY : PreconnectedSpace Y := φ.surjective.denseRange.preconnectedSpace φ.continuous
     refine ⟨fun s v hCs hNs hCv hNv => ?_⟩

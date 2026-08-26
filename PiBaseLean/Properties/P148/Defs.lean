@@ -20,8 +20,7 @@ namespace PiBase.Formal
 
 def P148 : Property where
   toPred := CWGH
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y)
-      (h : CWGH X) := by
+  well_defined := fun {X Y} _ _ φ h => by
     have hCWGH_X : CWGH X := h
     have hCG_X : CompactlyGeneratedSpace X := inferInstance
     have hW_X : WeakT2Space X := inferInstance

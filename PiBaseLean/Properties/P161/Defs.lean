@@ -22,7 +22,7 @@ open PiBase
 
 def P161 : Property where
   toPred := MarkovKMengerSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h :=
+  well_defined φ h :=
     ⟨h.markov_k_menger.kMengerGame_of_homeomorph φ⟩
 
 end PiBase.Formal

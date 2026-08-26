@@ -23,7 +23,7 @@ namespace PiBase.Formal
 
 def P189 : Property where
   toPred := SigmaConnectedSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined := fun {X Y} _ _ φ h => by
     have h_conn : PreconnectedSpace Y := by
       constructor
       have hpre := isPreconnected_range (β := Y) φ.continuous

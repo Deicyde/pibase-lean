@@ -21,7 +21,7 @@ namespace PiBase.Formal
 
 def P221 : Property where
   toPred := DieudonneCompleteSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined := fun {X Y} _ _ φ h => by
     obtain ⟨uX, huX_top, hCompX⟩ := h.complete_uniformity
     let f : Y → X := φ.symm
     let uY : UniformSpace Y := UniformSpace.comap f uX

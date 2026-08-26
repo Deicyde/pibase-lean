@@ -44,7 +44,7 @@ open PiBase
 
 def P151 : Property where
   toPred := StrategicallyRothbergerSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h :=
+  well_defined φ h :=
     ⟨fun hY ↦ (h.strategically_rothberger ⟨φ.symm hY.some⟩).rothbergerGame_of_homeomorph φ⟩
 
 end PiBase.Formal

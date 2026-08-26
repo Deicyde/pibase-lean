@@ -94,7 +94,7 @@ end WGame
 
 def P187 : Property where
   toPred := WSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined φ h := by
     refine ⟨fun y => ?_⟩
     refine hasWinningStrategyA_of_comap (wMoveComap φ) (wMoveMap φ) (wMoveComap_wMoveMap φ)
       (fun b => ?_) (h.w_space (φ.symm y))

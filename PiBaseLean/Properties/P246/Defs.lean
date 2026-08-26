@@ -23,7 +23,7 @@ namespace PiBase.Formal
 
 def P246 : Property where
   toPred := CollectionwiseHausdorffSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) hX := by
+  well_defined := fun {X Y} _ _ φ hX => by
     constructor
     intro v hv_closed hv_discrete
     -- preimage is closed

@@ -22,7 +22,7 @@ namespace PiBase.Formal
 
 def P171 : Property where
   toPred := K2T2Space
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined := fun {X Y} _ _ φ h => by
     refine ⟨fun K _ f hT2 hComp hCont => ?_⟩
     -- Transport along `φ.symm` componentwise: `f k` is diagonal in `Y` iff its
     -- image under `Prod.map φ.symm φ.symm` is diagonal in `X`, since `φ.symm` is injective.

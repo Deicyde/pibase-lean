@@ -23,7 +23,7 @@ namespace PiBase.Formal
 
 def P194 : Property where
   toPred := SubmetacompactSpace
-  well_defined {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (φ : X ≃ₜ Y) h := by
+  well_defined φ h := by
     constructor
     intro α s hs_open hs_cover
     have hs_open_X : ∀ a, IsOpen (φ ⁻¹' (s a)) := fun a => (hs_open a).preimage φ.continuous
