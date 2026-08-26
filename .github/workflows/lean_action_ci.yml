@@ -17,17 +17,80 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Lean, restore caches, and build the library
+        uses: leanprover/lean-action@v1
+        with:
+          auto-config: false
+          build: true
+          build-args: --wfail
+          test: false
+          lint: false
+          use-mathlib-cache: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          cache: npm
+
       - name: Test space audit catalog generator
         run: python3 -m unittest tests/test_gen_space_audit_catalog.py
-      - name: Check generated space audit catalog
-        run: python3 scripts/gen_space_audit_catalog.py --check
-      - uses: leanprover/lean-action@v1
-        with:
-          build-args: --wfail
+
+      - name: Check generated Lean inputs
+        run: npm run generated:check
+
       - name: Build space audit registry smoke tests
         run: >-
           lake build --wfail
           PiBaseLean.Audit.Spaces.Tests.RegistrySmoke
           PiBaseLean.Audit.Spaces.Tests.ReportSmoke
           PiBaseLean.Audit.Spaces.Tests.CrossModuleDuplicateSmoke
-      - uses: leanprover-community/docgen-action@v1
+
+      - name: Build the Lean-native space audit
+        run: npm run audit:build
+
+      - name: Run the Lean-native space audit
+        id: space-audit
+        shell: bash
+        run: |
+          mkdir -p "${RUNNER_TEMP}/space-audit"
+          set +e
+          npm run --silent audit:run > "${RUNNER_TEMP}/space-audit/space-audit.json" 2> "${RUNNER_TEMP}/space-audit/space-audit.stderr.log"
+          audit_status=$?
+          set -e
+          cat "${RUNNER_TEMP}/space-audit/space-audit.stderr.log" >&2
+          exit "${audit_status}"
+
+      - name: Upload space audit report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: space-audit-${{ github.run_id }}
+          path: ${{ runner.temp }}/space-audit
+          if-no-files-found: warn
+
+      - name: Run Python tests
+        run: npm run test:python
+
+      - name: Install dashboard dependencies
+        run: npm ci
+
+      - name: Check dashboard types
+        run: npm run dashboard:check
+
+      - name: Build the project dashboard
+        env:
+          PIBASE_SPACE_AUDIT_ARTIFACT: ${{ runner.temp }}/space-audit/space-audit.json
+        run: npm run dashboard:build
+
+      - name: Verify dashboard artifacts
+        run: npm run dashboard:verify
+
+      - name: Build documentation
+        uses: leanprover-community/docgen-action@v1

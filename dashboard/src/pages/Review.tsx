@@ -1,13 +1,24 @@
 import { AlertTriangle, Check, Download, ExternalLink, FileUp, Flag, Search } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import MathText from "../components/MathText";
+import SpaceAuditBadge from "../components/SpaceAuditBadge";
+import SpaceAuditDetails from "../components/SpaceAuditDetails";
 import StatusBadge from "../components/StatusBadge";
 import { downloadText, formatNumber, routeTo } from "../lib";
-import type { DashboardData, LeanStatusName, ReviewChunkPayload, ReviewEntry, ReviewKind, ReviewPayload } from "../types";
+import type {
+  DashboardData,
+  LeanStatusName,
+  ReviewChunkPayload,
+  ReviewEntry,
+  ReviewEntrySummary,
+  ReviewKind,
+  ReviewPayload,
+  SpaceAuditStatus,
+} from "../types";
 
 type Mark = "ok" | "flag";
 type MarkMap = Record<string, Mark>;
-type StatusFilter = "all" | LeanStatusName;
+type StatusFilter = "all" | LeanStatusName | SpaceAuditStatus;
 
 const cache = new Map<ReviewKind, ReviewPayload>();
 const chunkCache = new Map<string, ReviewEntry[]>();
@@ -19,6 +30,13 @@ function statusLabel(kind: ReviewKind, entry: { leanStatus: ReviewEntry["leanSta
     && entry.leanStatus.wellDefinedPlaceholders > 0
   ) return "Well-definedness debt";
   return undefined;
+}
+
+function reviewStatusBadge(kind: ReviewKind, entry: ReviewEntry | ReviewEntrySummary) {
+  if (kind === "spaces" && entry.spaceAudit) {
+    return <SpaceAuditBadge status={entry.spaceAudit.status} />;
+  }
+  return <StatusBadge status={entry.leanStatus.status} label={statusLabel(kind, entry)} />;
 }
 
 function readMarks(key: string): MarkMap {
@@ -88,7 +106,10 @@ export default function Review({ data, params }: { data: DashboardData; params: 
     const term = query.trim().toLowerCase();
     const exactId = /^[pst]\d+$/.test(term);
     return payload.entries.filter((entry) => {
-      if (status !== "all" && entry.leanStatus.status !== status) return false;
+      const entryStatus = kind === "spaces" && entry.spaceAudit
+        ? entry.spaceAudit.status
+        : entry.leanStatus.status;
+      if (status !== "all" && entryStatus !== status) return false;
       if (hideReviewed && marks[entry.id]) return false;
       if (!term) return true;
       if (exactId) return entry.shortId.toLowerCase() === term;
@@ -130,6 +151,7 @@ export default function Review({ data, params }: { data: DashboardData; params: 
 
   function changeKind(next: ReviewKind) {
     setKind(next);
+    setStatus("all");
     setLimit(24);
     window.history.replaceState(null, "", routeTo("review", { kind: next, q: query || undefined }));
   }
@@ -179,7 +201,7 @@ export default function Review({ data, params }: { data: DashboardData; params: 
         <div>
           <p className="eyebrow">Semantic verification</p>
           <h1>Review</h1>
-          <p className="page-lede">Informal π-Base statements beside their Lean representation and dependency status.</p>
+          <p className="page-lede">Informal π-Base records beside their Lean representation, audit, and dependency evidence.</p>
         </div>
         <div className="review-progress">
           <strong>{formatNumber(reviewedCount)}</strong>
@@ -205,11 +227,23 @@ export default function Review({ data, params }: { data: DashboardData; params: 
         <label className="select-field">
           <span>Status</span>
           <select value={status} onChange={(event) => { setStatus(event.target.value as StatusFilter); setLimit(24); }}>
-            <option value="all">All trust states</option>
-            <option value="dependency-clean">Dependency-clean</option>
-            <option value="dependency-debt">Dependency debt</option>
-            <option value="local-debt">Local debt</option>
-            <option value="missing-declaration">Missing declaration</option>
+            {kind === "spaces" ? (
+              <>
+                <option value="all">All audit states</option>
+                <option value="implemented">Implemented</option>
+                <option value="not-implemented">Incomplete</option>
+                <option value="invalid">Invalid</option>
+                <option value="not-targeted">Not targeted</option>
+              </>
+            ) : (
+              <>
+                <option value="all">All trust states</option>
+                <option value="dependency-clean">Dependency-clean</option>
+                <option value="dependency-debt">Dependency debt</option>
+                <option value="local-debt">Local debt</option>
+                <option value="missing-declaration">Missing declaration</option>
+              </>
+            )}
           </select>
         </label>
         <label className="check-field"><input type="checkbox" checked={hideReviewed} onChange={(event) => setHideReviewed(event.target.checked)} /><span>Hide reviewed</span></label>
@@ -237,7 +271,7 @@ export default function Review({ data, params }: { data: DashboardData; params: 
                 <header className="review-entry-head">
                   <a className="entry-id" href={summary.referenceUrl}><code>{summary.shortId}</code></a>
                   <div className="entry-title"><MathText text={summary.name} inline /></div>
-                  <StatusBadge status={summary.leanStatus.status} label={statusLabel(kind, summary)} />
+                  {reviewStatusBadge(kind, summary)}
                 </header>
                 <div className="review-source-loading">Loading Lean source…</div>
               </article>
@@ -249,7 +283,7 @@ export default function Review({ data, params }: { data: DashboardData; params: 
               <a className="entry-id" href={entry.referenceUrl}><code>{entry.shortId}</code></a>
               <div className="entry-title"><MathText text={entry.name} inline /></div>
               {entry.author && <span className="author-name">{entry.author}</span>}
-              <StatusBadge status={entry.leanStatus.status} label={statusLabel(kind, entry)} />
+              {reviewStatusBadge(kind, entry)}
               <div className="entry-links">
                 <a className="icon-link" href={entry.referenceUrl} aria-label={`Open ${entry.shortId} on π-Base`} data-tooltip="π-Base"><ExternalLink size={15} /></a>
                 <a className="icon-link" href={entry.sourceUrl} aria-label={`Open ${entry.shortId} Lean source`} data-tooltip="Lean source"><code>λ</code></a>
@@ -300,29 +334,17 @@ export default function Review({ data, params }: { data: DashboardData; params: 
                   </div>
                 )}
                 {entry.description ? <MathText text={entry.description} /> : <p className="muted-copy">No informal description recorded.</p>}
-                <dl className="entry-ledger">
-                  <div><dt>Local placeholders</dt><dd>{entry.leanStatus.localPlaceholders}</dd></div>
-                  <div><dt>Dependency placeholders</dt><dd>{entry.leanStatus.dependencyPlaceholders}</dd></div>
-                  {kind === "properties" && <div><dt>Well-definedness placeholders</dt><dd>{entry.leanStatus.wellDefinedPlaceholders}</dd></div>}
-                  {kind === "theorems" && <div><dt>Imported well-definedness debt</dt><dd>{entry.leanStatus.dependencyWellDefinedPlaceholders}</dd></div>}
-                  {kind === "theorems" && <div><dt>Other imported placeholders</dt><dd>{entry.leanStatus.dependencyNonWellDefinedPlaceholders}</dd></div>}
-                  <div><dt>Declaration</dt><dd>{entry.leanStatus.declarationPresent ? "Present" : "Missing"}</dd></div>
-                </dl>
-                {entry.traits && entry.traits.length > 0 && (
-                  <details className="trait-details">
-                    <summary>{formatNumber(entry.traits.length)} known traits</summary>
-                    <table>
-                      <tbody>
-                        {entry.traits.map((trait) => (
-                          <tr key={`${trait.property}-${trait.value}`}>
-                            <td className={trait.value ? "trait-yes" : "trait-no"}>{trait.value ? "✓" : "×"}</td>
-                            <td><a href={routeTo("review", { kind: "properties", q: trait.property.replace(/^P0+/, "P") })}>{trait.name}</a></td>
-                            <td><span className="table-tag">{trait.status}</span></td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </details>
+                {kind === "spaces" && entry.spaceAudit ? (
+                  <SpaceAuditDetails audit={entry.spaceAudit} />
+                ) : (
+                  <dl className="entry-ledger">
+                    <div><dt>Local placeholders</dt><dd>{entry.leanStatus.localPlaceholders}</dd></div>
+                    <div><dt>Dependency placeholders</dt><dd>{entry.leanStatus.dependencyPlaceholders}</dd></div>
+                    {kind === "properties" && <div><dt>Well-definedness placeholders</dt><dd>{entry.leanStatus.wellDefinedPlaceholders}</dd></div>}
+                    {kind === "theorems" && <div><dt>Imported well-definedness debt</dt><dd>{entry.leanStatus.dependencyWellDefinedPlaceholders}</dd></div>}
+                    {kind === "theorems" && <div><dt>Other imported placeholders</dt><dd>{entry.leanStatus.dependencyNonWellDefinedPlaceholders}</dd></div>}
+                    <div><dt>Declaration</dt><dd>{entry.leanStatus.declarationPresent ? "Present" : "Missing"}</dd></div>
+                  </dl>
                 )}
               </div>
               <div className="lean-pane"><pre><code>{entry.code || "-- No primary Lean source"}</code></pre></div>
