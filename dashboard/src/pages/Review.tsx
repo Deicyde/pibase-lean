@@ -349,7 +349,8 @@ export default function Review({ data, params }: { data: DashboardData; params: 
               </div>
               <div className="lean-pane"><pre><code>{entry.code || "-- No primary Lean source"}</code></pre></div>
             </div>
-            {entry.extraCode && <details className="extra-code"><summary>Supporting lemmas</summary><pre><code>{entry.extraCode}</code></pre></details>}
+            {entry.extraCode && <details className="extra-code"><summary>{kind === "spaces" ? "Direct certificates" : "Supporting lemmas"}</summary><pre><code>{entry.extraCode}</code></pre></details>}
+            {"generatedCode" in entry && entry.generatedCode && <details className="extra-code"><summary>Generated derived certificates</summary><pre><code>{entry.generatedCode}</code></pre></details>}
           </article>
           );
         })}

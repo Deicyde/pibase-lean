@@ -72,6 +72,10 @@ def check_review(kind: str, expected: int, source_prefix: str) -> dict[str, dict
                 and entry["spaceAudit"] == chunk_entry["spaceAudit"],
                 f"space review index disagrees with its chunk for {entry['id']}",
             )
+            require(
+                "generatedCode" in chunk_entry,
+                f"space review chunk is missing generated certificates for {entry['id']}",
+            )
     return chunk_entries
 
 

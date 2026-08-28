@@ -790,7 +790,9 @@ def build_review_payloads(
     for uid in sorted((key for key in statuses if key.startswith("S")), key=lambda key: int(key[1:])):
         number = int(uid[1:])
         rel = f"PiBaseLean/Spaces/S{number}/Defs.lean"
-        extra = LEAN_ROOT / "PiBaseLean" / "Spaces" / f"S{number}" / "Lemmas.lean"
+        space_root = LEAN_ROOT / "PiBaseLean" / "Spaces" / f"S{number}"
+        extra = space_root / "Lemmas.lean"
+        generated = space_root / "Generated.lean"
         item = spaces.get(uid, {})
         trait_rows = traits.get(uid, {}).get("traits", [])
         payloads["spaces"].append({
@@ -805,6 +807,7 @@ def build_review_payloads(
             "referenceUrl": f"{PIBASE_URL}/spaces/{uid}",
             "code": focused_lean(LEAN_ROOT / rel),
             "extraCode": focused_lean(extra),
+            "generatedCode": focused_lean(generated),
             "leanStatus": statuses[uid],
             "spaceAudit": statuses[uid]["spaceAudit"],
             "traits": trait_rows,

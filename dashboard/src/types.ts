@@ -310,6 +310,7 @@ export interface StandardReviewEntry extends ReviewEntryBase {
 }
 
 export interface SpaceReviewEntry extends ReviewEntryBase {
+  generatedCode: string;
   spaceAudit: SpaceAudit;
   traits: ReviewTrait[];
   traitSummary: Partial<Record<ReviewTrait["status"], number>>;
