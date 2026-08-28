@@ -17,5 +17,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+      - name: Test space audit catalog generator
+        run: python3 -m unittest tests/test_gen_space_audit_catalog.py
+      - name: Check generated space audit catalog
+        run: python3 scripts/gen_space_audit_catalog.py --check
       - uses: leanprover/lean-action@v1
+        with:
+          build-args: --wfail
+      - name: Build space audit registry smoke tests
+        run: >-
+          lake build --wfail
+          PiBaseLean.Audit.Spaces.Tests.RegistrySmoke
+          PiBaseLean.Audit.Spaces.Tests.CrossModuleDuplicateSmoke
       - uses: leanprover-community/docgen-action@v1

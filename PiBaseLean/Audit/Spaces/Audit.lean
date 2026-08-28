@@ -388,11 +388,13 @@ def auditDirectObligation
   match certificateMatches with
   | #[] =>
       if resolution.formalized then
-        return emptyTrait space obligation.propertyId obligation.value obligation.value resolution #[]
+        return emptyTrait
+          space obligation.propertyId obligation.value obligation.value resolution #[]
           #[failure "missing-certificate"
             s!"no direct certificate is visible for {space.id}/{obligation.propertyId}"]
       else
-        return emptyTrait space obligation.propertyId obligation.value obligation.value resolution #[] #[]
+        return emptyTrait
+          space obligation.propertyId obligation.value obligation.value resolution #[] #[]
   | #[certificate] =>
       auditRegisteredCertificate space context certificate obligation.value .direct false false
   | registrations =>
@@ -503,6 +505,18 @@ def topLevelFailures
   for spaceId in duplicateStrings (spaces.map (·.spaceId)) do
     failures := failures.push <| failure "duplicate-space-registration"
       s!"multiple space registrations exist for {spaceId}"
+  for carrierName in duplicateNames (spaces.map (·.carrier)) do
+    let registrations := spaces.filter (·.carrier == carrierName)
+    if registrations.any fun lhs =>
+        registrations.any fun rhs => lhs.spaceId != rhs.spaceId then
+      failures := failures.push <| failure "duplicate-space-carrier"
+        s!"carrier {carrierName} is registered under multiple space IDs"
+  for canonicalName in duplicateNames (spaces.map (·.canonicalHomeomorph)) do
+    let registrations := spaces.filter (·.canonicalHomeomorph == canonicalName)
+    if registrations.any fun lhs =>
+        registrations.any fun rhs => lhs.spaceId != rhs.spaceId then
+      failures := failures.push <| failure "duplicate-canonical-homeomorph"
+        s!"canonical homeomorphism {canonicalName} is registered under multiple space IDs"
   for registration in spaces do
     unless expectedSpaceIds.contains registration.spaceId do
       failures := failures.push <| failure "unexpected-space-registration"

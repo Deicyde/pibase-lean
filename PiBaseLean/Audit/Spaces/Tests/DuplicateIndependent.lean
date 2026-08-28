@@ -2,6 +2,8 @@ module
 
 public meta import PiBaseLean.Audit.Spaces.Registry
 
+@[expose] public meta section
+
 open Lean
 open PiBase.Audit.Spaces
 
@@ -22,6 +24,14 @@ run_cmd do
     «provenance» := .derived
     assumptionIds := #[]
   }
+  let sharedDeclarations : SpaceRegistration := {
+    spaceId := "TEST-CROSS-MODULE-SHARED-INDEPENDENT"
+    catalogName := "synthetic shared-declaration fixture"
+    «carrier» := `PiBase.Audit.Spaces.Tests.SharedCarrier
+    canonicalHomeomorph := `PiBase.Audit.Spaces.Tests.sharedCanonical
+    assumptionIds := #[]
+  }
   let env ← getEnv
   let env := spaceRegistryExt.addEntry env space
+  let env := spaceRegistryExt.addEntry env sharedDeclarations
   setEnv <| certificateRegistryExt.addEntry env certificate

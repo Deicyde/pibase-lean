@@ -2,7 +2,7 @@ module
 
 public meta import PiBaseLean.Audit.Core.Meta
 public meta import PiBaseLean.Audit.Spaces.GeneratedCatalog
-public meta import PiBaseLean.Properties.Bundled.Defs
+public meta import PiBaseLean.Bundled.Defs
 
 @[expose] public meta section
 
@@ -104,7 +104,9 @@ def getCertificate (env : Environment) (spaceId propertyId : String) :
   | #[entry] => .ok entry
   | #[] => .error s!"no certificate registration for {spaceId}/{propertyId}"
   | entries =>
-      .error s!"ambiguous certificate registration for {spaceId}/{propertyId}: {entries.size} entries"
+      .error
+        s!"ambiguous certificate registration for {spaceId}/{propertyId}: \
+          {entries.size} entries"
 
 def findCatalogSpace (spaceId : String) : Except String SpaceEntry :=
   match generatedCatalog.spaces.filter (·.id == spaceId) with
@@ -145,6 +147,16 @@ def checkAssumptions
   unless actual.isEmpty do
     throwError "conditional assumption binders are not yet supported for {description}"
 
+def canonicalHomeomorphArgs (canonicalName : Name) : Meta.MetaM (Array Expr) := do
+  let canonical ← Meta.mkConstWithFreshMVarLevels canonicalName
+  let canonicalType ← Meta.whnf (← Meta.inferType canonical)
+  let (head, args) := canonicalType.getAppFnArgs
+  unless head == ``Homeomorph && args.size == 4 do
+    throwError
+      "canonical declaration {canonicalName} is not a monomorphic homeomorphism; it has type \
+        {canonicalType}"
+  return args
+
 def validateSpaceDecls (carrierName canonicalName : Name) : Meta.MetaM Unit := do
   let carrier ← Meta.mkConstWithFreshMVarLevels carrierName
   let carrierType ← Meta.whnf (← Meta.inferType carrier)
@@ -153,22 +165,19 @@ def validateSpaceDecls (carrierName canonicalName : Name) : Meta.MetaM Unit := d
   if level == .zero then
     throwError "space carrier {carrierName} is a proposition, not a type"
   let topologyType ← Meta.mkAppM ``TopologicalSpace #[carrier]
-  try
-    let _ ← Meta.synthInstance topologyType
+  let topology ← try
+    Meta.synthInstance topologyType
   catch _ =>
     throwError "failed to synthesize TopologicalSpace {carrierName}"
-
-  let canonical ← Meta.mkConstWithFreshMVarLevels canonicalName
-  let canonicalType ← Meta.whnf (← Meta.inferType canonical)
-  let (head, args) := canonicalType.getAppFnArgs
-  unless head == ``Homeomorph && args.size == 4 do
-    throwError
-      "canonical declaration {canonicalName} is not a monomorphic homeomorphism; it has type \
-        {canonicalType}"
+  let args ← canonicalHomeomorphArgs canonicalName
   PiBase.Audit.Meta.assertDefEq
     s!"canonical homeomorphism {canonicalName} has the wrong source"
     args[0]!
     carrier
+  PiBase.Audit.Meta.assertDefEq
+    s!"canonical homeomorphism {canonicalName} uses the wrong source topology"
+    args[2]!
+    topology
 
 def checkLocalSpaceRegistration
     (env : Environment) (entry : SpaceRegistration) : Lean.Elab.Command.CommandElabM Unit := do
@@ -217,9 +226,12 @@ def validateCertificateDecls
     s!"property declaration {propertyName} does not have type PiBase.Formal.Property"
     propertyType
     bundledProperty
-
-  let topologyType ← Meta.mkAppM ``TopologicalSpace #[carrier]
-  let topology ← Meta.synthInstance topologyType
+  let canonicalArgs ← canonicalHomeomorphArgs space.canonicalHomeomorph
+  PiBase.Audit.Meta.assertDefEq
+    s!"registered canonical homeomorphism {space.canonicalHomeomorph} has the wrong source"
+    canonicalArgs[0]!
+    carrier
+  let topology := canonicalArgs[2]!
   let proposition ← Meta.mkAppOptM ``PiBase.Formal.Property.toPred
     #[some property, some carrier, some topology]
   let expected ← if polarity then pure proposition else Meta.mkAppM ``Not #[proposition]
@@ -231,21 +243,21 @@ def validateCertificateDecls
     expected
 
 declare_syntax_cat auditAssumption
-syntax "continuumHypothesis" : auditAssumption
-syntax "notContinuumHypothesis" : auditAssumption
-syntax "martinsAxiom" : auditAssumption
-syntax "generalizedContinuumHypothesis" : auditAssumption
+syntax ident : auditAssumption
 
 declare_syntax_cat auditAssumptions
 syntax "[" auditAssumption,* "]" : auditAssumptions
 
-def parseAssumption : Syntax → Lean.Elab.Command.CommandElabM AssumptionId
-  | `(auditAssumption| continuumHypothesis) => pure AssumptionId.continuumHypothesis
-  | `(auditAssumption| notContinuumHypothesis) => pure AssumptionId.notContinuumHypothesis
-  | `(auditAssumption| martinsAxiom) => pure AssumptionId.martinsAxiom
-  | `(auditAssumption| generalizedContinuumHypothesis) =>
+def parseAssumption (stx : Syntax) : Lean.Elab.Command.CommandElabM AssumptionId := do
+  let `(auditAssumption| $assumption:ident) := stx
+    | throwErrorAt stx "invalid Pi-Base assumption"
+  match assumption.getId.toString with
+  | "continuumHypothesis" => pure AssumptionId.continuumHypothesis
+  | "notContinuumHypothesis" => pure AssumptionId.notContinuumHypothesis
+  | "martinsAxiom" => pure AssumptionId.martinsAxiom
+  | "generalizedContinuumHypothesis" =>
       pure AssumptionId.generalizedContinuumHypothesis
-  | stx => throwErrorAt stx "unknown Pi-Base assumption"
+  | _ => throwErrorAt assumption "unknown Pi-Base assumption"
 
 def parseAssumptions (stx : Syntax) :
     Lean.Elab.Command.CommandElabM (Array AssumptionId) := do
@@ -266,19 +278,25 @@ def parseProvenance (stx : Syntax) :
   | "derived" => pure CertificateProvenance.derived
   | _ => throwErrorAt stx "certificate provenance must be direct or derived"
 
+def checkFieldLabel (stx : Syntax) (expected : String) :
+    Lean.Elab.Command.CommandElabM Unit :=
+  unless stx.getId.toString == expected do
+    throwErrorAt stx "expected '{expected}'"
+
 syntax (name := registerSpaceCmd)
-  "register_space" ident "carrier" ident "canonical" ident
-  "assumptions" auditAssumptions : command
+  "register_space" ident ident ident ident ident ident auditAssumptions : command
 
 syntax (name := registerCertificateCmd)
-  "register_certificate" ident ident ident "proof" ident
-  "provenance" ident "assumptions" auditAssumptions : command
+  "register_certificate" ident ident ident ident ident ident ident ident auditAssumptions : command
 
 elab_rules : command
   | `(register_space $spaceIdStx:ident
-      carrier $carrierStx:ident
-      canonical $canonicalStx:ident
-      assumptions $assumptionsStx:auditAssumptions) => do
+      $carrierLabel:ident $carrierStx:ident
+      $canonicalLabel:ident $canonicalStx:ident
+      $assumptionsLabel:ident $assumptionsStx:auditAssumptions) => do
+    checkFieldLabel carrierLabel "carrier"
+    checkFieldLabel canonicalLabel "canonical"
+    checkFieldLabel assumptionsLabel "assumptions"
     let spaceId := spaceIdStx.getId.toString
     let catalogEntry ← match findCatalogSpace spaceId with
       | .ok entry => pure entry
@@ -301,9 +319,12 @@ elab_rules : command
 
 elab_rules : command
   | `(register_certificate $spaceIdStx:ident $propertyIdStx:ident $polarityStx:ident
-      proof $proofStx:ident
-      provenance $provenanceStx:ident
-      assumptions $assumptionsStx:auditAssumptions) => do
+      $proofLabel:ident $proofStx:ident
+      $provenanceLabel:ident $provenanceStx:ident
+      $assumptionsLabel:ident $assumptionsStx:auditAssumptions) => do
+    checkFieldLabel proofLabel "proof"
+    checkFieldLabel provenanceLabel "provenance"
+    checkFieldLabel assumptionsLabel "assumptions"
     let spaceId := spaceIdStx.getId.toString
     let propertyId := propertyIdStx.getId.toString
     let catalogSpace ← match findCatalogSpace spaceId with

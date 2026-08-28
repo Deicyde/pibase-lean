@@ -49,7 +49,7 @@ class SpaceAuditCatalogGeneratorTest(unittest.TestCase):
                     "condition": "first context",
                 },
                 {
-                    "space": "S000010",
+                    "space": "S000002",
                     "assumptions": ["GCH", "CH"],
                     "condition": "second context",
                 },
@@ -127,9 +127,12 @@ class SpaceAuditCatalogGeneratorTest(unittest.TestCase):
             (
                 "martinsAxiom",
                 "notContinuumHypothesis",
-                "generalizedContinuumHypothesis",
-                "continuumHypothesis",
             ),
+        )
+        second_space = next(row for row in data.spaces if row.id == "S000002")
+        self.assertEqual(
+            second_space.assumptions,
+            ("generalizedContinuumHypothesis", "continuumHypothesis"),
         )
         output = generator.render_generated_catalog(data)
         for label, assumption_id in generator.ASSUMPTIONS:
@@ -137,11 +140,26 @@ class SpaceAuditCatalogGeneratorTest(unittest.TestCase):
                 f'{{ id := .{assumption_id}, label := "{label}" }}', output
             )
         self.assertIn(
-            "conditionalAssumptions := #[.martinsAxiom, .notContinuumHypothesis, "
-            ".generalizedContinuumHypothesis, .continuumHypothesis]",
+            "conditionalAssumptions := #[.martinsAxiom, .notContinuumHypothesis]",
+            output,
+        )
+        self.assertIn(
+            "conditionalAssumptions := #[.generalizedContinuumHypothesis, "
+            ".continuumHypothesis]",
             output,
         )
         self.assertNotIn("PiBase.ContinuumHypothesis", output)
+
+    def test_duplicate_conditional_space_record_is_rejected(self) -> None:
+        self.independence["conditionalSpaces"][1]["space"] = "S000010"
+        self.write_inputs()
+        with self.assertRaisesRegex(
+            generator.CatalogGenerationError,
+            r"duplicate conditional space record for S000010: "
+            r"independence\.conditionalSpaces\[0\] and "
+            r"independence\.conditionalSpaces\[1\]",
+        ):
+            generator.load_catalog(self.pibase_path, self.independence_path)
 
     def test_unknown_assumption_is_rejected(self) -> None:
         self.independence["conditionalSpaces"][0]["assumptions"] = ["PFA"]

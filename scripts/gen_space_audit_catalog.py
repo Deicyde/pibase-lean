@@ -179,6 +179,7 @@ def load_catalog(pibase_path: Path, independence_path: Path) -> CatalogData:
     conditional_rows = _expect_list(
         independence.get("conditionalSpaces"), "independence.conditionalSpaces"
     )
+    conditional_space_rows: dict[str, int] = {}
     for index, raw_row in enumerate(conditional_rows):
         row = _expect_dict(raw_row, f"independence.conditionalSpaces[{index}]")
         space_id = _canonical_id(
@@ -190,6 +191,14 @@ def load_catalog(pibase_path: Path, independence_path: Path) -> CatalogData:
             raise CatalogGenerationError(
                 f"conditional space references unknown space: {space_id}"
             )
+        if space_id in conditional_space_rows:
+            first_index = conditional_space_rows[space_id]
+            raise CatalogGenerationError(
+                "duplicate conditional space record for "
+                f"{space_id}: independence.conditionalSpaces[{first_index}] and "
+                f"independence.conditionalSpaces[{index}]"
+            )
+        conditional_space_rows[space_id] = index
         labels = _expect_list(
             row.get("assumptions"),
             f"independence.conditionalSpaces[{index}].assumptions",
