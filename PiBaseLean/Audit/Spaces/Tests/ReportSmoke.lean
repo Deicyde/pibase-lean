@@ -1,10 +1,10 @@
 module
 
 public meta import PiBaseLean.Audit.Spaces.Audit
-public import PiBaseLean.Spaces.S1.Lemmas
-public import PiBaseLean.Spaces.S4.Lemmas
-public import PiBaseLean.Spaces.S10.Lemmas
-public import PiBaseLean.Spaces.S189.Lemmas
+public import PiBaseLean.Spaces.S1.Generated
+public import PiBaseLean.Spaces.S4.Generated
+public import PiBaseLean.Spaces.S10.Generated
+public import PiBaseLean.Spaces.S189.Generated
 
 @[expose] public meta section
 

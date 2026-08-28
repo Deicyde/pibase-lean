@@ -102,31 +102,31 @@ class RenderingTests(unittest.TestCase):
             [atom("P000001"), atom("P000002")],
             atom("P000003"),
         )
-        self.names = {
-            "P000001": "first",
-            "P000002": "second",
-            "P000003": "third",
-        }
 
     def render(self, seed, independence=None):
-        return GEN_TRAITS.render_generated_region(
+        return GEN_TRAITS.render_generated_module(
             "S000147",
             seed,
             [self.theorem],
             {"P000001", "P000002", "P000003"},
-            self.names,
-            {"S000147": "Conditional space"},
             independence or {},
         )
 
-    def test_uses_stable_namespace_carrier_and_separates_direct_obligations(self):
+    def test_renders_complete_module_with_exact_deterministic_imports(self):
         output = self.render({"P000001": True, "P000002": True})
 
-        self.assertIn("S147_P1 : P1 PiBase.S147", output)
-        self.assertIn("S147_P2 : P2 PiBase.S147", output)
-        self.assertIn("namespace PiBase.Formal", output)
+        expected_prefix = (
+            "module\n\n"
+            f"{GEN_TRAITS.GENERATED_HEADER}\n"
+            "public import PiBaseLean.Spaces.S147.Lemmas\n"
+            "public import PiBaseLean.Properties.P3.Defs\n"
+            "public import PiBaseLean.Theorems.T7.Theorem\n\n"
+            "@[expose] public section\n\n"
+            "namespace PiBase.Formal\n"
+        )
+        self.assertTrue(output.startswith(expected_prefix), output)
+        self.assertTrue(output.endswith("end PiBase.Formal\n"))
         self.assertIn("theorem S147_P3 : P3 PiBase.S147 :=", output)
-        self.assertIn("end PiBase.Formal", output)
         self.assertIn(
             "T7 PiBase.S147 inferInstance ⟨S147_P1, S147_P2⟩", output
         )
@@ -138,26 +138,19 @@ class RenderingTests(unittest.TestCase):
         )
         self.assertIn(certificate, output)
         self.assertLess(output.index("theorem S147_P3"), output.index(certificate))
-        self.assertLess(output.index(certificate), output.index("end PiBase.Formal"))
+
+    def test_never_generates_direct_theorems_or_certificates(self):
+        output = self.render({"P000001": True, "P000002": True})
+
         self.assertNotIn("theorem S147_P1", output)
-        self.assertEqual(output.count(GEN_TRAITS.GENERATED_BEGIN), 1)
-        self.assertEqual(output.count(GEN_TRAITS.GENERATED_END), 1)
-        imports = GEN_TRAITS.render_generated_imports(
-            {"P000001": True, "P000002": True},
-            [self.theorem],
-            {"P000001", "P000002", "P000003"},
-        )
-        self.assertIn(
-            "public meta import PiBaseLean.Audit.Spaces.Registry", imports
-        )
-        self.assertIn("public import PiBaseLean.Properties.P3.Defs", imports)
-        self.assertIn("public import PiBaseLean.Theorems.T7.Theorem", imports)
+        self.assertNotIn("theorem S147_P2", output)
+        self.assertNotIn("provenance direct", output)
+        self.assertNotIn("register_certificate S000147 P000001", output)
+        self.assertNotIn("register_certificate S000147 P000002", output)
 
     def test_renders_sound_contrapositive(self):
         output = self.render({"P000002": True, "P000003": False})
 
-        self.assertIn("theorem S147_P1_not : ¬ P1 PiBase.S147 := by", output)
-        self.assertIn("intro h", output)
         proof = (
             "theorem S147_P1_not : ¬ P1 PiBase.S147 := by\n"
             "  intro h\n"
@@ -171,7 +164,7 @@ class RenderingTests(unittest.TestCase):
         )
         self.assertIn(f"{proof}\n\n{certificate}", output)
 
-    def test_adds_conditional_binders_to_obligations_and_references(self):
+    def test_preserves_conditional_assumptions(self):
         independence = {
             "conditionalSpaces": [
                 {"space": "S000147", "assumptions": ["CH", "not CH", "MA"]},
@@ -183,18 +176,11 @@ class RenderingTests(unittest.TestCase):
         )
 
         self.assertIn(
-            "S147_P1 [PiBase.ContinuumHypothesis] [PiBase.NotContinuumHypothesis] "
-            "[PiBase.MartinsAxiom] [PiBase.GeneralizedContinuumHypothesis] : "
-            "P1 PiBase.S147",
-            output,
-        )
-        self.assertIn(
             "theorem S147_P3 [PiBase.ContinuumHypothesis] "
             "[PiBase.NotContinuumHypothesis] [PiBase.MartinsAxiom] "
             "[PiBase.GeneralizedContinuumHypothesis] : P3 PiBase.S147 :=",
             output,
         )
-        self.assertIn("⟨S147_P1, S147_P2⟩", output)
         self.assertIn(
             "assumptions [continuumHypothesis, notContinuumHypothesis, "
             "martinsAxiom, generalizedContinuumHypothesis]",
@@ -207,33 +193,6 @@ class RenderingTests(unittest.TestCase):
         lowered = output.lower()
         for forbidden in ("sorry", "admit", "axiom", "placeholder"):
             self.assertNotIn(forbidden, lowered)
-
-
-class RegionTests(unittest.TestCase):
-    def test_replacement_preserves_handwritten_content_and_is_idempotent(self):
-        old_region = (
-            f"{GEN_TRAITS.GENERATED_BEGIN}\nold\n"
-            f"{GEN_TRAITS.GENERATED_END}"
-        )
-        new_region = (
-            f"{GEN_TRAITS.GENERATED_BEGIN}\nnew\n"
-            f"{GEN_TRAITS.GENERATED_END}"
-        )
-        source = f"namespace Handwritten\n\n{old_region}\n\nend Handwritten\n"
-
-        updated = GEN_TRAITS.replace_generated_region(source, new_region)
-        self.assertIn("namespace Handwritten", updated)
-        self.assertIn("end Handwritten", updated)
-        self.assertNotIn("old", updated)
-        self.assertEqual(
-            GEN_TRAITS.replace_generated_region(updated, new_region), updated
-        )
-
-    def test_rejects_malformed_delimiters(self):
-        with self.assertRaisesRegex(ValueError, "complete generated trait region"):
-            GEN_TRAITS.replace_generated_region(
-                f"handwritten\n{GEN_TRAITS.GENERATED_BEGIN}\n", "region"
-            )
 
 
 class CliTests(unittest.TestCase):
@@ -267,12 +226,15 @@ class CliTests(unittest.TestCase):
             source.write_text(content, encoding="utf-8")
         lemmas = root / "spaces" / "S3" / "Lemmas.lean"
         lemmas.parent.mkdir(parents=True)
-        lemmas.write_text(
-            "module\n\npublic import PiBaseLean.Spaces.S3.Defs\n\n"
-            "@[expose] public section\n\nnamespace PiBase.Formal\n\nend PiBase.Formal\n",
-            encoding="utf-8",
+        lemmas.write_text("handwritten direct proofs\n", encoding="utf-8")
+        return (
+            catalog_path,
+            independence_path,
+            root / "lean",
+            root / "spaces",
+            lemmas,
+            lemmas.with_name("Generated.lean"),
         )
-        return catalog_path, independence_path, root / "lean", root / "spaces", lemmas
 
     def run_cli(self, *args):
         return subprocess.run(
@@ -282,59 +244,99 @@ class CliTests(unittest.TestCase):
             check=False,
         )
 
-    def test_write_is_idempotent_and_check_detects_stale_region(self):
+    def common_args(self, fixture):
+        catalog, independence, lean_root, generated_root, _, _ = fixture
+        return (
+            "--catalog", catalog,
+            "--independence", independence,
+            "--lean-root", lean_root,
+            "--generated-root", generated_root,
+        )
+
+    def test_write_is_idempotent_and_never_writes_lemmas(self):
         with tempfile.TemporaryDirectory() as directory:
-            catalog, independence, lean_root, lemmas_root, lemmas = self.make_fixture(directory)
-            common = (
-                "--catalog", catalog,
-                "--independence", independence,
-                "--lean-root", lean_root,
-                "--lemmas-root", lemmas_root,
-            )
+            fixture = self.make_fixture(directory)
+            _, _, _, _, lemmas, generated = fixture
+            common = self.common_args(fixture)
+            lemmas_content = lemmas.read_text(encoding="utf-8")
+            lemmas_mtime = lemmas.stat().st_mtime_ns
 
             first = self.run_cli("--write", *common, "S3")
             self.assertEqual(first.returncode, 0, first.stderr)
-            first_content = lemmas.read_text(encoding="utf-8")
-            self.assertIn("namespace PiBase.Formal", first_content)
+            first_content = generated.read_text(encoding="utf-8")
+            self.assertIn(GEN_TRAITS.GENERATED_HEADER, first_content)
             self.assertIn("theorem S3_P2", first_content)
-            self.assertIn(
-                "register_certificate S000003 P000002 true\n"
-                "  proof PiBase.Formal.S3_P2\n"
-                "  provenance derived\n"
-                "  assumptions []",
-                first_content,
-            )
+            self.assertEqual(lemmas.read_text(encoding="utf-8"), lemmas_content)
+            self.assertEqual(lemmas.stat().st_mtime_ns, lemmas_mtime)
 
+            first_mtime = generated.stat().st_mtime_ns
             second = self.run_cli("--write", *common, "S3")
             self.assertEqual(second.returncode, 0, second.stderr)
             self.assertIn("unchanged:", second.stdout)
-            self.assertEqual(lemmas.read_text(encoding="utf-8"), first_content)
+            self.assertEqual(generated.read_text(encoding="utf-8"), first_content)
+            self.assertEqual(generated.stat().st_mtime_ns, first_mtime)
 
             current = self.run_cli("--check", *common, "S3")
             self.assertEqual(current.returncode, 0, current.stderr)
             self.assertIn("current:", current.stdout)
 
-            lemmas.write_text(first_content.replace("theorem S3_P2", "theorem stale"), encoding="utf-8")
+    def test_check_reports_missing_and_stale_without_writing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            fixture = self.make_fixture(directory)
+            _, _, _, _, _, generated = fixture
+            common = self.common_args(fixture)
+
+            missing = self.run_cli("--check", *common, "S3")
+            self.assertEqual(missing.returncode, 1)
+            self.assertIn("missing:", missing.stdout)
+            self.assertFalse(generated.exists())
+
+            self.assertEqual(self.run_cli("--write", *common, "S3").returncode, 0)
+            generated.write_text("stale\n", encoding="utf-8")
             stale = self.run_cli("--check", *common, "S3")
             self.assertEqual(stale.returncode, 1)
             self.assertIn("stale:", stale.stdout)
-            self.assertIn("theorem stale", lemmas.read_text(encoding="utf-8"))
+            self.assertEqual(generated.read_text(encoding="utf-8"), "stale\n")
 
-    def test_write_refuses_to_create_missing_numbered_lemmas_file(self):
+    def test_emit_outputs_complete_module_without_writing(self):
         with tempfile.TemporaryDirectory() as directory:
-            catalog, independence, lean_root, lemmas_root, lemmas = self.make_fixture(directory)
-            lemmas.unlink()
-            result = self.run_cli(
-                "--write",
-                "--catalog", catalog,
-                "--independence", independence,
-                "--lean-root", lean_root,
-                "--lemmas-root", lemmas_root,
-                "S3",
+            fixture = self.make_fixture(directory)
+            _, _, _, _, lemmas, generated = fixture
+            result = self.run_cli("--emit", *self.common_args(fixture), "S3")
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertTrue(result.stdout.startswith("module\n\n"))
+            self.assertIn(GEN_TRAITS.GENERATED_HEADER, result.stdout)
+            self.assertIn("public import PiBaseLean.Spaces.S3.Lemmas", result.stdout)
+            self.assertFalse(generated.exists())
+            self.assertEqual(
+                lemmas.read_text(encoding="utf-8"), "handwritten direct proofs\n"
             )
+
+    def test_write_requires_existing_numbered_lemmas_file(self):
+        with tempfile.TemporaryDirectory() as directory:
+            fixture = self.make_fixture(directory)
+            _, _, _, _, lemmas, generated = fixture
+            lemmas.unlink()
+            result = self.run_cli("--write", *self.common_args(fixture), "S3")
+
             self.assertEqual(result.returncode, 1)
             self.assertIn("does not exist", result.stderr)
-            self.assertFalse(lemmas.exists())
+            self.assertFalse(generated.exists())
+
+    def test_check_requires_existing_numbered_lemmas_file(self):
+        with tempfile.TemporaryDirectory() as directory:
+            fixture = self.make_fixture(directory)
+            _, _, _, _, lemmas, generated = fixture
+            common = self.common_args(fixture)
+            self.assertEqual(self.run_cli("--write", *common, "S3").returncode, 0)
+            lemmas.unlink()
+
+            result = self.run_cli("--check", *common, "S3")
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn(f"missing: {lemmas.resolve()}", result.stdout)
+            self.assertTrue(generated.exists())
 
 
 if __name__ == "__main__":
