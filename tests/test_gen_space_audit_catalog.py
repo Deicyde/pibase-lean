@@ -24,6 +24,8 @@ class SpaceAuditCatalogGeneratorTest(unittest.TestCase):
         self.independence_path = self.root / "inputs" / "independence.json"
         self.catalog_output = self.root / "out" / "Catalog.lean"
         self.generated_output = self.root / "out" / "GeneratedCatalog.lean"
+        self.catalog_output.parent.mkdir(parents=True, exist_ok=True)
+        self.catalog_output.write_text("handwritten schema\n", encoding="utf-8")
         self.pibase = {
             "spaces": [
                 {"uid": "S000010", "name": 'Quote " slash \\ line\n\t\r\u0000 caf\u00e9'},
@@ -79,21 +81,15 @@ class SpaceAuditCatalogGeneratorTest(unittest.TestCase):
             str(self.pibase_path),
             "--independence",
             str(self.independence_path),
-            "--catalog-output",
-            str(self.catalog_output),
             "--generated-output",
             str(self.generated_output),
             *extra,
         ]
 
     def test_generation_is_deterministic_complete_and_numerically_sorted(self) -> None:
-        first_schema, first = generator.generate(
-            self.pibase_path, self.independence_path
-        )
-        second_schema, second = generator.generate(
-            self.pibase_path, self.independence_path
-        )
-        self.assertEqual((first_schema, first), (second_schema, second))
+        first = generator.generate(self.pibase_path, self.independence_path)
+        second = generator.generate(self.pibase_path, self.independence_path)
+        self.assertEqual(first, second)
         self.assertLess(first.index('id := "P000002"'), first.index('id := "P000052"'))
         self.assertLess(first.index('id := "S000001"'), first.index('id := "S000002"'))
         self.assertLess(first.index('id := "S000002"'), first.index('id := "S000010"'))
@@ -102,9 +98,7 @@ class SpaceAuditCatalogGeneratorTest(unittest.TestCase):
 
     def test_generated_catalog_uses_schema_version_constant(self) -> None:
         with mock.patch.object(generator, "SCHEMA_VERSION", 73):
-            _, generated = generator.generate(
-                self.pibase_path, self.independence_path
-            )
+            generated = generator.generate(self.pibase_path, self.independence_path)
 
         self.assertIn("  { schemaVersion := 73\n", generated)
         self.assertNotIn("  { schemaVersion := 1\n", generated)
@@ -198,16 +192,14 @@ class SpaceAuditCatalogGeneratorTest(unittest.TestCase):
             stderr = StringIO()
             with redirect_stderr(stderr):
                 self.assertEqual(generator.run(self.cli_args("--check")), 1)
-        self.assertFalse(self.catalog_output.exists())
+        self.assertEqual(
+            self.catalog_output.read_text(encoding="utf-8"), "handwritten schema\n"
+        )
         self.assertFalse(self.generated_output.exists())
-        self.assertIn(str(self.catalog_output), stderr.getvalue())
+        self.assertNotIn(str(self.catalog_output), stderr.getvalue())
         self.assertIn(str(self.generated_output), stderr.getvalue())
 
         self.assertEqual(generator.run(self.cli_args()), 0)
-        expected = {
-            self.catalog_output: self.catalog_output.read_bytes(),
-            self.generated_output: self.generated_output.read_bytes(),
-        }
         self.generated_output.write_text("stale\n", encoding="utf-8")
         stale = self.generated_output.read_bytes()
         with mock.patch.object(
@@ -215,24 +207,28 @@ class SpaceAuditCatalogGeneratorTest(unittest.TestCase):
         ):
             with redirect_stderr(StringIO()):
                 self.assertEqual(generator.run(self.cli_args("--check")), 1)
-        self.assertEqual(self.catalog_output.read_bytes(), expected[self.catalog_output])
+        self.assertEqual(
+            self.catalog_output.read_text(encoding="utf-8"), "handwritten schema\n"
+        )
         self.assertEqual(self.generated_output.read_bytes(), stale)
 
-    def test_normal_cli_uses_configurable_atomic_idempotent_outputs(self) -> None:
+    def test_normal_cli_uses_configurable_atomic_idempotent_output(self) -> None:
         with redirect_stdout(StringIO()):
             self.assertEqual(generator.run(self.cli_args()), 0)
-        self.assertTrue(self.catalog_output.is_file())
+        self.assertEqual(
+            self.catalog_output.read_text(encoding="utf-8"), "handwritten schema\n"
+        )
         self.assertTrue(self.generated_output.is_file())
-        contents = {
-            self.catalog_output: self.catalog_output.read_bytes(),
-            self.generated_output: self.generated_output.read_bytes(),
-        }
-        mtimes = {path: path.stat().st_mtime_ns for path in contents}
+        contents = self.generated_output.read_bytes()
+        mtime = self.generated_output.stat().st_mtime_ns
 
         with redirect_stdout(StringIO()):
             self.assertEqual(generator.run(self.cli_args()), 0)
-        self.assertEqual({path: path.read_bytes() for path in contents}, contents)
-        self.assertEqual({path: path.stat().st_mtime_ns for path in contents}, mtimes)
+        self.assertEqual(self.generated_output.read_bytes(), contents)
+        self.assertEqual(self.generated_output.stat().st_mtime_ns, mtime)
+        self.assertEqual(
+            self.catalog_output.read_text(encoding="utf-8"), "handwritten schema\n"
+        )
         self.assertEqual(list(self.catalog_output.parent.glob(".*.lean.*")), [])
 
         with redirect_stdout(StringIO()):
