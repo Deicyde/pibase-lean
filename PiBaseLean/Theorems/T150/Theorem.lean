@@ -1,20 +1,18 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P5.Defs
-public import PiBaseLean.Properties.P117.Defs
-public import PiBaseLean.Properties.P177.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P117.Bundled
+public import PiBaseLean.Properties.P177.Bundled
+public import PiBaseLean.Properties.P5.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T150: P117 (HasSigmaLocallyFiniteNetwork) + P5 (T3Space) => P177 (SigmaSpace) -/
-theorem instSigmaSpaceOfHasSigmaLocallyFiniteNetworkOfT3Space (X : Type u)
+theorem instSigmaSpaceOfHasSigmaLocallyFiniteNetworkOfT3Space {X : Type u}
     [TopologicalSpace X] [HasSigmaLocallyFiniteNetwork X] [T3Space X] :
     SigmaSpace X := by tauto
 

@@ -1,11 +1,10 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Cover
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
-open Topology Set Function Filter TopologicalSpace
+open Set
 
 universe u
 
@@ -19,11 +18,3 @@ class CollectionwiseNormalSpace (X : Type u) [TopologicalSpace X] : Prop where
           (∀ i : ι, IsOpen (U i)) ∧ (∀ i : ι, F i ⊆ U i)
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P88 : Property where
-  toPred := CollectionwiseNormalSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

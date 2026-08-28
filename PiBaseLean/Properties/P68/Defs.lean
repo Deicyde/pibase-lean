@@ -1,11 +1,10 @@
 module
 
 public import Mathlib.Topology.Defs.Basic
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
-open Topology Set Function TopologicalSpace
+open Set
 
 universe u
 
@@ -18,11 +17,3 @@ class RothbergerSpace (X : Type u) [TopologicalSpace X] : Prop where
       ∃ j : ℕ → ι, univ = ⋃ (n : ℕ), U n (j n)
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P68 : Property where
-  toPred := RothbergerSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

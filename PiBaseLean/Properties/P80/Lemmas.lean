@@ -7,15 +7,13 @@ public import PiBaseLean.Properties.P80.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem WellDefined.frechetUrysohnSpace : WellDefined FrechetUrysohnSpace :=
-  sorry
+theorem Homeomorph.frechetUrysohnSpace [h : FrechetUrysohnSpace X] (f : X ≃ₜ Y) :
+    FrechetUrysohnSpace Y :=
+  f.symm.isInducing.frechetUrysohnSpace
 
-end Meta
+theorem WellDefined.frechetUrysohnSpace : WellDefined FrechetUrysohnSpace :=
+  fun {_ _} _ _ h _ ↦ Homeomorph.frechetUrysohnSpace h.some
 
 end PiBase

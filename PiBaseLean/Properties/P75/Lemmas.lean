@@ -7,15 +7,13 @@ public import PiBaseLean.Properties.P75.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem WellDefined.spectralSpace : WellDefined SpectralSpace :=
-  sorry
+theorem Homeomorph.spectralSpace [h : SpectralSpace X] (f : X ≃ₜ Y) :
+    SpectralSpace Y :=
+  @f.symm.isOpenEmbedding.spectralSpace _ _ _ _ _ _ f.compactSpace
 
-end Meta
+theorem WellDefined.spectralSpace : WellDefined SpectralSpace :=
+  fun {_ _} _ _ h _ ↦ Homeomorph.spectralSpace h.some
 
 end PiBase

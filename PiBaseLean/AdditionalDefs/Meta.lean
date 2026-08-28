@@ -1,20 +1,17 @@
 module
 
-public import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
-public import Mathlib.Data.Set.Card
-public import Mathlib.SetTheory.Ordinal.Basic
-public import Mathlib.Topology.Sets.OpenCover
+public import Mathlib.Topology.Homeomorph.Lemmas
+
+/-! This file contains additional "meta" definitions and statemtns about topological properties
+which are useful for properties and theorems. -/
 
 @[expose] public section
 
 universe u v
 
-/-! This file contains additional "meta" definitions and statemtns about topological properties
-which are useful for properties and theorems. -/
-
 namespace PiBase
 
-open Filter Function Set Topology
+open Filter Set Topology
 
 variable {X Y Z : Type*} [TopologicalSpace X] [TopologicalSpace Y] [TopologicalSpace Z]
 
@@ -53,7 +50,6 @@ theorem IsHomeo.piCongrRight {ι : Type*} {Y₁ Y₂ : ι → Type u} [∀ i, To
     [∀ i, TopologicalSpace (Y₂ i)] (F : ∀ i, Y₁ i ≃ₜ Y₂ i) : IsHomeo (∀ i, Y₁ i) (∀ i, Y₂ i) :=
   .intro (Homeomorph.piCongrRight F)
 
---TODO: `Property` should probably use this
 /-- We say a property of topological spaces is well-defined,
 if it is preserved by homeomorphisms.
 
@@ -75,6 +71,11 @@ abbrev WellDefined (P : (X : Type u) → [TopologicalSpace X] → Prop) : Prop :
   ∀ {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y],
     IsHomeo X Y → P X → P Y
 
+theorem WellDefined.homeo {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+    {P : (X : Type u) → [TopologicalSpace X] → Prop} (h : WellDefined P) (f : X ≃ₜ Y) (hX : P X) :
+    P Y :=
+  h (Homeomorph.isHomeo f) hX
+
 /-- A well defined property `P` holds for `X` iff it holds for `univ : Set X`. -/
 theorem WellDefined.Set.univ {P : (X : Type u) → [TopologicalSpace X] → Prop} (hP : WellDefined P)
     {X : Type u} [TopologicalSpace X] :
@@ -88,8 +89,6 @@ def Sigma {X : Type v} [TopologicalSpace X] (P : {α : Type u} → (α → Set X
   ∃ (ω : Type u) (r : ω → Set ι), Countable ω ∧ (⋃ i : ω, r i = univ) ∧
     ∀ i : ω, P (fun (j : r i) ↦ f j.val)
 
---TODO : Sigma Sigma P = Sigma P (?)
-
 /-- A collection of sets with a well defined property also has the sigma version of the property. -/
 theorem property_to_sigma {P : {α : Type u} → (α → Set X) → Prop}
     (hP : ∀ {α β : Type u} (l : α → Set X) (e : β ≃ α), P l → P (l ∘ e))
@@ -101,7 +100,7 @@ theorem property_to_sigma {P : {α : Type u} → (α → Set X) → Prop}
 def Omega (P : (Y : Type u) → [TopologicalSpace Y] → Prop) (X : Type u) [TopologicalSpace X] :
     Prop := ∀ n : ℕ, P (Fin n → X)
 
---TODO: Put this in mathlib, there is only another (in my opinion worse) version
+--maybe put this in mathlib, there is only another (in my opinion worse) version
 /-- A empty set is a topological space (with a unique topology). -/
 instance instTopologicalSpaceOfIsEmpty (α : Type u) [IsEmpty α] : TopologicalSpace α where
   IsOpen := fun _ ↦ True
@@ -121,9 +120,14 @@ theorem Omega.wellDefined {P : (X : Type u) → [TopologicalSpace X] → Prop}
     (h : WellDefined P) : WellDefined (Omega P) :=
   fun {_ _} _ _ XY hX n ↦ h (IsHomeo.piCongrRight fun _ ↦ XY.some) (hX n)
 
---TODO: Omega P X for some nonempty X implies P holds for singleton space
+theorem Omega.toUnique {P : (X : Type u) → [TopologicalSpace X] → Prop}
+      {Z X : Type u} [TopologicalSpace Z] [Unique X] [TopologicalSpace X]
+      (h : WellDefined P) (hZ : Omega P Z) : P X := by
+    refine h ?_ (hZ 0)
+    apply Homeomorph.isHomeo
+    exact (Homeomorph.homeomorphOfUnique X (Fin 0 → Z)).symm
+
 --TODO: Omega Omega P = Omega P
---TODO (though it's doubtable this actually saves time):
 
 /-- If `P` => `Q`, then `Omega P` => `Omega Q`. -/
 theorem omega_of_imp {Z : Type u} [TopologicalSpace Z]
@@ -142,11 +146,19 @@ theorem Hereditarily.wellDefined {P : (X : Type u) → [TopologicalSpace X] → 
     (h : WellDefined P) : WellDefined (Hereditarily P) :=
   fun {_ _} _ _ XY hX s ↦ h (IsHomeo.subset_preimage (Nonempty.some XY) s) (hX <| XY.some ⁻¹' s)
 
---TODO: Hereditarily Hereditarily P = Hereditarily P
---TODO (though it's doubtable this actually saves time):
---If P X => Q X, Hereditarily P X => Hereditarily Q X
+theorem Hereditarily.hereditarily {Z : Type u} [TopologicalSpace Z]
+    {P : (X : Type u) → [TopologicalSpace X] → Prop}
+    (h : WellDefined P) (hX : Hereditarily (Hereditarily P) Z) : Hereditarily P Z := by
+  unfold Hereditarily at hX ⊢
+  intro s
+  exact h (IsHomeo.Set.univ ↑s) (hX s univ)
 
---TODO: better name?
+theorem Hereditarily.implies {Z : Type u} [TopologicalSpace Z]
+    {P Q : (X : Type u) → [TopologicalSpace X] → Prop}
+    (h : ∀ (X : Type u) (_ : TopologicalSpace X), P X → Q X) (hZ : Hereditarily P Z) :
+    Hereditarily Q Z :=
+  fun s ↦ h s _ (hZ s)
+
 /-- For a well defined property `P`, `Hereditarily P X` implies `P X` -/
 theorem Hereditarily.toProperty {Z : Type u} [TopologicalSpace Z]
     {P : (X : Type u) → [TopologicalSpace X] → Prop}
@@ -164,16 +176,14 @@ def Locally (P : (Y : Type u) → [TopologicalSpace Y] → Prop)
 def WeaklyLocally (P : (Y : Type u) → [TopologicalSpace Y] → Prop)
     (X : Type u) [TopologicalSpace X] : Prop := ∀ x : X, ∃ s ∈ 𝓝 x, P s
 
-/-
-
 /-- `Locally P` implies `WeaklyLocally P`. -/
 theorem Locally.weaklyLocally {Z : Type u} [TopologicalSpace Z]
     {P : (X : Type u) → [TopologicalSpace X] → Prop}
     (hZ : Locally P Z) : WeaklyLocally P Z := by
   intro x
-  sorry
-
--/
+  unfold Locally at hZ
+  obtain ⟨s, hs, _⟩ := ((hZ x).mem_iff).mp univ_mem
+  exact ⟨s, hs.1, hs.2⟩
 
 def IsPiBase {X : Type u} [TopologicalSpace X] (s : Set (Set X)) : Prop :=
   ∅ ∉ s ∧ (∀ a ∈ s, IsOpen a) ∧ ∀ o : Set X, IsOpen o → o.Nonempty → ∃ t ∈ s, t ⊆ o

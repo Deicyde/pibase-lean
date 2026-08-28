@@ -7,15 +7,16 @@ public import PiBaseLean.Properties.P56.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem WellDefined.meagreSpace : WellDefined MeagreSpace :=
-  sorry
+theorem Homeomorph.meagreSpace [h : MeagreSpace X] (f : X ≃ₜ Y) : MeagreSpace Y where
+  meagre := by
+    have h1 : IsMeagre (Set.univ (α := X)) := h.meagre
+    have h2 : IsMeagre (f '' Set.univ) := f.isInducing.isMeagre_image h1
+    convert h2 using 1
+    simp only [Set.image_univ, EquivLike.range_eq_univ]
 
-end Meta
+theorem WellDefined.meagreSpace : WellDefined MeagreSpace :=
+  fun {_ _} _ _ h _ ↦ Homeomorph.meagreSpace h.some
 
 end PiBase

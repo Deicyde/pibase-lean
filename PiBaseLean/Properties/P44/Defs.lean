@@ -1,11 +1,10 @@
 module
 
-public import Mathlib.Topology.Connected.Basic
-public import PiBaseLean.Properties.Bundled.Defs
+public import PiBaseLean.AdditionalDefs.Meta
 
 @[expose] public section
 
-open Topology Set Function Filter TopologicalSpace
+universe u
 
 namespace PiBase
 
@@ -15,11 +14,3 @@ class BiconnectedSpace (X : Type*) [TopologicalSpace X] extends PreconnectedSpac
     ConnectedSpace s → s.Nontrivial → ConnectedSpace v → v.Nontrivial → (s ∩ v).Nonempty
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P44 : Property where
-  toPred := BiconnectedSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

@@ -1,21 +1,17 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Meta
-public import PiBaseLean.Properties.P13.Defs
 
 @[expose] public section
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem WellDefined.normalSpace : WellDefined NormalSpace :=
-  sorry
+theorem Homeomorph.normalSpace [NormalSpace X] (f : X ≃ₜ Y) : NormalSpace Y :=
+  f.normalSpace
 
-end Meta
+theorem WellDefined.normalSpace : WellDefined NormalSpace :=
+  fun {_ _} _ _ h _ => Homeomorph.normalSpace h.some
 
 end PiBase

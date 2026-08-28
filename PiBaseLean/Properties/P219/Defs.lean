@@ -1,10 +1,11 @@
 module
 
 public import Mathlib.SetTheory.Cardinal.Defs
-public import Mathlib.Topology.Homeomorph.Defs
-public import PiBaseLean.Properties.Bundled.Defs
+public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
+
+universe u
 
 open Cardinal
 
@@ -15,11 +16,3 @@ class TorontoSpace (X : Type*) [TopologicalSpace X] : Prop where
   toronto : ∀ ⦃Y : Set X⦄, #Y = #X → Nonempty (Y ≃ₜ X)
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P219 : Property where
-  toPred := TorontoSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

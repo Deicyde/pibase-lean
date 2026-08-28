@@ -1,20 +1,19 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P78.Defs
-public import PiBaseLean.Properties.P208.Defs
-public import Mathlib.Topology.NoetherianSpace
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P208.Bundled
+public import PiBaseLean.Properties.P78.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function TopologicalSpace
+open TopologicalSpace
 
 namespace PiBase
 
 /-- Theorem T198: P78 (Finite) => P208 (NoetherianSpace) -/
-theorem instNoetherianSpaceOfFinite (X : Type u)
+theorem instNoetherianSpaceOfFinite {X : Type u}
     [TopologicalSpace X] [Finite X] : NoetherianSpace X := by infer_instance
 
 end PiBase

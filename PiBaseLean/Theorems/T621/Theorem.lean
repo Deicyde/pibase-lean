@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P107.Defs
-public import PiBaseLean.Properties.P137.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P107.Bundled
+public import PiBaseLean.Properties.P137.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T621: P107 (HasClosedPoint) => P137 (¬IsEmpty) -/
-instance instNonemptyOfHasClosedPoint (X : Type u)
+instance instNonemptyOfHasClosedPoint {X : Type u}
     [TopologicalSpace X] [h : HasClosedPoint X] :
     Nonempty X :=
   let ⟨p, _⟩ := h.has_closed_point

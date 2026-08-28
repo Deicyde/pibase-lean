@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P204.Defs
-public import PiBaseLean.Properties.P205.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P204.Bundled
+public import PiBaseLean.Properties.P205.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T635: P205 (CutPointSpace) => P204 (HasACutPoint) -/
-instance instHasACutPointOfCutPointSpace (X : Type u)
+instance instHasACutPointOfCutPointSpace {X : Type u}
     [TopologicalSpace X] [h : CutPointSpace X] :
     HasACutPoint X :=
   have : Nonempty X := by infer_instance

@@ -1,7 +1,5 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Constructions
-public import PiBaseLean.Properties.Bundled.Defs
 public import Mathlib.Analysis.Normed.Operator.BanachSteinhaus
 public import Mathlib.Topology.Algebra.Module.Spaces.WeakDual
 
@@ -19,11 +17,3 @@ class EberleinCompactSpace (X : Type u) [TopologicalSpace X] : Prop extends Comp
     (f : X → WeakSpace ℝ E), CompleteSpace E ∧ IsEmbedding f
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P91 : Property where
-  toPred := EberleinCompactSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

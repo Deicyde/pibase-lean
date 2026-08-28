@@ -1,14 +1,14 @@
 module
 
-public import PiBaseLean.Properties.P46.Defs
 public import Mathlib.Topology.Connected.PathConnected
 public import PiBaseLean.AdditionalDefs.Meta
+public import PiBaseLean.Properties.P46.Defs
 
 @[expose] public section
 
 namespace PiBase
 
-open Topology Filter Set
+open Set
 
 variable (X : Type*) [TopologicalSpace X]
 
@@ -48,11 +48,25 @@ theorem totallyPathDisconnectedSpace_iff_pathComponent_singleton :
   have : y ∈ ({x} : Set X) := h x ▸ xy
   simp_all
 
-section Meta
-
 theorem WellDefined.totallyPathDisconnectedSpace : WellDefined TotallyPathDisconnectedSpace :=
-  sorry
-
-end Meta
+  fun {X Y} _ _ hXY h => by
+    let φ := hXY.some
+    constructor
+    intro f hf
+    -- compose arbitrary path into Y with φ.symm to get path into X
+    have hcomp : Continuous (fun t : Icc (0 : ℝ) 1 => φ.symm (f t)) :=
+      φ.symm.continuous.comp hf
+    -- apply totally path disconnected in X to get constant
+    obtain ⟨x, hx⟩ := h.totally_path_disconnected (fun t => φ.symm (f t)) hcomp
+    refine ⟨φ x, ?_⟩
+    ext t
+    simp only [Function.const_apply]
+    -- extract pointwise equality from hx : (φ.symm ∘ f) = const x
+    have hxt : φ.symm (f t) = x := by
+      have := congrFun hx t
+      simpa [Function.const_apply] using this
+    -- push constant through φ : f t = φ (φ.symm (f t)) = φ x
+    calc f t = φ (φ.symm (f t)) := (φ.apply_symm_apply (f t)).symm
+      _ = φ x := by rw [hxt]
 
 end PiBase

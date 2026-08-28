@@ -1,12 +1,11 @@
 module
 
 public import Mathlib.SetTheory.Cardinal.Continuum
-public import Mathlib.Topology.Constructions
-public import PiBaseLean.Properties.Bundled.Defs
+public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
 
-open TopologicalSpace Cardinal
+open Cardinal
 
 namespace PiBase
 
@@ -15,11 +14,3 @@ class HasClosedDiscreteSubsetCardContinuum (X : Type*) [TopologicalSpace X] : Pr
   ex_subset : ∃ s : Set X, IsDiscrete s ∧ IsClosed s ∧ #s = 𝔠
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P227 : Property where
-  toPred := HasClosedDiscreteSubsetCardContinuum
-  well_defined φ h := sorry
-
-end PiBase.Formal

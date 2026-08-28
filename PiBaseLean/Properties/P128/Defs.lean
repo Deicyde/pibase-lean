@@ -1,11 +1,10 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Cover
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
-open Topology Set Function Filter TopologicalSpace
+open Set TopologicalSpace
 
 universe u
 
@@ -18,11 +17,3 @@ class KLindelofSpace (X : Type u) [TopologicalSpace X] : Prop where
       IsKCover g ∧ range g ⊆ range f
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P128 : Property where
-  toPred := KLindelofSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

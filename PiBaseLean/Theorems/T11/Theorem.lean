@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P182.Defs
-public import PiBaseLean.Properties.P183.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P182.Bundled
+public import PiBaseLean.Properties.P183.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T11: P183 (HasCountableKNetwork) => P182 (HasCountableNetwork) -/
-instance instHasCountableNetworkOfHasCountableKNetwork (X : Type u)
+instance instHasCountableNetworkOfHasCountableKNetwork {X : Type u}
     [TopologicalSpace X] [h : HasCountableKNetwork X] :
     HasCountableNetwork X where
   has_countable_network := by

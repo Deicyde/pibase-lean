@@ -1,11 +1,10 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Constructions
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
-open Topology Set Filter Function
+universe u
 
 namespace PiBase
 
@@ -15,11 +14,3 @@ class StronglyZeroDimensionalSpace (X : Type*) [TopologicalSpace X] : Prop where
     ∃ s' t' : Set X, IsClopen s' ∧ IsClopen t' ∧ s ⊆ s' ∧ t ⊆ t' ∧ s' ∩ t' = ∅
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P217 : Property where
-  toPred := StronglyZeroDimensionalSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

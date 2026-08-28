@@ -1,20 +1,18 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P1.Defs
-public import PiBaseLean.Properties.P125.Defs
-public import PiBaseLean.Properties.P129.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P1.Bundled
+public import PiBaseLean.Properties.P125.Bundled
+public import PiBaseLean.Properties.P129.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T253: P125 (Nontrivial) + P1 (T0Space) => ¬P129 (IndiscreteTopology) -/
-theorem instNotIndiscreteTopologyOfNontrivialOfT0Space (X : Type u)
+theorem instNotIndiscreteTopologyOfNontrivialOfT0Space {X : Type u}
     [TopologicalSpace X] [h : Nontrivial X] [h' : T0Space X] : ¬IndiscreteTopology X := by
   contrapose! h
   exact { allEq := fun a b ↦ h'.t0 <| Inseparable.all a b }

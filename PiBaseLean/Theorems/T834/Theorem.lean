@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P58.Defs
-public import PiBaseLean.Properties.P227.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P227.Bundled
+public import PiBaseLean.Properties.P58.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function Cardinal
-
 namespace PiBase
 
 /-- Theorem T834: P227 (HasClosedDiscreteSubsetCardContinuum) => P58 (¬CardLtContinuum) -/
-theorem not_CardLtContinuumOfHasClosedDiscreteSubsetCardContinuum (X : Type u)
+theorem not_CardLtContinuumOfHasClosedDiscreteSubsetCardContinuum {X : Type u}
     [TopologicalSpace X] [h : HasClosedDiscreteSubsetCardContinuum X] :
     ¬ CardLtContinuum X := by
   intro h'

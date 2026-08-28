@@ -1,19 +1,19 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P93.Defs
-public import PiBaseLean.Properties.P94.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P93.Bundled
+public import PiBaseLean.Properties.P94.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 /-- Theorem T564: P94 (LocallyFiniteSpace) => P93 (LocallyCountableSpace) -/
-instance instLocallyCountableSpaceOfLocallyFiniteSpace (X : Type u)
+instance instLocallyCountableSpaceOfLocallyFiniteSpace {X : Type u}
     [TopologicalSpace X] [h : LocallyFiniteSpace X] :
     LocallyCountableSpace X where
   locally_countable x := by

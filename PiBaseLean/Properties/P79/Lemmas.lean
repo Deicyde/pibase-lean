@@ -7,15 +7,13 @@ public import PiBaseLean.Properties.P79.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem WellDefined.sequentialSpace : WellDefined SequentialSpace :=
-  sorry
+theorem Homeomorph.sequentialSpace [h : SequentialSpace X] (f : X ≃ₜ Y) :
+    SequentialSpace Y :=
+  f.isQuotientMap.sequentialSpace
 
-end Meta
+theorem WellDefined.sequentialSpace : WellDefined SequentialSpace :=
+  fun {_ _} _ _ h _ ↦ Homeomorph.sequentialSpace h.some
 
 end PiBase

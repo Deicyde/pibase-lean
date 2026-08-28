@@ -1,23 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P23.Defs
-public import PiBaseLean.Properties.P134.Defs
-public import PiBaseLean.Properties.P12.Lemmas
-public import PiBaseLean.Theorems.T27.BackgroundLemmas
+public import PiBaseLean.Theorems.T27.Lemmas
 
 @[expose] public section
 
 universe u
 
-open Set Function Topology Filter
-
-open scoped OnePoint
+open Topology
 
 namespace PiBase
 
 /-- Theorem T27: P23 (WeaklyLocallyCompactSpace) + P134 (R1Space) => P12 (CompletelyRegularSpace) -/
-instance instCompletelyRegularSpaceOfWeaklyLocallyCompactSpaceOfR1Space (X : Type u)
+instance instCompletelyRegularSpaceOfWeaklyLocallyCompactSpaceOfR1Space {X : Type u}
     [TopologicalSpace X] [WeaklyLocallyCompactSpace X] [R1Space X] : CompletelyRegularSpace X :=
   IsInducing.completelyRegularSpace <|
     Homeomorph.isInducing (OnePoint.isOpenEmbedding_coe (X := X)).toIsEmbedding.toHomeomorph

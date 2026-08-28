@@ -1,20 +1,19 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import Mathlib.Topology.Metrizable.Basic
-public import PiBaseLean.Properties.P53.Defs
-public import PiBaseLean.Properties.P121.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P121.Bundled
+public import PiBaseLean.Properties.P53.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function TopologicalSpace
+open TopologicalSpace
 
 namespace PiBase
 
 /-- Theorem T264: P53 (MetrizableSpace) => P121 (PseudoMetrizableSpace) -/
-theorem instPseudoMetrizableSpaceOfMetrizableSpace (X : Type u)
+theorem instPseudoMetrizableSpaceOfMetrizableSpace {X : Type u}
     [TopologicalSpace X] [MetrizableSpace X] :
     PseudoMetrizableSpace X := by infer_instance
 

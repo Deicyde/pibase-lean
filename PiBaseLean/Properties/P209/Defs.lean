@@ -2,11 +2,10 @@ module
 
 public import Mathlib.SetTheory.Cardinal.Continuum
 public import Mathlib.Topology.Defs.Basic
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
-open TopologicalSpace Set Cardinal
+open Cardinal
 
 namespace PiBase
 
@@ -15,11 +14,3 @@ class DensityLeContinuum (X : Type*) [TopologicalSpace X] : Prop where
   ex_dense : ∃ s : Set X, Dense s ∧ #s ≤ 𝔠
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P209 : Property where
-  toPred := DensityLeContinuum
-  well_defined φ h := sorry
-
-end PiBase.Formal

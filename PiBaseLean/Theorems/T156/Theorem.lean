@@ -1,18 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P14.Defs
-public import PiBaseLean.Properties.P15.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P14.Bundled
+public import PiBaseLean.Properties.P15.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /- Theorem T156: P15 (PerfectlyNormalSpace) => P14 (CompletelyNormalSpace) -/
+#guard_msgs (drop info) in
 #check PerfectlyNormalSpace.toCompletelyNormalSpace
 
 end PiBase

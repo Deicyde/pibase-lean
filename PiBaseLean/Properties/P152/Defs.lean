@@ -1,7 +1,6 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Games
-public import PiBaseLean.Properties.Bundled.Defs
+public import PiBaseLean.Properties.P151.Defs
 
 @[expose] public section
 
@@ -14,11 +13,3 @@ class MarkovRothbergerSpace (X : Type u) [TopologicalSpace X] : Prop where
   markov_rothberger : Nonempty X → HasMarkovKWinningStrategyB (rothbergerGame X) 1
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P152 : Property where
-  toPred := MarkovRothbergerSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

@@ -1,21 +1,17 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Meta
-public import PiBaseLean.Properties.P17.Defs
 
 @[expose] public section
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem WellDefined.sigmaCompactSpace : WellDefined SigmaCompactSpace :=
-  sorry
+theorem Homeomorph.sigmaCompactSpace [SigmaCompactSpace X] (f : X ≃ₜ Y) : SigmaCompactSpace Y :=
+  f.symm.isClosedEmbedding.sigmaCompactSpace
 
-end Meta
+theorem WellDefined.sigmaCompactSpace : WellDefined SigmaCompactSpace :=
+  fun {_ _} _ _ h _ => Homeomorph.sigmaCompactSpace h.some
 
 end PiBase

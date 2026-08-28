@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P137.Defs
-public import PiBaseLean.Properties.P199.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P137.Bundled
+public import PiBaseLean.Properties.P199.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T584: P199 (ContractibleSpace) => P137ᶜ (Nonempty) -/
-theorem instNonemptyOfContractibleSpace (X : Type u)
+theorem instNonemptyOfContractibleSpace {X : Type u}
     [TopologicalSpace X] [h : ContractibleSpace X] : Nonempty X := by infer_instance
 
 end PiBase

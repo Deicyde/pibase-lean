@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P7.Defs
-public import PiBaseLean.Properties.P127.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P127.Bundled
+public import PiBaseLean.Properties.P7.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T157: P127 (DowkerSpace) => P7 (T4Space) -/
-theorem instT4SpaceOfDowkerSpace (X : Type u)
+theorem instT4SpaceOfDowkerSpace {X : Type u}
     [TopologicalSpace X] [DowkerSpace X] :
     T4Space X := by tauto
 

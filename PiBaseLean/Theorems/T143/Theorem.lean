@@ -1,20 +1,21 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P1.Lemmas
-public import PiBaseLean.Properties.P126.Lemmas
-public import PiBaseLean.AdditionalDefs.Constructions
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P1.Bundled
+public import PiBaseLean.Properties.P126.Bundled
+
+import PiBaseLean.AdditionalDefs.Constructions
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 /-- Theorem T143: P126 (DoorSpace) => P1 (T0Space) -/
-instance instT0SpaceOfDoorSpace (X : Type u)
+instance instT0SpaceOfDoorSpace {X : Type u}
     [TopologicalSpace X] [h : DoorSpace X] : T0Space X := by
   refine t0Space_iff_inseparableComponent_eq_singleton.mpr (fun x ↦ ?_)
   refine subset_antisymm ?_ (singleton_subset_iff.mpr rfl)

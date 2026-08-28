@@ -1,7 +1,6 @@
 module
 
-public import Mathlib.Topology.Metrizable.Basic
-public import PiBaseLean.Properties.Bundled.Defs
+public import PiBaseLean.AdditionalDefs.AlphaTransport
 
 @[expose] public section
 
@@ -18,11 +17,3 @@ class α15Space (X : Type*) [TopologicalSpace X] : Prop where
         {n | (range (S n) \ range T).Finite}.Infinite
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P211 : Property where
-  toPred := α15Space
-  well_defined φ h := sorry
-
-end PiBase.Formal

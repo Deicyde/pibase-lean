@@ -1,9 +1,10 @@
 module
 
-public import Mathlib.Topology.Defs.Basic
-public import PiBaseLean.Properties.Bundled.Defs
+public import PiBaseLean.AdditionalDefs.Meta
 
 @[expose] public section
+
+universe u
 
 namespace PiBase
 
@@ -13,11 +14,3 @@ class UltranormalSpace (X : Type*) [TopologicalSpace X] : Prop where
     ∃ r : Set X, IsClopen r ∧ s ⊆ r ∧ t ⊆ rᶜ
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P218 : Property where
-  toPred := UltranormalSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

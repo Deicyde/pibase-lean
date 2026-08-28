@@ -1,17 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P39.Defs
-public import PiBaseLean.Properties.P41.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P39.Bundled
+public import PiBaseLean.Properties.P41.Bundled
 
 @[expose] public section
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 /-- Theorem T51: P39 (PreirreducibleSpace) => P41 (LocallyConnectedSpace) -/
-instance instLocallyConnectedSpaceOfPreirreducibleSpace (X : Type u)
+instance instLocallyConnectedSpaceOfPreirreducibleSpace {X : Type u}
     [TopologicalSpace X] [h : PreirreducibleSpace X] : LocallyConnectedSpace X := by
   refine locallyConnectedSpace_iff_connected_subsets.mpr (fun x U hU ↦ ?_)
   refine ⟨interior U, by simpa, ?_, interior_subset⟩
@@ -22,6 +22,6 @@ end PiBase
 
 namespace PiBase.Formal
 
-theorem T51 : P39 ≤ P41 := instLocallyConnectedSpaceOfPreirreducibleSpace
+theorem T51 : P39 ≤ P41 := @instLocallyConnectedSpaceOfPreirreducibleSpace
 
 end PiBase.Formal

@@ -1,21 +1,22 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Cardinal
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P57.Defs
-public import PiBaseLean.Properties.P136.Defs
-public import PiBaseLean.Properties.P183.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P136.Bundled
+public import PiBaseLean.Properties.P183.Bundled
+public import PiBaseLean.Properties.P57.Bundled
+
+import PiBaseLean.AdditionalDefs.Cardinal
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
+open Set Function
 
 namespace PiBase
 
 /-- Theorem T22: P136 (AnticompactSpace) + P57 (Countable) => P183 (HasCountableKNetwork) -/
-instance instHasCountableKNetworkOfAnticompactSpaceOfCountable (X : Type u)
+instance instHasCountableKNetworkOfAnticompactSpaceOfCountable {X : Type u}
     [TopologicalSpace X] [h : AnticompactSpace X] [Countable X] : HasCountableKNetwork X where
   ex_network := by
     obtain ⟨ι, f, hι⟩ := countable_equiv_type X

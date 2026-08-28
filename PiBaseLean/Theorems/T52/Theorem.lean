@@ -1,20 +1,18 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P36.Defs
-public import PiBaseLean.Properties.P47.Defs
-public import PiBaseLean.Properties.P125.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P125.Bundled
+public import PiBaseLean.Properties.P36.Bundled
+public import PiBaseLean.Properties.P47.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T52: P47 (TotallyDisconnectedSpace) + P125 (Nontrivial) => ¬P36 (PreconnectedSpace) -/
-theorem instNotPreconnectedSpaceOfTotallyDisconnectedSpaceOfNontrivial (X : Type u)
+theorem instNotPreconnectedSpaceOfTotallyDisconnectedSpaceOfNontrivial {X : Type u}
     [TopologicalSpace X] [TotallyDisconnectedSpace X] [h : Nontrivial X] :
     ¬PreconnectedSpace X := by
   contrapose! h

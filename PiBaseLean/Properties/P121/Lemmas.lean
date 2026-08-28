@@ -1,19 +1,15 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Meta
-public import PiBaseLean.Properties.P121.Defs
-public import PiBaseLean.Properties.P185.Lemmas
 public import Mathlib.Topology.Metrizable.Uniformity
+public import PiBaseLean.Properties.P185.Lemmas
 
 @[expose] public section
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
+open TopologicalSpace
 
 universe u
-
-section Meta
 
 --inline this
 lemma pseudoMetrizableSpace_iff_exists_pseudoMetric (X : Type u) [τ : TopologicalSpace X] :
@@ -36,8 +32,8 @@ lemma metrizableSpace_iff_exists_metric (X : Type u) [τ : TopologicalSpace X] :
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.pseudoMetrizableSpace : WellDefined PseudoMetrizableSpace :=
-  sorry
-
-end Meta
+  fun {_ _} _ _ hXY _ =>
+    let φ := hXY.some
+    φ.symm.isInducing.pseudoMetrizableSpace
 
 end PiBase

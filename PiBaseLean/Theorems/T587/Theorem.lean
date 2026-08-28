@@ -1,20 +1,20 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P18.Defs
-public import PiBaseLean.Properties.P83.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P18.Bundled
+public import PiBaseLean.Properties.P83.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 -- Most likely redundant
 /-- Theorem T587: P18 (LindelofSpace) => P83 (MetaLindelofSpace) -/
-instance instMetaLindelofSpaceOfLindelofSpace (X : Type u)
+instance instMetaLindelofSpaceOfLindelofSpace {X : Type u}
     [TopologicalSpace X] [h : LindelofSpace X] :
     MetaLindelofSpace X where
   meta_lindelof ι s so sc := by

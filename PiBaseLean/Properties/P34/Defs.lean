@@ -1,11 +1,8 @@
 module
 
 public import Mathlib.Topology.Compactness.Paracompact
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
-
-open Topology Set Function Filter TopologicalSpace
 
 namespace PiBase
 
@@ -14,12 +11,3 @@ class FullyNormalSpace (X : Type*) [TopologicalSpace X] : Prop
   extends ParacompactSpace X, NormalSpace X
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P34 : Property where
-  toPred := FullyNormalSpace
-  well_defined φ _ := @FullyNormalSpace.mk _ _
-    φ.symm.isClosedEmbedding.paracompactSpace φ.normalSpace
-
-end PiBase.Formal

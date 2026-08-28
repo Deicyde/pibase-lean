@@ -1,7 +1,6 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Meta
-public import PiBaseLean.Properties.P129.Defs
 
 @[expose] public section
 
@@ -9,9 +8,7 @@ namespace PiBase
 
 universe u
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open Set
 
 --to mathlib
 /-- A space is indiscrete iff all open sets are either the empty space or the entire space. -/
@@ -39,9 +36,11 @@ theorem TopologicalSpace.bot_le (X : Type u) [τ : TopologicalSpace X] :
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem WellDefined.indiscreteTopology : WellDefined IndiscreteTopology :=
-  sorry
+theorem Homeomorph.indiscreteTopology [h : IndiscreteTopology X] (f : X ≃ₜ Y) :
+    IndiscreteTopology Y :=
+  f.indiscreteTopology
 
-end Meta
+theorem WellDefined.indiscreteTopology : WellDefined IndiscreteTopology :=
+  fun {_ _} _ _ h _ ↦ Homeomorph.indiscreteTopology h.some
 
 end PiBase

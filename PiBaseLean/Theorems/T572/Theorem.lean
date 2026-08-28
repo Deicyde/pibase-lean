@@ -1,19 +1,19 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P126.Lemmas
-public import PiBaseLean.Properties.P203.Lemmas
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P126.Bundled
+public import PiBaseLean.Properties.P203.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 /-- Theorem T572: P203 (AlmostDiscreteSpace) => P126 (DoorSpace) -/
-instance instDoorSpaceOfAlmostDiscreteSpace (X : Type u)
+instance instDoorSpaceOfAlmostDiscreteSpace {X : Type u}
     [TopologicalSpace X] [h : AlmostDiscreteSpace X] : DoorSpace X where
   isOpen_or_isClosed s := by
     obtain ⟨p, hp⟩ := h.ex_point

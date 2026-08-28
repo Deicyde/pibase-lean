@@ -1,20 +1,18 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P27.Defs
-public import PiBaseLean.Properties.P124.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P124.Bundled
+public import PiBaseLean.Properties.P27.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 -- Most likely redundant
 /-- Theorem T340: P124 (TopologicalNManifold) => P27 (SecondCountableTopology) -/
-theorem instSecondCountableTopologyOfTopologicalNManifold (X : Type u)
+theorem instSecondCountableTopologyOfTopologicalNManifold {X : Type u}
     [TopologicalSpace X] [TopologicalNManifold X] :
     SecondCountableTopology X := by infer_instance
 

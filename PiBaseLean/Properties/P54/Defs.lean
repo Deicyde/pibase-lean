@@ -1,12 +1,10 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Cover
 public import PiBaseLean.AdditionalDefs.Meta
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
-open Topology Set Function Filter TopologicalSpace
+open Topology
 
 universe u
 
@@ -19,11 +17,3 @@ class HasSigmaLocallyFiniteBasis (X : Type u) [TopologicalSpace X] : Prop where
       ∀ᵉ (x : X) (s ∈ 𝓝 x), ∃ (i : ι), x ∈ f i ∧ f i ⊆ s
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P54 : Property where
-  toPred := HasSigmaLocallyFiniteBasis
-  well_defined φ h := sorry
-
-end PiBase.Formal

@@ -1,20 +1,18 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P140.Defs
-public import PiBaseLean.Properties.P142.Defs
-public import PiBaseLean.Properties.P170.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P140.Bundled
+public import PiBaseLean.Properties.P142.Bundled
+public import PiBaseLean.Properties.P170.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T60: P140 (CompactlyCoherentSpace) + P170 (K1T2Space) => P142 (K3Space) -/
-instance instK3SpaceOfCompactlyCoherentSpaceOfK1T2Space (X : Type u)
+instance instK3SpaceOfCompactlyCoherentSpaceOfK1T2Space {X : Type u}
     [TopologicalSpace X] [h : CompactlyCoherentSpace X] [h' : K1T2Space X] :
     K3Space X where
   isCoherentWith := by

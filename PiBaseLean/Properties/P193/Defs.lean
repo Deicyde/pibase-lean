@@ -1,11 +1,10 @@
 module
 
 public import Mathlib.Topology.Basic
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
-open Topology Set Filter TopologicalSpace
+open Set
 
 universe u
 
@@ -18,11 +17,3 @@ class ShrinkingSpace (X : Type u) [TopologicalSpace X] : Prop where
       ∃ (t : α → Set X), (∀ a, IsOpen (t a)) ∧ ⋃ a, t a = univ ∧ ∀ a, closure (t a) ⊆ s a
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P193 : Property where
-  toPred := ShrinkingSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

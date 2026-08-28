@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P49.Defs
-public import PiBaseLean.Properties.P85.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P49.Bundled
+public import PiBaseLean.Properties.P85.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T693: P49 (ExtremallyDisconnected) => P85 (BasicallyDisconnectedSpace) -/
-instance instBasicallyDisconnectedSpaceOfExtremallyDisconnected (X : Type u)
+instance instBasicallyDisconnectedSpaceOfExtremallyDisconnected {X : Type u}
     [TopologicalSpace X] [h : ExtremallyDisconnected X] :
     BasicallyDisconnectedSpace X where
   basically_disconnected U hU := h.open_closure U hU.isOpen

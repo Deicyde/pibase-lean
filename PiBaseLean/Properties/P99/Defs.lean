@@ -2,11 +2,10 @@ module
 
 public import Mathlib.Order.Filter.AtTopBot.Defs
 public import Mathlib.Topology.Defs.Filter
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
-open Topology Set Function Filter TopologicalSpace
+open Topology Filter
 
 namespace PiBase
 
@@ -15,11 +14,3 @@ class UsSpace (X : Type*) [TopologicalSpace X] : Prop where
   us : ∀ (f : ℕ → X) (a b : X), Tendsto f atTop (𝓝 a) → Tendsto f atTop (𝓝 b) → a = b
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P99 : Property where
-  toPred := UsSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

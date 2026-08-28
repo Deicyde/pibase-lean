@@ -1,18 +1,15 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Meta
-public import Mathlib.Topology.Defs.Induced
 public import PiBaseLean.Properties.P38.Defs
 
 @[expose] public section
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
+open Set Function
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
-
-section Meta
 
 theorem isInjPathConnectedSpace_of_injective_image {f : X → Y} (fc : Continuous f)
     {s : Set X} (fs : InjOn f s) (hs : IsInjPathConnected s) : IsInjPathConnected (f '' s) := by
@@ -36,8 +33,6 @@ theorem Homeomorph.injPathConnectedSpace [InjPathConnectedSpace X] (f : X ≃ₜ
 
 theorem WellDefined.injPathConnectedSpace : WellDefined InjPathConnectedSpace :=
   fun {_ _} _ _ h _ ↦ Homeomorph.injPathConnectedSpace h.some
-
-end Meta
 
 theorem isInjPathConnected_iff_injPathConnectedSpace (s : Set X) :
     IsInjPathConnected s ↔ InjPathConnectedSpace s := by

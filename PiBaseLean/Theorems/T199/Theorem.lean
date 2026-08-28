@@ -1,21 +1,19 @@
 module
 
-public import Mathlib.Topology.Bases
-public import Mathlib.Topology.MetricSpace.Polish
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P26.Defs
-public import PiBaseLean.Properties.P116.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P116.Bundled
+public import PiBaseLean.Properties.P26.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function TopologicalSpace
+open TopologicalSpace
 
 namespace PiBase
 
 /-- Theorem T199: P116 (PolishSpace) => P26 (SeparableSpace) -/
-theorem instSeparableSpaceOfPolishSpace (X : Type u)
+theorem instSeparableSpaceOfPolishSpace {X : Type u}
     [TopologicalSpace X] [PolishSpace X] :
     SeparableSpace X := by infer_instance
 

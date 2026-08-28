@@ -7,15 +7,11 @@ public import PiBaseLean.Properties.P192.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.quasiSober : WellDefined QuasiSober :=
-  sorry
-
-end Meta
+  fun {_ _} _ _ hXY _ =>
+    let φ := hXY.some
+    φ.symm.isClosedEmbedding.quasiSober
 
 end PiBase

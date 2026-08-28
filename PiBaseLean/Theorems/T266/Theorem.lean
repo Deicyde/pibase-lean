@@ -1,19 +1,19 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P78.Defs
-public import PiBaseLean.Properties.P94.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P78.Bundled
+public import PiBaseLean.Properties.P94.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function Filter
+open Set Filter
 
 namespace PiBase
 
 /-- Theorem T266: P78 (Finite) => P94 (LocallyFiniteSpace) -/
-instance instLocallyFiniteSpaceOfFinite (X : Type u)
+instance instLocallyFiniteSpaceOfFinite {X : Type u}
     [TopologicalSpace X] [h : Finite X] :
     LocallyFiniteSpace X where
   locally_finite _ := ⟨univ, univ_mem, finite_univ⟩

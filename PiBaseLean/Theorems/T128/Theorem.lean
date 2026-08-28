@@ -1,19 +1,19 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P18.Defs
-public import PiBaseLean.Properties.P62.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P18.Bundled
+public import PiBaseLean.Properties.P62.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 /-- Theorem T128: P18 (LindelofSpace) => P62 (WeaklyLindelofSpace) -/
-instance instWeaklyLindelofSpaceOfLindelofSpace (X : Type u)
+instance instWeaklyLindelofSpaceOfLindelofSpace {X : Type u}
     [TopologicalSpace X] [h : LindelofSpace X] :
     WeaklyLindelofSpace X where
   weakly_lindelof := by

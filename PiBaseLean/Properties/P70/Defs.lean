@@ -1,7 +1,6 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Games
-public import PiBaseLean.Properties.Bundled.Defs
+public import PiBaseLean.Properties.P69.Defs
 
 @[expose] public section
 
@@ -14,11 +13,3 @@ class MarkovMengerSpace (X : Type u) [TopologicalSpace X] : Prop where
   markov_menger : HasMarkovKWinningStrategyB (mengerGame X) 1
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P70 : Property where
-  toPred := MarkovMengerSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

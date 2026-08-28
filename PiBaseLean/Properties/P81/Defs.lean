@@ -1,12 +1,9 @@
 module
 
 public import Mathlib.Data.Set.Countable
-public import Mathlib.Topology.Defs.Basic
-public import PiBaseLean.Properties.Bundled.Defs
+public import Mathlib.Topology.Homeomorph.Defs
 
 @[expose] public section
-
-open Topology Set Function TopologicalSpace
 
 namespace PiBase
 
@@ -16,11 +13,3 @@ class CountablyTightSpace (X : Type*) [TopologicalSpace X] : Prop where
     D.Countable ∧ D ⊆ A ∧ x ∈ closure D
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P81 : Property where
-  toPred := CountablyTightSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

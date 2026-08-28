@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P6.Defs
-public import PiBaseLean.Properties.P7.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P6.Bundled
+public import PiBaseLean.Properties.P7.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T113: P7 (T4Space) => P6 (T35Space) -/
-theorem instT35SpaceOfT4Space (X : Type u) [TopologicalSpace X] [T4Space X] : T35Space X := by
+theorem instT35SpaceOfT4Space {X : Type u} [TopologicalSpace X] [T4Space X] : T35Space X := by
   infer_instance
 
 end PiBase

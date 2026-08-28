@@ -7,15 +7,13 @@ public import PiBaseLean.Properties.P205.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem WellDefined.cutPointSpace : WellDefined CutPointSpace :=
-  sorry
+theorem Homeomorph.cutPointSpace [h : CutPointSpace X] (f : X ≃ₜ Y) : CutPointSpace Y where
+  toConnectedSpace := (Homeomorph.connectedSpace_iff f).mp h.toConnectedSpace
+  all_cut y := by simpa using PiBase.Homeomorph.isCutPoint f (h.all_cut (f.symm y))
 
-end Meta
+theorem WellDefined.cutPointSpace : WellDefined CutPointSpace :=
+  fun {_ _} _ _ h _ => Homeomorph.cutPointSpace h.some
 
 end PiBase

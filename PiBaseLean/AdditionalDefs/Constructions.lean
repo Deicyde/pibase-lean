@@ -1,15 +1,13 @@
 module
 
 public import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
-public import Mathlib.Topology.GDelta.MetrizableSpace
-public import Mathlib.Topology.Metrizable.Uniformity
+
+/-! This file contains additional general constructions around topological spaces
+which are useful for properties and theorems. -/
 
 @[expose] public section
 
 universe u
-
-/-! This file contains additional general constructions around topological spaces
-which are useful for properties and theorems. -/
 
 namespace PiBase
 
@@ -38,7 +36,7 @@ def IsRelativelyCompact {X : Type u} [TopologicalSpace X] (s : Set X) : Prop :=
   ∀ {ι : Type u} (U : ι → Set X), (∀ i : ι, IsOpen (U i)) → (⋃ i : ι, U i = univ) →
     ∃ t : Finset ι, s ⊆ ⋃ i ∈ t, U i
 
---TODO: Notation Σ' for this?
+--TODO: Notation for this?
 /-- Σ-product (of topological spaces).
 Not to be confused with the disjoint union (topological sum). -/
 def SigmaProduct {Y : ι → Type u} (x : (i : ι) → Y i) : Set ((i : ι) → Y i) :=
@@ -56,9 +54,19 @@ def IsRegularOpen (s : Set X) : Prop :=
 /-- A regular open set is open -/
 theorem IsRegularOpen.isOpen {s : Set X} (hs : IsRegularOpen s) : IsOpen s := hs ▸ isOpen_interior
 
---TODO: Better to require `X` connected in this def?
 /-- A point *cut point* `p` in a space, is a space such that `X \ {p}` is disconnected. -/
 def IsCutPoint (p : X) := ¬ IsPreconnected {p}ᶜ
+
+section AIGenerated
+
+/-- The image of a cut point under a homeomorphism is a cut point. -/
+theorem Homeomorph.isCutPoint {p : X} (e : X ≃ₜ Y) (hp : IsCutPoint p) : IsCutPoint (e p) := by
+  intro h
+  apply hp
+  rw [← e.isPreconnected_image]
+  simpa only [e.image_compl, image_singleton] using h
+
+end AIGenerated
 
 /-- The inseperable component of `x : X` are the points inseparable to that point. -/
 def InseparableComponent (x : X) : Set X :=
@@ -126,7 +134,7 @@ theorem IsIrreducible.inseparableComponent (x : X) : IsIrreducible (InseparableC
 theorem subsingleton_iff_singleton_univ {α : Type u} (a : α) :
     Subsingleton α ↔ univ = {a} := by
   rw [← subsingleton_univ_iff, subsingleton_iff_singleton (mem_univ a)]
-section Symmetric --TODO: If we get significantly more, make this its own file
+section Symmetric -- if we get significantly more, make this its own file
 
 /-- A symmetric for of a set. -/
 class Symmetric (α : Type u) extends Dist α where
@@ -156,7 +164,7 @@ abbrev SemimetricSpace.symmetricSpace (X : Type u) [TopologicalSpace X] [h : Sem
 
 end Symmetric
 
-section Path --TODO: If we get significantly more, make this its own file
+section Path -- Down the line, if we get significantly more, make this its own file
 
 /-- A set `s : Set X` is called injectively path connected,
 if for any two point in `s` there is an injective path in `x` joining them. -/

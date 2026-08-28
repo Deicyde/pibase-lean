@@ -1,12 +1,10 @@
 module
 
-public import Mathlib.Order.BourbakiWitt
-public import Mathlib.Topology.Defs.Induced
-public import PiBaseLean.Properties.Bundled.Defs
+public import Mathlib.Topology.Homeomorph.Lemmas
 
 @[expose] public section
 
-open Topology Set Function Filter TopologicalSpace Set.Notation
+open Set Set.Notation
 
 namespace PiBase
 
@@ -17,11 +15,3 @@ class kω1Space (X : Type*) [TopologicalSpace X] : Prop where
       ∀ s : Set X, IsOpen s ↔ ∀ n : ℕ, IsOpen ((K n) ↓∩ s)
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P98 : Property where
-  toPred := kω1Space
-  well_defined φ h := sorry
-
-end PiBase.Formal

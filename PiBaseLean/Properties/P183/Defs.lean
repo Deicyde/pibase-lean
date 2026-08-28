@@ -1,11 +1,8 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Cover
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
-
-open Topology Set Function Filter TopologicalSpace
 
 universe u
 
@@ -16,11 +13,3 @@ class HasCountableKNetwork (X : Type u) [TopologicalSpace X] : Prop where
   ex_network : ∃ (ι : Type) (f : ι → Set X), Countable ι ∧ IsKNetwork f
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P183 : Property where
-  toPred := HasCountableKNetwork
-  well_defined φ h := sorry
-
-end PiBase.Formal

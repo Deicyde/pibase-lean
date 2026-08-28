@@ -1,19 +1,19 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P2.Defs
-public import PiBaseLean.Properties.P46.Lemmas
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P2.Bundled
+public import PiBaseLean.Properties.P46.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 /-- Theorem T49: P46 (TotallyPathDisconnectedSpace) => P2 (T1Space) -/
-instance instT1SpaceOfTotallyPathDisconnectedSpace (X : Type u)
+instance instT1SpaceOfTotallyPathDisconnectedSpace {X : Type u}
     [TopologicalSpace X] [h : TotallyPathDisconnectedSpace X] : T1Space X := by
   apply t1Space_iff_exists_open.mpr
   intro x y xy

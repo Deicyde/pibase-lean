@@ -1,20 +1,20 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P52.Defs
-public import PiBaseLean.Properties.P78.Defs
-public import PiBaseLean.Properties.P222.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P222.Bundled
+public import PiBaseLean.Properties.P52.Bundled
+public import PiBaseLean.Properties.P78.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 /-- Theorem T782: P52 (DiscreteTopology) + P78 (Finite) => P222 (HasCofiniteTopology) -/
-instance instHasCofiniteTopologyOfDiscreteTopologyOfFinite (X : Type u)
+instance instHasCofiniteTopologyOfDiscreteTopologyOfFinite {X : Type u}
     [TopologicalSpace X] [DiscreteTopology X] [Finite X] :
     HasCofiniteTopology X where
   open_iff_cofinite s := ⟨fun _ ↦ fun _ ↦ toFinite sᶜ, fun _ ↦ isOpen_discrete s⟩

@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P28.Defs
-public import PiBaseLean.Properties.P110.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P110.Bundled
+public import PiBaseLean.Properties.P28.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function Filter
-
 namespace PiBase
 
 /-- Theorem T710: P110 (DevelopableSpace) => P28 (FirstCountableTopology) -/
-instance instFirstCountableTopologyOfDevelopableSpace (X : Type u)
+instance instFirstCountableTopologyOfDevelopableSpace {X : Type u}
     [TopologicalSpace X] [h : DevelopableSpace X] :
     FirstCountableTopology X where
   nhds_generated_countable x :=

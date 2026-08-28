@@ -1,21 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P233.Defs
-public import PiBaseLean.Properties.P234.Defs
-public import PiBaseLean.Properties.P233.Lemmas
-public import PiBaseLean.Properties.P234.Lemmas
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P233.Bundled
+public import PiBaseLean.Properties.P234.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function Filter
-
 namespace PiBase
 
 /-- Theorem T862: P233 (HasOpenPathComponents) => P234 (HasOpenConnectedComponents) -/
-instance instHasOpenConnectedComponentsOfHasOpenPathComponents (X : Type u)
+instance instHasOpenConnectedComponentsOfHasOpenPathComponents {X : Type u}
     [TopologicalSpace X] [h : HasOpenPathComponents X] : HasOpenConnectedComponents X := by
   refine (hasOpenConnectedComponents_iff_ex_connected_nbhd X).mpr (fun x ↦ ?_)
   obtain ⟨s, sx, hs⟩ := (hasOpenPathComponents_iff_ex_connected_nbhd X).mp h x

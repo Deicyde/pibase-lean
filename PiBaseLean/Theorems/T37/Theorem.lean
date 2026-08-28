@@ -1,19 +1,18 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P12.Defs
-public import PiBaseLean.Properties.P13.Defs
-public import PiBaseLean.Properties.P135.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P12.Bundled
+public import PiBaseLean.Properties.P13.Bundled
+public import PiBaseLean.Properties.P135.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /- Theorem T37: P13 (NormalSpace) + P135 (R0Space) => P12 (CompletelyRegularSpace) -/
+#guard_msgs (drop info) in
 #check NormalSpace.instCompletelyRegularSpace
 
 end PiBase

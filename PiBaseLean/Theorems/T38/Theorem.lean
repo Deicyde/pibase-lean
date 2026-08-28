@@ -1,19 +1,19 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P37.Lemmas
-public import PiBaseLean.Properties.P40.Lemmas
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P37.Bundled
+public import PiBaseLean.Properties.P40.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 /-- Theorem T38: P40 (UltraconnectedSpace) => P37 (PrepathConnectedSpace) -/
-instance instPrepathConnectedSpaceOfUltraconnectedSpace (X : Type u)
+instance instPrepathConnectedSpaceOfUltraconnectedSpace {X : Type u}
     [TopologicalSpace X] [h : UltraconnectedSpace X] : PrepathConnectedSpace X where
   joined x y := by
     obtain ⟨p , px, py⟩ := h.ultraconnected (closure {x}) (closure {y})

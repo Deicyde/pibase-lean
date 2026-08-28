@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P100.Defs
-public import PiBaseLean.Properties.P103.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P100.Bundled
+public import PiBaseLean.Properties.P103.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T234: P103 (StronglyKcSpace) => P100 (KcSpace) -/
-instance instKcSpaceOfStronglyKcSpace (X : Type u)
+instance instKcSpaceOfStronglyKcSpace {X : Type u}
     [TopologicalSpace X] [h : StronglyKcSpace X] :
     KcSpace X where
   kc s hs := h.countablycompact_closed s hs.isCountablyCompact

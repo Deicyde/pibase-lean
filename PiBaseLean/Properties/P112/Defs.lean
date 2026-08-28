@@ -1,11 +1,10 @@
 module
 
-public import Mathlib.Topology.MetricSpace.Defs
-public import PiBaseLean.Properties.Bundled.Defs
+public import Mathlib.Topology.MetricSpace.Basic
 
 @[expose] public section
 
-open Topology Set TopologicalSpace
+universe u
 
 namespace PiBase
 
@@ -14,11 +13,3 @@ class SubmetrizableSpace (X : Type*) [τ : TopologicalSpace X] : Prop where
   le_metrizable : ∃ m : MetricSpace X, τ ≤ m.toUniformSpace.toTopologicalSpace
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P112 : Property where
-  toPred := SubmetrizableSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

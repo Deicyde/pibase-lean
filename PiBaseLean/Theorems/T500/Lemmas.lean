@@ -1,14 +1,13 @@
 module
 
-public import PiBaseLean.Properties.P2.Defs
 public import PiBaseLean.Properties.P191.Defs
-public import Mathlib.Data.Set.Defs
+public import PiBaseLean.Properties.P2.Defs
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
+open Topology Set
 
 namespace PiBase
 

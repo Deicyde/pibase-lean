@@ -1,18 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P41.Defs
-public import PiBaseLean.Properties.P42.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P41.Bundled
+public import PiBaseLean.Properties.P42.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /- Theorem T64: P42 (LocallyPathConnectedSpace) => P41 (LocallyConnectedSpace) -/
+#guard_msgs (drop info) in
 #check instLocallyConnectedSpace
 
 end PiBase

@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P210.Defs
-public import PiBaseLean.Properties.P211.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P210.Bundled
+public import PiBaseLean.Properties.P211.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T733: P210 (α1Space) => P211 (α15Space) -/
-instance instα15SpaceOfα1Space (X : Type u)
+instance instα15SpaceOfα1Space {X : Type u}
     [TopologicalSpace X] [h : α1Space X] :
     α15Space X where
   subset_converge := by

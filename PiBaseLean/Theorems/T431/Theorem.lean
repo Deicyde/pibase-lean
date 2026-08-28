@@ -1,9 +1,10 @@
 module
 
-public import Mathlib.SetTheory.Cardinal.Basic
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P78.Defs
-public import PiBaseLean.Properties.P176.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P176.Bundled
+public import PiBaseLean.Properties.P78.Bundled
+
+import Mathlib.SetTheory.Cardinal.Basic
 
 @[expose] public section
 
@@ -11,7 +12,7 @@ universe u
 
 namespace PiBase
 
---TODO: Maybe change this once negations are properly implemented
+-- TODO: Should this be changed? In theory it should use "not Finite" instead of Infinite
 /-- Theorem 431: X infinite implies 4 ≤ |X| -/
 instance instCardGeFourOfNotFinite {X : Type u} [h : Infinite X] :
     CardGeFour X where

@@ -7,15 +7,13 @@ public import PiBaseLean.Properties.P15.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem WellDefined.perfectlyNormalSpace : WellDefined PerfectlyNormalSpace :=
-  sorry
+theorem Homeomorph.perfectlyNormalSpace [PerfectlyNormalSpace X] (f : X ≃ₜ Y) :
+    PerfectlyNormalSpace Y :=
+  f.symm.isInducing.perfectlyNormalSpace
 
-end Meta
+theorem WellDefined.perfectlyNormalSpace : WellDefined PerfectlyNormalSpace :=
+  fun {_ _} _ _ h _ ↦ Homeomorph.perfectlyNormalSpace h.some
 
 end PiBase

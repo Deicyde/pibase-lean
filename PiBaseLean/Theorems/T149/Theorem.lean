@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P6.Defs
-public import PiBaseLean.Properties.P12.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P12.Bundled
+public import PiBaseLean.Properties.P6.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T149: P6 (T35Space) => P12 (CompletelyRegularSpace) -/
-theorem instCompletelyRegularSpaceOfT35Space (X : Type u)
+theorem instCompletelyRegularSpaceOfT35Space {X : Type u}
     [TopologicalSpace X] [T35Space X] : CompletelyRegularSpace X := by
   infer_instance
 

@@ -1,7 +1,6 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Meta
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
@@ -9,7 +8,7 @@ universe u
 
 namespace PiBase
 
-open Topology Filter
+open scoped Topology
 
 /- 244. Has countable π-character -/
 class HasCountablePiCharacter (X : Type u) [TopologicalSpace X] : Prop where
@@ -17,11 +16,3 @@ class HasCountablePiCharacter (X : Type u) [TopologicalSpace X] : Prop where
     ∅ ∉ s ∧ (∀ a ∈ s, IsOpen a) ∧ s.Countable ∧ ∀ U ∈ 𝓝 x, ∃ t ∈ s, t ⊆ U
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P244 : Property where
-  toPred := HasCountablePiCharacter
-  well_defined φ h := sorry
-
-end PiBase.Formal

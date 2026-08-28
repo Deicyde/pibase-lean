@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P15.Defs
-public import PiBaseLean.Properties.P67.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P15.Bundled
+public import PiBaseLean.Properties.P67.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T338: P67 (T6Space) => P15 (PerfectlyNormalSpace) -/
-theorem instPerfectlyNormalSpaceOfT6Space (X : Type u)
+theorem instPerfectlyNormalSpaceOfT6Space {X : Type u}
     [TopologicalSpace X] [T6Space X] :
     PerfectlyNormalSpace X := by infer_instance
 

@@ -1,19 +1,19 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P18.Defs
-public import PiBaseLean.Properties.P105.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P105.Bundled
+public import PiBaseLean.Properties.P18.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 /-- Theorem T654: P18 (LindelofSpace) => P105 (ParaLindelofSpace) -/
-instance instParaLindelofSpaceOfLindelofSpace (X : Type u)
+instance instParaLindelofSpaceOfLindelofSpace {X : Type u}
     [TopologicalSpace X] [h : LindelofSpace X] :
     ParaLindelofSpace X where
   para_lindelof α s so sc := by

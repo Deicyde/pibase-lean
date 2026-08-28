@@ -1,7 +1,6 @@
 module
 
 public import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
@@ -15,11 +14,3 @@ class LocallySimplyConnectedSpace (X : Type*) [TopologicalSpace X] : Prop where
     (𝓝 x).HasBasis (fun s : Set X => x ∈ s ∧ IsOpen s ∧ SimplyConnectedSpace s) id
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P230 : Property where
-  toPred := LocallySimplyConnectedSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

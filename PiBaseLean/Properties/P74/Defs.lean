@@ -1,9 +1,11 @@
 module
 
-public import Mathlib.Topology.Separation.Regular
 public import PiBaseLean.Properties.P182.Defs
+public import PiBaseLean.Properties.P5.Defs
 
 @[expose] public section
+
+universe u
 
 namespace PiBase
 
@@ -12,11 +14,3 @@ class CosmicSpace (X : Type*) [TopologicalSpace X] : Prop extends
   T3Space X, HasCountableNetwork X
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P74 : Property where
-  toPred := CosmicSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

@@ -1,8 +1,6 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Constructions
-public import PiBaseLean.AdditionalDefs.Meta
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
@@ -16,11 +14,3 @@ class CorsonCompactSpace (X : Type u) [TopologicalSpace X] : Prop extends Compac
     Topology.IsEmbedding f
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P77 : Property where
-  toPred := CorsonCompactSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

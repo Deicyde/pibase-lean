@@ -1,11 +1,10 @@
 module
 
-public import PiBaseLean.AdditionalDefs.Constructions
-public import PiBaseLean.Properties.Bundled.Defs
+public import PiBaseLean.Properties.P38.Defs
 
 @[expose] public section
 
-open Topology Set Function
+open Topology
 
 namespace PiBase
 
@@ -15,11 +14,3 @@ class LocallyInjPathConnectedSpace (X : Type*) [TopologicalSpace X] : Prop where
     (fun s : Set X => x ∈ s ∧ IsOpen s ∧ IsInjPathConnected s) id
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P43 : Property where
-  toPred := LocallyInjPathConnectedSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

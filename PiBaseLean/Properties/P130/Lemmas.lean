@@ -1,21 +1,18 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Meta
-public import PiBaseLean.Properties.P130.Defs
 
 @[expose] public section
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem WellDefined.locallyCompactSpace : WellDefined LocallyCompactSpace :=
-  sorry
+theorem Homeomorph.locallyCompactSpace [h : LocallyCompactSpace X] (f : X ≃ₜ Y) :
+    LocallyCompactSpace Y :=
+  f.symm.isClosedEmbedding.locallyCompactSpace
 
-end Meta
+theorem WellDefined.locallyCompactSpace : WellDefined LocallyCompactSpace :=
+  fun {_ _} _ _ h _ ↦ Homeomorph.locallyCompactSpace h.some
 
 end PiBase

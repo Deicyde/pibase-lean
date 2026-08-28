@@ -1,15 +1,15 @@
 module
 
-public import Mathlib.Logic.Nontrivial.Defs
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P125.Defs
-public import PiBaseLean.Properties.P137.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P125.Bundled
+public import PiBaseLean.Properties.P137.Bundled
 
 @[expose] public section
 
 namespace PiBase
 
 /- Theorem 295: a space with multiple points is nonempty -/
+#guard_msgs (drop info) in
 #check Nontrivial.to_nonempty
 
 end PiBase

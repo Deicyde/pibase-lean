@@ -7,15 +7,12 @@ public import PiBaseLean.Properties.P67.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem WellDefined.t6Space : WellDefined T6Space :=
-  sorry
+theorem Homeomorph.t6Space [T6Space X] (f : X ≃ₜ Y) : T6Space Y :=
+  f.symm.isEmbedding.t6Space
 
-end Meta
+theorem WellDefined.t6Space : WellDefined T6Space :=
+  fun {_ _} _ _ h _ => Homeomorph.t6Space h.some
 
 end PiBase

@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P66.Defs
-public import PiBaseLean.Properties.P68.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P66.Bundled
+public import PiBaseLean.Properties.P68.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T160: P68 (RothbergerSpace) => P66 (MengerSpace) -/
-instance instMengerSpaceOfRothbergerSpace (X : Type u) [TopologicalSpace X]
+instance instMengerSpaceOfRothbergerSpace {X : Type u} [TopologicalSpace X]
   [h : RothbergerSpace X] :
     MengerSpace X where
   menger := by

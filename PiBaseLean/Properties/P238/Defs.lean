@@ -1,9 +1,6 @@
 module
 
-public import Mathlib.Topology.Algebra.Module.Basic
-public import PiBaseLean.Properties.Bundled.Defs
-public import Mathlib.Data.Real.Basic
-public import PiBaseLean.AdditionalDefs.Meta
+public import Mathlib.Topology.Algebra.Ring.Real
 
 @[expose] public section
 
@@ -18,11 +15,3 @@ class HasRealTVSTopology (X : Type u) [t : TopologicalSpace X] : Prop where
       Continuous fun ((x, y) : X × X) ↦ x + y
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P238 : Property where
-  toPred := HasRealTVSTopology
-  well_defined φ h := sorry
-
-end PiBase.Formal

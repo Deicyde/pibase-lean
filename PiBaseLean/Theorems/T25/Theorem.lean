@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P123.Defs
-public import PiBaseLean.Properties.P124.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P123.Bundled
+public import PiBaseLean.Properties.P124.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T25: P124 (TopologicalNManifold) => P123 (LocallyNEuclideanSpace) -/
-theorem instLocallyNEuclideanSpaceOfTopologicalNManifold (X : Type u)
+theorem instLocallyNEuclideanSpaceOfTopologicalNManifold {X : Type u}
     [TopologicalSpace X] [TopologicalNManifold X] :
     LocallyNEuclideanSpace X := by infer_instance
 

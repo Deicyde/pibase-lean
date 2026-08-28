@@ -1,14 +1,12 @@
 module
 
-public import Mathlib.Analysis.Normed.Order.Lattice
-public import Mathlib.Analysis.RCLike.Basic
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P4.Defs
-public import PiBaseLean.Properties.P9.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P4.Bundled
+public import PiBaseLean.Properties.P9.Bundled
 
 @[expose] public section
 
-open Topology Set Function TopologicalSpace unitInterval
+open Set unitInterval
 
 namespace PiBase
 

@@ -7,15 +7,17 @@ public import PiBaseLean.Properties.P60.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem WellDefined.stronglyConnectedSpace : WellDefined StronglyConnectedSpace :=
-  sorry
+theorem Homeomorph.stronglyConnectedSpace [h : StronglyConnectedSpace X] (f : X ≃ₜ Y) :
+    StronglyConnectedSpace Y where
+  strongly_connected g hg := by
+    obtain ⟨r, hr⟩ := h.strongly_connected (g ∘ f) (hg.comp f.continuous)
+    refine ⟨r, funext fun y ↦ ?_⟩
+    obtain ⟨x, rfl⟩ := f.surjective y
+    exact congr_fun hr x
 
-end Meta
+theorem WellDefined.stronglyConnectedSpace : WellDefined StronglyConnectedSpace :=
+  fun {_ _} _ _ h _ ↦ Homeomorph.stronglyConnectedSpace h.some
 
 end PiBase

@@ -7,15 +7,17 @@ public import PiBaseLean.Properties.P20.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.seqCompactSpace : WellDefined SeqCompactSpace :=
-  sorry
+  fun {X Y} _ _ φ _ => by
+    constructor
+    convert IsSeqCompact.range φ.some.continuous.seqContinuous
+    simp only [EquivLike.range_eq_univ]
 
-end Meta
+theorem Homeomorph.seqCompactSpace [SeqCompactSpace X] (f : X ≃ₜ Y) : SeqCompactSpace Y := by
+  constructor
+  convert IsSeqCompact.range f.continuous.seqContinuous
+  simp only [EquivLike.range_eq_univ]
 
 end PiBase

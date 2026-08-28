@@ -7,15 +7,13 @@ public import PiBaseLean.Properties.P12.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
-
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem WellDefined.completelyRegularSpace : WellDefined CompletelyRegularSpace :=
-  sorry
+theorem Homeomorph.completelyRegularSpace [CompletelyRegularSpace X] (f : X ≃ₜ Y) :
+    CompletelyRegularSpace Y :=
+  f.symm.isInducing.completelyRegularSpace
 
-end Meta
+theorem WellDefined.completelyRegularSpace : WellDefined CompletelyRegularSpace :=
+  fun {_ _} _ _ h _ => Homeomorph.completelyRegularSpace h.some
 
 end PiBase

@@ -4,7 +4,7 @@ public import PiBaseLean.Properties.P95.Defs
 
 @[expose] public section
 
-open Topology Filter TopologicalSpace
+open Topology
 
 namespace PiBase
 
@@ -14,11 +14,3 @@ class LocallyArcConnectedSpace (X : Type*) [TopologicalSpace X] : Prop where
     x ∈ s ∧ IsOpen s ∧ ArcConnectedSpace s) id
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P96 : Property where
-  toPred := LocallyArcConnectedSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

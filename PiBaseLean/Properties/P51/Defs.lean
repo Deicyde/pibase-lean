@@ -1,11 +1,8 @@
 module
 
 public import Mathlib.Topology.Defs.Induced
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
-
-open Topology Set Function Filter TopologicalSpace
 
 namespace PiBase
 
@@ -14,11 +11,3 @@ class ScatteredSpace (X : Type*) [TopologicalSpace X] : Prop where
   scattered : ∀ s : Set X, s.Nonempty → ∃ x : s, IsOpen {x}
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P51 : Property where
-  toPred := ScatteredSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

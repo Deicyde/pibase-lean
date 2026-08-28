@@ -1,21 +1,24 @@
 module
 
 public import PiBaseLean.AdditionalDefs.Meta
-public import PiBaseLean.Properties.P36.Defs
 
 @[expose] public section
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
+universe u v
 
-section Meta
-
-variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+variable {X : Type u} {Y : Type v} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.preconnectedSpace : WellDefined PreconnectedSpace :=
-  sorry
+  fun {X Y} _ _ φ _ => by
+    constructor
+    convert isPreconnected_range φ.some.continuous
+    simp only [EquivLike.range_eq_univ]
 
-end Meta
+theorem Homeomorph.preconnectedSpace [PreconnectedSpace X] (f : X ≃ₜ Y) : PreconnectedSpace Y := by
+  constructor
+  convert isPreconnected_range f.continuous
+  simp only [EquivLike.range_eq_univ]
 
 end PiBase

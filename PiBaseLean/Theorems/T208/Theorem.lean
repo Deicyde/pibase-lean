@@ -1,21 +1,21 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P125.Defs
-public import PiBaseLean.Properties.P129.Defs
-public import PiBaseLean.Properties.P139.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P125.Bundled
+public import PiBaseLean.Properties.P129.Bundled
+public import PiBaseLean.Properties.P139.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
+open Set
 
 namespace PiBase
 
 -- Most likely redundant
 /-- Theorem T208: P129 (IndiscreteTopology) + P125 (Nontrivial) => P139 (¬HasAnIsolatedPoint) -/
-theorem instNotHasAnIsolatedPointOfIndiscreteTopologyOfNontrivial (X : Type u)
+theorem instNotHasAnIsolatedPointOfIndiscreteTopologyOfNontrivial {X : Type u}
     [TopologicalSpace X] [h : IndiscreteTopology X] [h' : Nontrivial X] :
     ¬ HasAnIsolatedPoint X := by
   contrapose! h'

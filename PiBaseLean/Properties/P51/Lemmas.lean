@@ -7,11 +7,9 @@ public import PiBaseLean.Properties.P51.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function
+open Set
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
-
-section Meta
 
 theorem Homeomorph.scatteredSpace [h : ScatteredSpace X] (f : X ≃ₜ Y) : ScatteredSpace Y where
   scattered s hs := by
@@ -31,7 +29,5 @@ theorem Homeomorph.scatteredSpace [h : ScatteredSpace X] (f : X ≃ₜ Y) : Scat
 
 theorem scatteredSpace : WellDefined ScatteredSpace :=
   fun {_ _} _ _ h _ ↦ Homeomorph.scatteredSpace h.some
-
-end Meta
 
 end PiBase

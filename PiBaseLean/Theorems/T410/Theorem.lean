@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P112.Defs
-public import PiBaseLean.Properties.P166.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P112.Bundled
+public import PiBaseLean.Properties.P166.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T410: P166 (HasCoarserSeparableMetrizableTopology ) => P112 (SubmetrizableSpace) -/
-instance instSubmetrizableSpaceOfHasCoarserSeparableMetrizableTopology (X : Type u)
+instance instSubmetrizableSpaceOfHasCoarserSeparableMetrizableTopology {X : Type u}
     [TopologicalSpace X] [h : HasCoarserSeparableMetrizableTopology X] :
     SubmetrizableSpace X where
   le_metrizable :=

@@ -1,11 +1,10 @@
 module
 
 public import Mathlib.SetTheory.Ordinal.Topology
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
-open Topology Set Filter TopologicalSpace Filter
+open Topology Set Filter
 
 universe u
 
@@ -17,11 +16,3 @@ class RadialSpace (X : Type u) [TopologicalSpace X] : Prop where
     0 < s ∧ range f ⊆ A ∧ Tendsto f atTop (𝓝 x)
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P172 : Property where
-  toPred := RadialSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

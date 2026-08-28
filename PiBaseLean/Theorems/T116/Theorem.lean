@@ -1,20 +1,18 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P179.Defs
-public import PiBaseLean.Properties.P183.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P179.Bundled
+public import PiBaseLean.Properties.P183.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 -- Most likely redundant
 /-- Theorem T116: P179 (AlephZeroSpace) => P183 (HasCountableKNetwork) -/
-theorem instHasCountableKNetworkOfAlephZeroSpace (X : Type u)
+theorem instHasCountableKNetworkOfAlephZeroSpace {X : Type u}
     [TopologicalSpace X] [AlephZeroSpace X] :
     HasCountableKNetwork X := by infer_instance
 

@@ -7,15 +7,13 @@ public import PiBaseLean.Properties.P208.Defs
 
 namespace PiBase
 
-open Topology Filter Set Function TopologicalSpace
-
-section Meta
+open TopologicalSpace
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
 theorem WellDefined.noetherianSpace : WellDefined NoetherianSpace :=
-  sorry
-
-end Meta
+  fun {_ _} _ _ hXY _ =>
+    let φ := hXY.some
+    φ.symm.isInducing.noetherianSpace
 
 end PiBase

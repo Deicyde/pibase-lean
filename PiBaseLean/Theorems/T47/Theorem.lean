@@ -1,19 +1,17 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P46.Lemmas
-public import PiBaseLean.Properties.P47.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P46.Bundled
+public import PiBaseLean.Properties.P47.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T47: P47 (TotallyDisconnectedSpace) => P46 (TotallyPathDisconnectedSpace) -/
-instance instTotallyPathDisconnectedSpaceOfTotallyDisconnectedSpace (X : Type u)
+instance instTotallyPathDisconnectedSpaceOfTotallyDisconnectedSpace {X : Type u}
     [TopologicalSpace X] [h : TotallyDisconnectedSpace X] :
     TotallyPathDisconnectedSpace X := by
   apply (totallyPathDisconnectedSpace_iff_pathComponent_singleton X).mpr (fun x ↦ ?_)

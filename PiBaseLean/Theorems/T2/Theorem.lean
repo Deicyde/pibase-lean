@@ -1,14 +1,12 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P19.Defs
-public import PiBaseLean.Properties.P21.Defs
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P19.Bundled
+public import PiBaseLean.Properties.P21.Bundled
 
 @[expose] public section
 
 universe u
-
-open Topology Set Function
 
 namespace PiBase
 

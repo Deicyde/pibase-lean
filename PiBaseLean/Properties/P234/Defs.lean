@@ -1,7 +1,6 @@
 module
 
 public import Mathlib.Topology.Connected.Basic
-public import PiBaseLean.Properties.Bundled.Defs
 
 @[expose] public section
 
@@ -12,11 +11,3 @@ class HasOpenConnectedComponents (X : Type*) [TopologicalSpace X] : Prop where
   component_open (x : X) : IsOpen (connectedComponent x)
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P234 : Property where
-  toPred := HasOpenConnectedComponents
-  well_defined φ h := sorry
-
-end PiBase.Formal

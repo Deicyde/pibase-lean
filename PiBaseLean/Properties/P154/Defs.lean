@@ -4,7 +4,7 @@ public import PiBaseLean.Properties.P133.Defs
 
 @[expose] public section
 
-open Topology Set Filter TopologicalSpace
+open Topology
 
 universe u
 
@@ -16,11 +16,3 @@ class GoSpace (X : Type u) [TopologicalSpace X] : Prop where
     Lots Z ∧ IsEmbedding f
 
 end PiBase
-
-namespace PiBase.Formal
-
-def P154 : Property where
-  toPred := GoSpace
-  well_defined φ h := sorry
-
-end PiBase.Formal

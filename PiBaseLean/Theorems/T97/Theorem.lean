@@ -1,21 +1,19 @@
 module
 
-public import PiBaseLean.Properties.Bundled.Basic
-public import PiBaseLean.Properties.P36.Defs
-public import PiBaseLean.Properties.P39.Lemmas
-public import PiBaseLean.Properties.P49.Lemmas
+public import PiBaseLean.Bundled.Basic
+public import PiBaseLean.Properties.P36.Bundled
+public import PiBaseLean.Properties.P39.Bundled
+public import PiBaseLean.Properties.P49.Bundled
 
 @[expose] public section
 
 universe u
 
-open Topology Set Function
-
 namespace PiBase
 
 /-- Theorem T97: P49 (ExtremallyDisconnected) + P36 (PreconnectedSpace)
 => P39 (PreirreducibleSpace) -/
-instance instPreirreducibleSpaceOfExtremallyDisconnectedOfPreconnectedSpace (X : Type u)
+instance instPreirreducibleSpaceOfExtremallyDisconnectedOfPreconnectedSpace {X : Type u}
     [TopologicalSpace X] [h : ExtremallyDisconnected X] [h' : PreconnectedSpace X] :
     PreirreducibleSpace X := by
   apply (preirreducibleSpace_iff_open_dense X).mpr (fun s hs sn ↦ ?_)
