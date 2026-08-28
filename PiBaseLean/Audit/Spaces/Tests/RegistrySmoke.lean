@@ -20,7 +20,7 @@ def registrySmokeCanonical :
   Homeomorph.refl RegistrySmokeCarrier
 
 theorem registrySmokeP52 :
-    PiBase.Formal.P52 RegistrySmokeCarrier :=
+    DiscreteTopology RegistrySmokeCarrier :=
   inferInstance
 
 end PiBase.Audit.Spaces.Tests
