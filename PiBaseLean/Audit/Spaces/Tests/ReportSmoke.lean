@@ -75,6 +75,11 @@ run_cmd do
 end PiBase.Audit.Spaces.Tests
 
 run_cmd do
+  let syntheticForbidden := `PiBase.Audit.Spaces.Tests.syntheticForbiddenAxiom
+  let classified := classifyAxioms #[syntheticForbidden]
+  unless classified.axioms == #[syntheticForbidden] && classified.trusted.isEmpty &&
+      classified.conditional.isEmpty && classified.forbidden == #[syntheticForbidden] do
+    throwError "unknown axioms must be classified as forbidden: {repr classified}"
   let report ← Lean.Elab.Command.liftTermElabM buildAuditReport
   unless report.isSuccess do
     throwError "space audit unexpectedly failed:\n{report.toJson.pretty}"

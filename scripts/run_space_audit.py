@@ -18,7 +18,17 @@ ALLOWED_STATUSES = frozenset({"implemented", "not-implemented", "invalid"})
 TRUSTED_AXIOMS = frozenset({"Classical.choice", "Quot.sound", "propext"})
 # Mirrors the schema-v1 conditional axiom mappings in the Lean report producer.
 CONDITIONAL_AXIOM_ASSUMPTIONS: dict[str, str] = {}
+# This independent web-side lock makes any change to the published Lean audit
+# scope explicit in both implementations and their regression tests.
+REQUIRED_SPACE_AUDIT_SCOPE = (
+    "S000001",
+    "S000004",
+    "S000010",
+    "S000189",
+)
 _HASH_RE = re.compile(r"[0-9a-f]{64}")
+_SPACE_ID_RE = re.compile(r"S[0-9]{6}")
+_PROPERTY_ID_RE = re.compile(r"P[0-9]{6}")
 _MISSING = object()
 
 
@@ -266,7 +276,11 @@ class _Validator:
 
     def trait(self, value: Any, path: str) -> str:
         trait = self.object(value, path)
-        self.string(self.field(trait, "propertyId", path), f"{path}.propertyId")
+        property_id = self.string(
+            self.field(trait, "propertyId", path), f"{path}.propertyId"
+        )
+        if _PROPERTY_ID_RE.fullmatch(property_id) is None:
+            self.fail(f"{path}.propertyId", "expected a canonical property ID")
         self.optional_string(self.field(trait, "name", path), f"{path}.name")
         expected = self.boolean(self.field(trait, "expected", path), f"{path}.expected")
         polarity = self.boolean(self.field(trait, "polarity", path), f"{path}.polarity")
@@ -306,6 +320,8 @@ class _Validator:
     def space(self, value: Any, path: str) -> tuple[str, int, int]:
         space = self.object(value, path)
         space_id = self.string(self.field(space, "spaceId", path), f"{path}.spaceId")
+        if _SPACE_ID_RE.fullmatch(space_id) is None:
+            self.fail(f"{path}.spaceId", "expected a canonical space ID")
         self.optional_string(self.field(space, "catalogName", path), f"{path}.catalogName")
         presentation_status = self.presentation(
             self.field(space, "presentation", path), f"{path}.presentation"
@@ -315,6 +331,9 @@ class _Validator:
             self.trait(trait, f"{path}.traits[{index}]")
             for index, trait in enumerate(traits)
         ]
+        property_ids = [trait["propertyId"] for trait in traits]
+        if len(set(property_ids)) != len(property_ids):
+            self.fail(f"{path}.traits", "propertyId values must be unique")
         failures = self.failures(self.field(space, "failures", path), f"{path}.failures")
         status = self.status(self.field(space, "status", path), f"{path}.status")
 

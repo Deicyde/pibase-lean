@@ -102,6 +102,21 @@ def valid_report() -> dict:
     }
 
 
+def published_scope_report() -> dict:
+    report = valid_report()
+    spaces = []
+    for space_id in build_dashboard_data.REQUIRED_SPACE_AUDIT_SCOPE:
+        item = copy.deepcopy(report["spaces"][0])
+        item["spaceId"] = space_id
+        spaces.append(item)
+    report["scope"] = list(build_dashboard_data.REQUIRED_SPACE_AUDIT_SCOPE)
+    report["spaces"] = spaces
+    report["summary"].update(
+        {"spaces": len(spaces), "implemented": len(spaces), "traits": len(spaces)}
+    )
+    return report
+
+
 def load_result(report: dict):
     with mock.patch("run_space_audit.subprocess.run") as run:
         run.return_value = subprocess.CompletedProcess(
@@ -111,6 +126,39 @@ def load_result(report: dict):
 
 
 class DashboardSpaceAuditProjectionTest(unittest.TestCase):
+    def test_loader_accepts_the_exact_published_scope(self) -> None:
+        report = published_scope_report()
+        result = AuditResult(
+            report=report,
+            returncode=0,
+            stdout=json.dumps(report),
+            stderr="",
+            source="fixture",
+        )
+        with (
+            mock.patch.dict("os.environ", {}, clear=True),
+            mock.patch.object(build_dashboard_data, "run_space_audit", return_value=result),
+            mock.patch.object(build_dashboard_data, "sha256", side_effect=[HASH_A, HASH_B]),
+        ):
+            self.assertIs(build_dashboard_data.load_space_audit(), report)
+
+    def test_loader_requires_the_exact_published_scope(self) -> None:
+        report = valid_report()
+        result = AuditResult(
+            report=report,
+            returncode=0,
+            stdout=json.dumps(report),
+            stderr="",
+            source="fixture",
+        )
+        with (
+            mock.patch.dict("os.environ", {}, clear=True),
+            mock.patch.object(build_dashboard_data, "run_space_audit", return_value=result),
+            mock.patch.object(build_dashboard_data, "sha256", side_effect=[HASH_A, HASH_B]),
+            self.assertRaisesRegex(SystemExit, r"required pilot"),
+        ):
+            build_dashboard_data.load_space_audit()
+
     def test_non_targeted_review_entry_has_no_fabricated_source_link(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -176,7 +224,7 @@ class DashboardSpaceAuditProjectionTest(unittest.TestCase):
                 {"uid": "S000002", "name": "Another space"},
             ],
             "traits": [
-                {"space": "S000001", "property": "P000001", "value": False},
+                {"space": "S000001", "property": "P000001", "value": True},
                 {"space": "S000002", "property": "P000001", "value": True},
             ],
         }
@@ -206,6 +254,40 @@ class DashboardSpaceAuditProjectionTest(unittest.TestCase):
         )
         self.assertEqual(traits["S000002"]["traits"][0]["status"], "asserted")
 
+    def test_projection_rejects_forged_trait_contracts(self) -> None:
+        catalog = {
+            "properties": [{"uid": "P000001", "name": "Compact"}],
+            "spaces": [{"uid": "S000001", "name": "A space"}],
+            "traits": [
+                {"space": "S000001", "property": "P000001", "value": True},
+            ],
+        }
+        mutations = {
+            "missing direct trait": lambda report: report["spaces"][0].update(traits=[]),
+            "wrong direct polarity": lambda report: report["spaces"][0]["traits"][0].update(
+                expected=False, polarity=False
+            ),
+            "wrong direct provenance": lambda report: report["spaces"][0]["traits"][0].update(
+                provenance="derived"
+            ),
+            "unknown property": lambda report: report["spaces"][0]["traits"][0].update(
+                propertyId="P999999"
+            ),
+            "wrong property name": lambda report: report["spaces"][0]["traits"][0].update(
+                name="Forged"
+            ),
+            "wrong catalog name": lambda report: report["spaces"][0].update(
+                catalogName="Forged"
+            ),
+        }
+
+        for label, mutate in mutations.items():
+            with self.subTest(label=label):
+                report = valid_report()
+                mutate(report)
+                with self.assertRaises(SystemExit):
+                    space_audit_projection(report, catalog)
+
     def test_failed_target_uses_compatibility_debt_status(self) -> None:
         report = valid_report()
         report["spaces"][0]["presentation"] = presentation(
@@ -220,7 +302,9 @@ class DashboardSpaceAuditProjectionTest(unittest.TestCase):
         catalog = {
             "properties": [{"uid": "P000001", "name": "Compact"}],
             "spaces": [{"uid": "S000001", "name": "A space"}],
-            "traits": [],
+            "traits": [
+                {"space": "S000001", "property": "P000001", "value": True},
+            ],
         }
 
         statuses, _ = space_audit_projection(report, catalog)
@@ -371,6 +455,24 @@ class SpaceAuditAdapterTest(unittest.TestCase):
         report["scope"].append("S000002")
         report["summary"].update({"spaces": 2, "implemented": 2, "traits": 2})
         self.assert_invalid(report, r"spaceId values must be unique")
+
+    def test_duplicate_trait_property_ids(self) -> None:
+        report = valid_report()
+        report["spaces"][0]["traits"].append(
+            copy.deepcopy(report["spaces"][0]["traits"][0])
+        )
+        report["summary"]["traits"] = 2
+        self.assert_invalid(report, r"propertyId values must be unique")
+
+    def test_noncanonical_ids(self) -> None:
+        report = valid_report()
+        report["spaces"][0]["spaceId"] = "S1"
+        report["scope"] = ["S1"]
+        self.assert_invalid(report, r"canonical space ID")
+
+        report = valid_report()
+        report["spaces"][0]["traits"][0]["propertyId"] = "P1"
+        self.assert_invalid(report, r"canonical property ID")
 
     def test_duplicate_scope(self) -> None:
         report = valid_report()

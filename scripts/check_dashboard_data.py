@@ -9,7 +9,11 @@ import re
 from collections import Counter
 from pathlib import Path
 
-from run_space_audit import load_audit_artifact, normalized_json
+from run_space_audit import (
+    REQUIRED_SPACE_AUDIT_SCOPE,
+    load_audit_artifact,
+    normalized_json,
+)
 
 ROOT = Path(__file__).resolve().parent.parent
 PUBLIC = ROOT / "dashboard" / "public"
@@ -296,6 +300,10 @@ def main() -> None:
         "space audit scope and entries are inconsistent",
     )
     require(
+        audit["scope"] == list(REQUIRED_SPACE_AUDIT_SCOPE),
+        "space audit scope does not match the required published pilot",
+    )
+    require(
         audit["sourceHashes"]
         == {
             "pibase": sha256(ROOT / "data" / "pibase.json"),
@@ -312,6 +320,69 @@ def main() -> None:
         len(spaces) == summary["spaceTotal"] == summary["spaceEntries"],
         "space manifest, catalog total, and trust ledger are not aligned",
     )
+    catalog_space_names = {entry["uid"]: entry["name"] for entry in catalog["spaces"]}
+    require(
+        len(catalog_space_names) == len(catalog["spaces"]),
+        "catalog contains duplicate space IDs",
+    )
+    property_names = {entry["uid"]: entry["name"] for entry in catalog["properties"]}
+    require(
+        len(property_names) == len(catalog["properties"]),
+        "catalog contains duplicate property IDs",
+    )
+    catalog_direct: dict[str, dict[str, bool]] = {
+        space_id: {} for space_id in catalog_space_names
+    }
+    for row in catalog["traits"]:
+        require(
+            row["space"] in catalog_direct and row["property"] in property_names,
+            "catalog trait references an unknown space or property",
+        )
+        direct = catalog_direct[row["space"]]
+        require(
+            row["property"] not in direct,
+            f"catalog contains duplicate direct trait {row['space']}/{row['property']}",
+        )
+        direct[row["property"]] = row["value"]
+    for space_id, audited in audit_spaces.items():
+        require(
+            audited["catalogName"] == catalog_space_names.get(space_id),
+            f"audit catalog name disagrees for {space_id}",
+        )
+        audited_traits = {row["propertyId"]: row for row in audited["traits"]}
+        require(
+            len(audited_traits) == len(audited["traits"]),
+            f"audit contains duplicate trait properties for {space_id}",
+        )
+        require(
+            set(audited_traits) <= set(property_names),
+            f"audit contains an unknown property for {space_id}",
+        )
+        require(
+            all(
+                row["name"] == property_names[property_id]
+                and row["polarity"] == row["expected"]
+                for property_id, row in audited_traits.items()
+            ),
+            f"audit property names or polarities disagree with the catalog for {space_id}",
+        )
+        direct = {
+            property_id: row["expected"]
+            for property_id, row in audited_traits.items()
+            if row["provenance"] == "direct"
+        }
+        require(
+            direct == catalog_direct[space_id],
+            f"audit direct traits disagree with the catalog for {space_id}",
+        )
+        require(
+            all(
+                row["provenance"]
+                == ("direct" if property_id in catalog_direct[space_id] else "derived")
+                for property_id, row in audited_traits.items()
+            ),
+            f"audit trait provenance disagrees with the catalog for {space_id}",
+        )
     for space in spaces:
         audit_projection = space.get("spaceAudit", {})
         require(

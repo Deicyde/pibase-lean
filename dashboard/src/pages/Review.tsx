@@ -5,10 +5,16 @@ import SpaceAuditBadge from "../components/SpaceAuditBadge";
 import SpaceAuditDetails from "../components/SpaceAuditDetails";
 import StatusBadge from "../components/StatusBadge";
 import { downloadText, formatNumber, routeTo } from "../lib";
+import {
+  assertReviewChunkPayload,
+  assertReviewPayload,
+  reviewCacheKey,
+  reviewChunkCacheKey,
+  versionedReviewUrl,
+} from "../reviewData";
 import type {
   DashboardData,
   LeanStatusName,
-  ReviewChunkPayload,
   ReviewEntry,
   ReviewEntrySummary,
   ReviewKind,
@@ -20,7 +26,7 @@ type Mark = "ok" | "flag";
 type MarkMap = Record<string, Mark>;
 type StatusFilter = "all" | LeanStatusName | SpaceAuditStatus;
 
-const cache = new Map<ReviewKind, ReviewPayload>();
+const cache = new Map<string, ReviewPayload>();
 const chunkCache = new Map<string, ReviewEntry[]>();
 
 function statusLabel(kind: ReviewKind, entry: { leanStatus: ReviewEntry["leanStatus"] }): string | undefined {
@@ -53,7 +59,10 @@ export default function Review({ data, params }: { data: DashboardData; params: 
   const [status, setStatus] = useState<StatusFilter>("all");
   const [hideReviewed, setHideReviewed] = useState(false);
   const [limit, setLimit] = useState(24);
-  const [payload, setPayload] = useState<ReviewPayload | null>(cache.get(initialKind) ?? null);
+  const sourceCommit = data.source.commit;
+  const [payload, setPayload] = useState<ReviewPayload | null>(
+    cache.get(reviewCacheKey(sourceCommit, initialKind)) ?? null,
+  );
   const [loadedEntries, setLoadedEntries] = useState<Map<string, ReviewEntry>>(new Map());
   const [error, setError] = useState("");
   const marksKey = `pibase-review:${data.source.commit}`;
@@ -73,33 +82,34 @@ export default function Review({ data, params }: { data: DashboardData; params: 
 
   useEffect(() => {
     let active = true;
+    const cacheKey = reviewCacheKey(sourceCommit, kind);
     const seeded = new Map<string, ReviewEntry>();
     chunkCache.forEach((entries, key) => {
-      if (key.startsWith(`${kind}:`)) entries.forEach((entry) => seeded.set(entry.id, entry));
+      if (key.startsWith(`${cacheKey}:`)) entries.forEach((entry) => seeded.set(entry.id, entry));
     });
     setLoadedEntries(seeded);
-    const cached = cache.get(kind);
+    const cached = cache.get(cacheKey);
     if (cached) {
       setPayload(cached);
       setError("");
       return () => { active = false; };
     }
     setPayload(null);
-    fetch(new URL(`data/review-${kind}.json`, document.baseURI))
+    fetch(versionedReviewUrl(`data/review-${kind}.json`, sourceCommit))
       .then((response) => {
         if (!response.ok) throw new Error(`Review data returned ${response.status}`);
-        return response.json() as Promise<ReviewPayload>;
+        return response.json() as Promise<unknown>;
       })
       .then((next) => {
-        if (next.kind !== kind) throw new Error(`Review index does not match ${kind}`);
-        cache.set(kind, next);
+        assertReviewPayload(next, kind, sourceCommit);
+        cache.set(cacheKey, next);
         if (active) { setPayload(next); setError(""); }
       })
       .catch((reason: unknown) => {
         if (active) setError(reason instanceof Error ? reason.message : "Review data could not be loaded");
       });
     return () => { active = false; };
-  }, [kind]);
+  }, [kind, sourceCommit]);
 
   const filtered = useMemo(() => {
     if (!payload || payload.kind !== kind) return [];
@@ -123,16 +133,16 @@ export default function Review({ data, params }: { data: DashboardData; params: 
     let active = true;
     const payloadKind = payload.kind;
     const wanted = [...new Set(filtered.slice(0, limit).map((entry) => entry.chunk))];
-    const missing = wanted.filter((chunk) => !chunkCache.has(`${payloadKind}:${chunk}`));
+    const missing = wanted.filter(
+      (chunk) => !chunkCache.has(reviewChunkCacheKey(sourceCommit, payloadKind, chunk)),
+    );
     if (!missing.length) return () => { active = false; };
     Promise.all(missing.map(async (chunk) => {
-      const response = await fetch(new URL(payload.chunks[chunk], document.baseURI));
+      const response = await fetch(versionedReviewUrl(payload.chunks[chunk], sourceCommit));
       if (!response.ok) throw new Error(`Review chunk returned ${response.status}`);
-      const next = await response.json() as ReviewChunkPayload;
-      if (next.kind !== payloadKind || next.chunk !== chunk) {
-        throw new Error(`Review chunk ${chunk} does not match ${payloadKind}`);
-      }
-      chunkCache.set(`${payloadKind}:${chunk}`, next.entries);
+      const next = await response.json() as unknown;
+      assertReviewChunkPayload(next, payloadKind, chunk, sourceCommit);
+      chunkCache.set(reviewChunkCacheKey(sourceCommit, payloadKind, chunk), next.entries);
       return next.entries;
     }))
       .then((groups) => {
@@ -147,7 +157,7 @@ export default function Review({ data, params }: { data: DashboardData; params: 
         if (active) setError(reason instanceof Error ? reason.message : "Review source could not be loaded");
       });
     return () => { active = false; };
-  }, [filtered, kind, limit, payload]);
+  }, [filtered, kind, limit, payload, sourceCommit]);
 
   function changeKind(next: ReviewKind) {
     setKind(next);

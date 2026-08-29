@@ -21,6 +21,7 @@ sys.path.insert(0, str(SCRIPTS))
 
 from graph import full_trait_matrix, known_true_edges, transitive_closure  # noqa: E402
 from run_space_audit import (  # noqa: E402
+    REQUIRED_SPACE_AUDIT_SCOPE,
     load_audit_artifact,
     normalized_json,
     run_space_audit,
@@ -66,22 +67,53 @@ def load_space_audit() -> dict:
             "space audit source hashes do not match the exact dashboard catalog bytes: "
             f"expected {expected_hashes}, got {report['sourceHashes']}"
         )
+    if report["scope"] != list(REQUIRED_SPACE_AUDIT_SCOPE):
+        raise SystemExit(
+            "space audit scope does not match the dashboard's required pilot: "
+            f"expected {list(REQUIRED_SPACE_AUDIT_SCOPE)}, got {report['scope']}"
+        )
     return report
 
 
 def space_audit_projection(report: dict, catalog: dict) -> tuple[dict[str, dict], dict[str, dict]]:
     """Build audit-owned space status and compatible review trait projections."""
     audit_spaces = {item["spaceId"]: item for item in report["spaces"]}
-    catalog_space_ids = {item["uid"] for item in catalog["spaces"]}
+    catalog_spaces: dict[str, dict] = {}
+    for item in catalog["spaces"]:
+        uid = item["uid"]
+        if uid in catalog_spaces:
+            raise SystemExit(f"dashboard catalog has duplicate space ID: {uid}")
+        catalog_spaces[uid] = item
+    catalog_space_ids = set(catalog_spaces)
     unknown_targets = sorted(set(audit_spaces) - catalog_space_ids)
     if unknown_targets:
         raise SystemExit(
             "space audit targets are absent from the dashboard catalog: "
             + ", ".join(unknown_targets)
         )
-    property_names = {item["uid"]: item["name"] for item in catalog["properties"]}
+    property_names: dict[str, str] = {}
+    for item in catalog["properties"]:
+        uid = item["uid"]
+        if uid in property_names:
+            raise SystemExit(f"dashboard catalog has duplicate property ID: {uid}")
+        property_names[uid] = item["name"]
     catalog_traits: dict[str, list[dict]] = defaultdict(list)
+    direct_trait_keys: set[tuple[str, str]] = set()
     for item in catalog["traits"]:
+        if item["space"] not in catalog_spaces:
+            raise SystemExit(
+                f"dashboard catalog trait references unknown space: {item['space']}"
+            )
+        if item["property"] not in property_names:
+            raise SystemExit(
+                f"dashboard catalog trait references unknown property: {item['property']}"
+            )
+        key = (item["space"], item["property"])
+        if key in direct_trait_keys:
+            raise SystemExit(
+                "dashboard catalog has duplicate direct trait: " + "/".join(key)
+            )
+        direct_trait_keys.add(key)
         catalog_traits[item["space"]].append({
             "property": item["property"],
             "name": property_names.get(item["property"], item["property"]),
@@ -101,6 +133,60 @@ def space_audit_projection(report: dict, catalog: dict) -> tuple[dict[str, dict]
             represented = declaration_present = dependency_clean = False
             trait_rows = catalog_traits.get(uid, [])
         else:
+            if audited.get("catalogName") != item["name"]:
+                raise SystemExit(
+                    f"space audit catalog name mismatch for {uid}: "
+                    f"expected {item['name']!r}, got {audited.get('catalogName')!r}"
+                )
+            audited_traits = {row["propertyId"]: row for row in audited["traits"]}
+            if len(audited_traits) != len(audited["traits"]):
+                raise SystemExit(f"space audit has duplicate trait property IDs for {uid}")
+            unknown_properties = sorted(set(audited_traits) - set(property_names))
+            if unknown_properties:
+                raise SystemExit(
+                    f"space audit has unknown properties for {uid}: "
+                    + ", ".join(unknown_properties)
+                )
+            for property_id, row in audited_traits.items():
+                if row.get("name") != property_names[property_id]:
+                    raise SystemExit(
+                        f"space audit property name mismatch for {uid}/{property_id}: "
+                        f"expected {property_names[property_id]!r}, got {row.get('name')!r}"
+                    )
+                if row["polarity"] != row["expected"]:
+                    raise SystemExit(
+                        f"space audit certificate polarity mismatch for {uid}/{property_id}"
+                    )
+            expected_direct = {
+                row["property"]: row["value"]
+                for row in catalog_traits.get(uid, [])
+            }
+            actual_direct = {
+                property_id: row["expected"]
+                for property_id, row in audited_traits.items()
+                if row.get("provenance") == "direct"
+            }
+            if actual_direct != expected_direct:
+                raise SystemExit(
+                    f"space audit direct traits do not match the catalog for {uid}: "
+                    f"expected {expected_direct}, got {actual_direct}"
+                )
+            for property_id, row in audited_traits.items():
+                if property_id in expected_direct:
+                    if row["expected"] != expected_direct[property_id]:
+                        raise SystemExit(
+                            f"space audit polarity mismatch for {uid}/{property_id}"
+                        )
+                    if row.get("provenance") != "direct":
+                        raise SystemExit(
+                            f"space audit direct obligation has wrong provenance for "
+                            f"{uid}/{property_id}"
+                        )
+                elif row.get("provenance") != "derived":
+                    raise SystemExit(
+                        f"space audit supplemental trait has wrong provenance for "
+                        f"{uid}/{property_id}"
+                    )
             space_audit = {**audited, "targeted": True}
             implemented = audited["status"] == "implemented"
             presentation = audited["presentation"]
