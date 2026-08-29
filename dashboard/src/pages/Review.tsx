@@ -286,7 +286,7 @@ export default function Review({ data, params }: { data: DashboardData; params: 
               {reviewStatusBadge(kind, entry)}
               <div className="entry-links">
                 <a className="icon-link" href={entry.referenceUrl} aria-label={`Open ${entry.shortId} on π-Base`} data-tooltip="π-Base"><ExternalLink size={15} /></a>
-                <a className="icon-link" href={entry.sourceUrl} aria-label={`Open ${entry.shortId} Lean source`} data-tooltip="Lean source"><code>λ</code></a>
+                {entry.sourceUrl && <a className="icon-link" href={entry.sourceUrl} aria-label={`Open ${entry.shortId} Lean source`} data-tooltip="Lean source"><code>λ</code></a>}
               </div>
               <div className="review-actions">
                 <button type="button" aria-pressed={marks[entry.id] === "ok"} onClick={() => setMark(entry, "ok")}><Check size={15} /> Reviewed</button>
@@ -335,7 +335,7 @@ export default function Review({ data, params }: { data: DashboardData; params: 
                 )}
                 {entry.description ? <MathText text={entry.description} /> : <p className="muted-copy">No informal description recorded.</p>}
                 {kind === "spaces" && entry.spaceAudit ? (
-                  <SpaceAuditDetails audit={entry.spaceAudit} />
+                  <SpaceAuditDetails audit={entry.spaceAudit} catalogTraits={entry.traits} />
                 ) : (
                   <dl className="entry-ledger">
                     <div><dt>Local placeholders</dt><dd>{entry.leanStatus.localPlaceholders}</dd></div>

@@ -94,6 +94,21 @@ class AvailabilityTests(unittest.TestCase):
 
             self.assertEqual(GEN_TRAITS.available("T", directory), {"T000001"})
 
+    def test_properties_require_bundled_definition(self):
+        with tempfile.TemporaryDirectory() as directory:
+            property_root = Path(directory) / "PiBaseLean" / "Properties"
+            bundled = property_root / "P1" / "Bundled.lean"
+            bundled.parent.mkdir(parents=True)
+            bundled.write_text("def P1 := True\n", encoding="utf-8")
+            defs_only = property_root / "P2" / "Defs.lean"
+            defs_only.parent.mkdir(parents=True)
+            defs_only.write_text("def P2 := True\n", encoding="utf-8")
+            wrong_name = property_root / "P3" / "Bundled.lean"
+            wrong_name.parent.mkdir(parents=True)
+            wrong_name.write_text("def differentlyNamed := True\n", encoding="utf-8")
+
+            self.assertEqual(GEN_TRAITS.available("P", directory), {"P000001"})
+
 
 class RenderingTests(unittest.TestCase):
     def setUp(self):
@@ -119,7 +134,7 @@ class RenderingTests(unittest.TestCase):
             "module\n\n"
             f"{GEN_TRAITS.GENERATED_HEADER}\n"
             "public import PiBaseLean.Spaces.S147.Lemmas\n"
-            "public import PiBaseLean.Properties.P3.Defs\n"
+            "public import PiBaseLean.Properties.P3.Bundled\n"
             "public import PiBaseLean.Theorems.T7.Theorem\n\n"
             "@[expose] public section\n\n"
             "namespace PiBase.Formal\n"
@@ -216,8 +231,8 @@ class CliTests(unittest.TestCase):
         independence_path = root / "independence.json"
         independence_path.write_text("{}", encoding="utf-8")
         declarations = {
-            "Properties/P1/Defs.lean": "def P1\n",
-            "Properties/P2/Defs.lean": "def P2\n",
+            "Properties/P1/Bundled.lean": "def P1\n",
+            "Properties/P2/Bundled.lean": "def P2\n",
             "Theorems/T1/Theorem.lean": "theorem T1 : P1 ≤ P2 := by sorry\n",
         }
         for relative_path, content in declarations.items():

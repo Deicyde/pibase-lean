@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any, NoReturn
 
 SCHEMA_VERSION = 1
+CATALOG_SCHEMA_VERSION = 1
 ALLOWED_STATUSES = frozenset({"implemented", "not-implemented", "invalid"})
 TRUSTED_AXIOMS = frozenset({"Classical.choice", "Quot.sound", "propext"})
 # Mirrors the schema-v1 conditional axiom mappings in the Lean report producer.
@@ -347,10 +348,15 @@ class _Validator:
         scope = self.strings(
             self.field(report, "scope", "$ report"), "$.scope", unique=True
         )
-        self.integer(
+        catalog_schema_version = self.integer(
             self.field(report, "catalogSchemaVersion", "$ report"),
             "$.catalogSchemaVersion",
         )
+        if catalog_schema_version != CATALOG_SCHEMA_VERSION:
+            self.fail(
+                "$.catalogSchemaVersion",
+                f"expected {CATALOG_SCHEMA_VERSION}, got {catalog_schema_version}",
+            )
 
         hashes = self.object(
             self.field(report, "sourceHashes", "$ report"), "$.sourceHashes"
@@ -461,7 +467,15 @@ def run_space_audit(root: Path | str) -> AuditResult:
         text=True,
         check=False,
     )
-    report = parse_report(completed.stdout, source="spaceAudit stdout")
+    try:
+        report = parse_report(completed.stdout, source="spaceAudit stdout")
+    except AuditAdapterError as error:
+        diagnostic = completed.stderr.strip()
+        if diagnostic:
+            raise type(error)(
+                f"{error}\nspaceAudit stderr:\n{diagnostic}"
+            ) from error
+        raise
     return AuditResult(
         report=report,
         returncode=completed.returncode,
@@ -524,6 +538,8 @@ def main(argv: list[str] | None = None) -> int:
         print(str(error), file=sys.stderr)
         return 2
 
+    if result.stderr:
+        print(result.stderr, file=sys.stderr, end="" if result.stderr.endswith("\n") else "\n")
     print(normalized_json(result.report))
     if result.returncode not in (None, 0):
         return result.returncode if 0 < result.returncode < 256 else 1

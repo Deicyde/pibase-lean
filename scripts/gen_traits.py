@@ -225,7 +225,7 @@ def available(kind: str, lean_root: Path | str) -> set[str]:
         "T": "Theorems",
         "S": "Spaces",
     }[kind]
-    source_name = {"P": "Defs.lean", "T": "Theorem.lean", "S": "Defs.lean"}[kind]
+    source_name = {"P": "Bundled.lean", "T": "Theorem.lean", "S": "Defs.lean"}[kind]
     declaration_kind = "(?:theorem|lemma)" if kind == "T" else "def"
     if not directory.is_dir():
         return set()
@@ -417,7 +417,7 @@ def render_generated_imports(
 ) -> str:
     properties, theorem_ids = generated_dependencies(seed, theorems, available_properties)
     lines = [f"public import PiBaseLean.Spaces.{short_uid(space_uid)}.Lemmas"]
-    lines.extend(f"public import PiBaseLean.Properties.{uid}.Defs" for uid in properties)
+    lines.extend(f"public import PiBaseLean.Properties.{uid}.Bundled" for uid in properties)
     lines.extend(f"public import PiBaseLean.Theorems.{uid}.Theorem" for uid in theorem_ids)
     return "\n".join(lines)
 

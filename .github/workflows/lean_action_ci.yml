@@ -42,6 +42,9 @@ jobs:
       - name: Test space audit catalog generator
         run: python3 -m unittest tests/test_gen_space_audit_catalog.py
 
+      - name: Check generated space audit catalog
+        run: python3 scripts/gen_space_audit_catalog.py --check
+
       - name: Check generated Lean inputs
         run: npm run generated:check
 
@@ -51,6 +54,7 @@ jobs:
           PiBaseLean.Audit.Spaces.Tests.RegistrySmoke
           PiBaseLean.Audit.Spaces.Tests.ReportSmoke
           PiBaseLean.Audit.Spaces.Tests.CrossModuleDuplicateSmoke
+          PiBaseLean.Audit.Spaces.Tests.ReportSmoke
 
       - name: Build the Lean-native space audit
         run: npm run audit:build
@@ -71,7 +75,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: space-audit-${{ github.run_id }}
+          name: space-audit-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/space-audit
           if-no-files-found: warn
 

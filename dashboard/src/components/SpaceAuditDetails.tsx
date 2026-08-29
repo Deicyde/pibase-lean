@@ -5,6 +5,7 @@ import type {
   SpaceAuditAssumptions,
   SpaceAuditFailure,
   SpaceAuditTrait,
+  ReviewTrait,
 } from "../types";
 import MathText from "./MathText";
 
@@ -46,15 +47,48 @@ function auditStatusLabel(status: "implemented" | "not-implemented" | "invalid")
   return "Invalid";
 }
 
-export default function SpaceAuditDetails({ audit }: { audit: SpaceAudit }) {
+export default function SpaceAuditDetails({
+  audit,
+  catalogTraits,
+}: {
+  audit: SpaceAudit;
+  catalogTraits: ReviewTrait[];
+}) {
   if (!audit.targeted) {
     return (
-      <div className="audit-note" role="note">
-        <Info size={17} aria-hidden="true" />
-        <div>
-          <strong>Outside the current audit scope</strong>
-          <span>This π-Base catalog space is not currently targeted by the Lean space audit.</span>
+      <div className="space-audit-details">
+        <div className="audit-note" role="note">
+          <Info size={17} aria-hidden="true" />
+          <div>
+            <strong>Outside the current audit scope</strong>
+            <span>This π-Base catalog space is not currently targeted by the Lean space audit.</span>
+          </div>
         </div>
+        {catalogTraits.length > 0 && (
+          <details className="trait-details">
+            <summary>{formatNumber(catalogTraits.length)} known catalog traits</summary>
+            <div className="trait-table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Value</th><th>Property</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                  {catalogTraits.map((trait) => (
+                    <tr key={`${trait.property}-${trait.value}`}>
+                      <td className={trait.value ? "trait-yes" : "trait-no"}>{trait.value ? "✓" : "×"}</td>
+                      <td>
+                        <a href={routeTo("review", { kind: "properties", q: trait.property.replace(/^P0+/, "P") })}>
+                          <MathText text={trait.name} inline />
+                        </a>
+                      </td>
+                      <td><span className="table-tag">{trait.status}</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </details>
+        )}
       </div>
     );
   }

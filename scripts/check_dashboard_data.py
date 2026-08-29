@@ -30,13 +30,26 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def check_review(kind: str, expected: int, source_prefix: str) -> dict[str, dict]:
+def check_review(
+    kind: str, expected: int, source_prefix: str, source_commit: str
+) -> dict[str, dict]:
+    def has_expected_source(entry: dict) -> bool:
+        if kind == "spaces" and not entry["spaceAudit"]["targeted"]:
+            return entry["sourceUrl"] == ""
+        return entry["sourceUrl"].startswith(source_prefix)
+
     index = load(DATA / f"review-{kind}.json")
+    require(index["schemaVersion"] == 2, f"unexpected {kind} review index schema version")
+    require(index["kind"] == kind, f"{kind} review index has the wrong kind")
+    require(
+        index["sourceCommit"] == source_commit,
+        f"{kind} review index has the wrong source commit",
+    )
     entries = index["entries"]
     require(len(entries) == expected, f"{kind} review index has {len(entries)} entries, expected {expected}")
     require(len({entry["id"] for entry in entries}) == expected, f"{kind} review index has duplicate IDs")
     require(
-        all(entry["sourceUrl"].startswith(source_prefix) for entry in entries),
+        all(has_expected_source(entry) for entry in entries),
         f"{kind} review index contains a non-canonical source link",
     )
     if kind == "properties":
@@ -50,20 +63,39 @@ def check_review(kind: str, expected: int, source_prefix: str) -> dict[str, dict
             "space review index is missing structured audit data",
         )
     chunk_entries: dict[str, dict] = {}
+    chunk_numbers: dict[str, int] = {}
     for chunk_number, relative in enumerate(index["chunks"]):
         path = PUBLIC / relative
         require(path.exists(), f"missing review chunk {relative}")
         payload = load(path)
+        require(payload["schemaVersion"] == 2, f"unexpected review schema version in {relative}")
+        require(payload["kind"] == kind, f"review chunk has the wrong kind in {relative}")
+        require(
+            payload["sourceCommit"] == source_commit,
+            f"review chunk has the wrong source commit in {relative}",
+        )
         require(payload["chunk"] == chunk_number, f"review chunk number mismatch in {relative}")
         require(
-            all(entry["sourceUrl"].startswith(source_prefix) for entry in payload["entries"]),
+            all(has_expected_source(entry) for entry in payload["entries"]),
             f"{relative} contains a non-canonical source link",
         )
         for entry in payload["entries"]:
             require(entry["id"] not in chunk_entries, f"{kind} review chunks contain duplicate IDs")
             chunk_entries[entry["id"]] = entry
+            chunk_numbers[entry["id"]] = chunk_number
     require(set(chunk_entries) == {entry["id"] for entry in entries}, f"{kind} review chunks do not match their index")
     require(all(0 <= entry["chunk"] < len(index["chunks"]) for entry in entries), f"{kind} review entry has an invalid chunk")
+    require(
+        all(chunk_numbers[entry["id"]] == entry["chunk"] for entry in entries),
+        f"{kind} review index points an entry at the wrong chunk",
+    )
+    require(
+        all(
+            entry["sourceUrl"] == chunk_entries[entry["id"]]["sourceUrl"]
+            for entry in entries
+        ),
+        f"{kind} review index source links disagree with their chunks",
+    )
     if kind == "spaces":
         for entry in entries:
             chunk_entry = chunk_entries[entry["id"]]
@@ -83,7 +115,7 @@ def main() -> None:
     manifest = load(DATA / "dashboard.json")
     catalog = load(ROOT / "data" / "pibase.json")
     canonical_repo = "https://github.com/felixpernegger/pibase-lean"
-    require(manifest["schemaVersion"] == 4, "unexpected dashboard schema version")
+    require(manifest["schemaVersion"] == 5, "unexpected dashboard schema version")
     require(manifest["project"]["repoUrl"] == canonical_repo, "project repository is not Felix's repository")
     require(
         manifest["project"]["repositoryLabel"] == "felixpernegger/pibase-lean",
@@ -320,9 +352,10 @@ def main() -> None:
     require(summary["theoremImplementations"] <= summary["theoremTotal"], "theorem coverage exceeds pi-Base total")
     require(summary["spaceImplementations"] <= summary["spaceTotal"], "space coverage exceeds pi-Base total")
 
-    space_review = check_review("spaces", summary["spaceEntries"], source_prefix)
-    check_review("properties", summary["propertyEntries"], source_prefix)
-    check_review("theorems", summary["theoremEntries"], source_prefix)
+    source_commit = manifest["source"]["commit"]
+    space_review = check_review("spaces", summary["spaceEntries"], source_prefix, source_commit)
+    check_review("properties", summary["propertyEntries"], source_prefix, source_commit)
+    check_review("theorems", summary["theoremEntries"], source_prefix, source_commit)
     require(
         all(
             space_review[space["id"]]["leanStatus"] == space["lean"]

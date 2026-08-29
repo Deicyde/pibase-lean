@@ -1,7 +1,7 @@
 module
 
 public meta import PiBaseLean.Audit.Spaces.Registry
-public import PiBaseLean.Properties.P52.Defs
+public import PiBaseLean.Properties.P52.Bundled
 public import PiBaseLean.Spaces.Constructions.Finite.Lemmas
 public import PiBaseLean.Spaces.S189.Defs
 

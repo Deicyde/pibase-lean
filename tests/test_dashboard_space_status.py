@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import io
 import json
 import subprocess
 import sys
@@ -12,12 +13,15 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
+import build_dashboard_data
 from build_dashboard_data import space_audit_projection
 from run_space_audit import (
     AuditOutputError,
+    AuditResult,
     AuditReportValidationError,
     AuditUnsuccessfulError,
     load_audit_artifact,
+    main as run_space_audit_main,
     parse_report,
     run_space_audit,
 )
@@ -107,6 +111,62 @@ def load_result(report: dict):
 
 
 class DashboardSpaceAuditProjectionTest(unittest.TestCase):
+    def test_non_targeted_review_entry_has_no_fabricated_source_link(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            output = root / "output"
+            data = {
+                "properties": [],
+                "spaces": [{"uid": "S000002", "name": "Unimplemented"}],
+                "theorems": [],
+            }
+            statuses = {
+                "S000002": {
+                    "sourcePath": "",
+                    "spaceAudit": {"targeted": False, "status": "not-targeted"},
+                }
+            }
+
+            with (
+                mock.patch.object(build_dashboard_data, "LEAN_ROOT", root),
+                mock.patch.object(build_dashboard_data, "OUT_DIR", output),
+                mock.patch.object(build_dashboard_data, "load_authors", return_value={}),
+            ):
+                build_dashboard_data.build_review_payloads(
+                    data, statuses, "a" * 40, "2026-08-28T00:00:00Z", {}
+                )
+
+            payload = json.loads(
+                (output / "review-spaces-000.json").read_text(encoding="utf-8")
+            )
+
+        entry = payload["entries"][0]
+        self.assertEqual(entry["sourcePath"], "")
+        self.assertEqual(entry["sourceUrl"], "")
+        self.assertEqual(entry["code"], "")
+
+    def test_property_status_uses_bundled_declaration(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            property_root = root / "PiBaseLean" / "Properties" / "P1"
+            property_root.mkdir(parents=True)
+            (root / "PiBaseLean.lean").write_text("module\n", encoding="utf-8")
+            (property_root / "Defs.lean").write_text(
+                "def underlyingProperty := True\n", encoding="utf-8"
+            )
+            (property_root / "Bundled.lean").write_text(
+                "def P1 := True\n", encoding="utf-8"
+            )
+
+            with mock.patch.object(build_dashboard_data, "LEAN_ROOT", root):
+                statuses, _ = build_dashboard_data.analyze_lean_tree()
+
+        self.assertTrue(statuses["P000001"]["declarationPresent"])
+        self.assertEqual(
+            statuses["P000001"]["sourcePath"],
+            "PiBaseLean/Properties/P1/Bundled.lean",
+        )
+
     def test_audit_owns_targeted_semantics_and_traits(self) -> None:
         report = valid_report()
         catalog = {
@@ -249,10 +309,60 @@ class SpaceAuditAdapterTest(unittest.TestCase):
         with self.assertRaises(AuditOutputError):
             parse_report("not json")
 
+    @mock.patch("run_space_audit.subprocess.run")
+    def test_subprocess_parse_failure_preserves_stderr(self, run: mock.Mock) -> None:
+        run.return_value = subprocess.CompletedProcess(
+            ["lake", "exe", "spaceAudit"], 1, "not json", "Lean runtime failed"
+        )
+
+        with self.assertRaisesRegex(AuditOutputError, r"Lean runtime failed"):
+            run_space_audit(Path("/tmp/audit-root"))
+
+    @mock.patch("run_space_audit.subprocess.run")
+    def test_subprocess_validation_failure_preserves_stderr(self, run: mock.Mock) -> None:
+        report = valid_report()
+        report["schemaVersion"] = 2
+        run.return_value = subprocess.CompletedProcess(
+            ["lake", "exe", "spaceAudit"],
+            1,
+            json.dumps(report),
+            "Lean validation diagnostic",
+        )
+
+        with self.assertRaisesRegex(
+            AuditReportValidationError, r"Lean validation diagnostic"
+        ):
+            run_space_audit(Path("/tmp/audit-root"))
+
+    @mock.patch("run_space_audit.run_space_audit")
+    def test_cli_forwards_subprocess_stderr(self, run: mock.Mock) -> None:
+        report = valid_report()
+        run.return_value = AuditResult(
+            report=report,
+            returncode=0,
+            stdout=json.dumps(report),
+            stderr="Lean diagnostic\n",
+            source="fixture",
+        )
+
+        with (
+            mock.patch("sys.stdout", new_callable=io.StringIO),
+            mock.patch("sys.stderr", new_callable=io.StringIO) as stderr,
+        ):
+            status = run_space_audit_main(["--root", "/tmp/audit-root"])
+
+        self.assertEqual(status, 0)
+        self.assertEqual(stderr.getvalue(), "Lean diagnostic\n")
+
     def test_schema_mismatch(self) -> None:
         report = valid_report()
         report["schemaVersion"] = 2
         self.assert_invalid(report, r"schemaVersion")
+
+    def test_catalog_schema_mismatch(self) -> None:
+        report = valid_report()
+        report["catalogSchemaVersion"] = 999
+        self.assert_invalid(report, r"catalogSchemaVersion")
 
     def test_duplicate_space_ids(self) -> None:
         report = valid_report()

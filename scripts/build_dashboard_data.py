@@ -454,7 +454,7 @@ def analyze_lean_tree() -> tuple[dict[str, dict], dict[Path, dict]]:
         }
 
     statuses: dict[str, dict] = {}
-    for kind, primary in (("Properties", "Defs.lean"), ("Theorems", "Theorem.lean"), ("Spaces", "Defs.lean")):
+    for kind, primary in (("Properties", "Bundled.lean"), ("Theorems", "Theorem.lean"), ("Spaces", "Defs.lean")):
         prefix = kind[0]
         parent = LEAN_ROOT / "PiBaseLean" / kind
         for folder in parent.glob(f"{prefix}*"):
@@ -789,7 +789,7 @@ def build_review_payloads(
 
     for uid in sorted((key for key in statuses if key.startswith("S")), key=lambda key: int(key[1:])):
         number = int(uid[1:])
-        rel = f"PiBaseLean/Spaces/S{number}/Defs.lean"
+        rel = statuses[uid].get("sourcePath", "")
         space_root = LEAN_ROOT / "PiBaseLean" / "Spaces" / f"S{number}"
         extra = space_root / "Lemmas.lean"
         generated = space_root / "Generated.lean"
@@ -803,9 +803,9 @@ def build_review_payloads(
             "description": clean_informal(item.get("description", "")),
             "author": authors.get(rel, ""),
             "sourcePath": rel,
-            "sourceUrl": source_url(commit, rel),
+            "sourceUrl": source_url(commit, rel) if rel else "",
             "referenceUrl": f"{PIBASE_URL}/spaces/{uid}",
-            "code": focused_lean(LEAN_ROOT / rel),
+            "code": focused_lean(LEAN_ROOT / rel) if rel else "",
             "extraCode": focused_lean(extra),
             "generatedCode": focused_lean(generated),
             "leanStatus": statuses[uid],
@@ -816,7 +816,7 @@ def build_review_payloads(
 
     for uid in sorted((key for key in statuses if key.startswith("P")), key=lambda key: int(key[1:])):
         number = int(uid[1:])
-        rel = f"PiBaseLean/Properties/P{number}/Defs.lean"
+        rel = f"PiBaseLean/Properties/P{number}/Bundled.lean"
         extra = LEAN_ROOT / "PiBaseLean" / "Properties" / f"P{number}" / "Lemmas.lean"
         item = properties.get(uid, {})
         payloads["properties"].append({
@@ -866,7 +866,7 @@ def build_review_payloads(
             chunk_path = f"data/review-{kind}-{chunk_index:03d}.json"
             chunks.append(chunk_path)
             dump_json(OUT_DIR / f"review-{kind}-{chunk_index:03d}.json", {
-                "schemaVersion": 1,
+                "schemaVersion": 2,
                 "kind": kind,
                 "chunk": chunk_index,
                 "sourceCommit": commit,
@@ -886,7 +886,7 @@ def build_review_payloads(
                     "chunk": chunk_index,
                 })
         dump_json(OUT_DIR / f"review-{kind}.json", {
-            "schemaVersion": 1,
+            "schemaVersion": 2,
             "kind": kind,
             "sourceCommit": commit,
             "generatedAt": generated_at,
@@ -944,7 +944,7 @@ def main() -> None:
     commit = git("rev-parse", "HEAD")
     if not commit:
         raise SystemExit(f"Lean source at {LEAN_ROOT} is not a Git checkout")
-    if LEAN_ROOT != ROOT and git("status", "--porcelain", "--", "PiBaseLean", "PiBaseLean.lean"):
+    if git("status", "--porcelain", "--", "PiBaseLean", "PiBaseLean.lean"):
         raise SystemExit(f"Lean source at {LEAN_ROOT} has uncommitted changes")
     if LEAN_ROOT != ROOT and not is_felix_commit():
         raise SystemExit(
@@ -1098,7 +1098,7 @@ def main() -> None:
         + counts.get("axiomDependent", 0)
     )
     dashboard = {
-        "schemaVersion": 4,
+        "schemaVersion": 5,
         "project": {
             "id": "pibase-lean",
             "name": "pibase-lean",

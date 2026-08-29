@@ -97,4 +97,5 @@ run_cmd do
   if let .error message := Json.parse report.toJsonString then
     throwError "audit JSON did not parse: {message}"
 
+set_option linter.hashCommand false in
 #assert_pibase_spaces

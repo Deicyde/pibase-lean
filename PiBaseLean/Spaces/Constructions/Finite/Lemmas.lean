@@ -1,9 +1,9 @@
 module
 
 public import Mathlib.Tactic.NormNum
-public import PiBaseLean.Properties.P125.Defs
-public import PiBaseLean.Properties.P175.Defs
-public import PiBaseLean.Properties.P176.Defs
+public import PiBaseLean.Properties.P125.Bundled
+public import PiBaseLean.Properties.P175.Bundled
+public import PiBaseLean.Properties.P176.Bundled
 public import PiBaseLean.Spaces.Constructions.Finite.Defs
 
 @[expose] public section

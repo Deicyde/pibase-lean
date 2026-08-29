@@ -153,7 +153,7 @@ export interface DirectEdge {
 }
 
 export interface DashboardData {
-  schemaVersion: 4;
+  schemaVersion: 5;
   project: {
     id: string;
     name: string;
@@ -341,7 +341,7 @@ export interface SpaceReviewEntrySummary extends ReviewEntrySummaryBase {
 export type ReviewEntrySummary = StandardReviewEntrySummary | SpaceReviewEntrySummary;
 
 interface ReviewPayloadBase {
-  schemaVersion: 1;
+  schemaVersion: 2;
   sourceCommit: string;
   generatedAt: string;
   chunkSize: number;
@@ -353,7 +353,7 @@ export type ReviewPayload =
   | (ReviewPayloadBase & { kind: "properties" | "theorems"; entries: StandardReviewEntrySummary[] });
 
 interface ReviewChunkPayloadBase {
-  schemaVersion: 1;
+  schemaVersion: 2;
   chunk: number;
   sourceCommit: string;
 }

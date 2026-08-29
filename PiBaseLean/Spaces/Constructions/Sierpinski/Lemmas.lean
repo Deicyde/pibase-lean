@@ -3,11 +3,11 @@ module
 public import Mathlib.Topology.Connected.Basic
 public import Mathlib.Topology.Sober
 public import Mathlib.Tactic.NormNum
-public import PiBaseLean.Properties.P125.Defs
-public import PiBaseLean.Properties.P175.Defs
-public import PiBaseLean.Properties.P196.Defs
-public import PiBaseLean.Properties.P201.Defs
-public import PiBaseLean.Properties.P203.Defs
+public import PiBaseLean.Properties.P125.Bundled
+public import PiBaseLean.Properties.P175.Bundled
+public import PiBaseLean.Properties.P196.Bundled
+public import PiBaseLean.Properties.P201.Bundled
+public import PiBaseLean.Properties.P203.Bundled
 public import PiBaseLean.Spaces.Constructions.Sierpinski.Defs
 
 @[expose] public section
