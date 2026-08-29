@@ -350,9 +350,10 @@ The final certificate type for a fixed, reviewable classification plan for π-Ba
 pairs. A plan may use `none` while a pair is open; this completion certificate requires every pair
 to have a sound status.
 
-This generic API is useful for checking candidate plans, but it is not itself the project goal.
+This generic API is useful for checking candidate plans, but it is not itself the checked target.
 In particular, choosing a plan noncomputably by case-splitting on each implication does not count
-as a classification. The closed project goal below is tied to one transparent, executable plan.
+as a classification. The closed positive-fragment target below is tied to one transparent,
+executable plan.
 -/
 abbrev PiBaseClassificationPlan := ClassificationPlan allProperties.{u}
 
@@ -374,13 +375,18 @@ theorem piBaseClassificationPlan_sound : piBaseClassificationPlan.{u}.Sound := b
   intro pair status hStatus
   simp [piBaseClassificationPlan] at hStatus
 
-/-- The closed project goal: soundness and completeness of the canonical executable plan. -/
-def PiBaseProjectGoal : Prop :=
+/--
+The closed completion target for the directed positive-implication fragment.
+
+This name is deliberately narrower than "project goal": a future target that includes negated
+literals must first specify its larger signed scope explicitly.
+-/
+def PiBasePositiveImplicationGoal : Prop :=
   PiBaseClassification.{u} piBaseClassificationPlan
 
-/-- Because partial soundness is maintained, completing the plan is exactly the project goal. -/
-theorem piBaseProjectGoal_iff_complete :
-    PiBaseProjectGoal.{u} ↔ piBaseClassificationPlan.{u}.Complete := by
+/-- Because partial soundness is maintained, completing the plan is exactly the positive target. -/
+theorem piBasePositiveImplicationGoal_iff_complete :
+    PiBasePositiveImplicationGoal.{u} ↔ piBaseClassificationPlan.{u}.Complete := by
   constructor
   · intro certificate
     exact certificate.complete
@@ -397,8 +403,8 @@ theorem piBaseClassificationPlan_has_open_pair :
     ∃ pair, piBaseClassificationPlan.{u} pair = none :=
   ⟨firstPiBaseImplicationPair, rfl⟩
 
-/-- Regression guard: the initial all-open canonical plan does not satisfy the project goal. -/
-theorem not_piBaseProjectGoal : ¬ PiBaseProjectGoal.{u} := by
+/-- Regression guard: the initial all-open canonical plan does not satisfy the positive target. -/
+theorem not_piBasePositiveImplicationGoal : ¬ PiBasePositiveImplicationGoal.{u} := by
   intro certificate
   have hComplete := certificate.complete firstPiBaseImplicationPair
   simp [piBaseClassificationPlan] at hComplete
