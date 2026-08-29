@@ -52,7 +52,7 @@ def SetTheoryContext.toProp : SetTheoryContext → Prop
 
 /--
 `VariesUnder P A B` records that `P` follows in the explicit context `A`, while `¬ P` follows in
-the explicit context `B`.
+the distinct explicit context `B`.
 
 This is conditional evidence only: it does not assert that either context is consistent with ZFC,
 nor does it by itself prove that `P` is independent of any formal theory. Each declaration using
@@ -60,6 +60,7 @@ nor does it by itself prove that `P` is independent of any formal theory. Each d
 recreate a vacuous independence predicate and must not be used for classification.
 -/
 structure VariesUnder (P : Prop) (positiveContext negativeContext : SetTheoryContext) : Prop where
+  contexts_ne : positiveContext ≠ negativeContext
   of_positive : positiveContext.toProp.{u} → P
   not_of_negative : negativeContext.toProp.{u} → ¬ P
 
@@ -74,17 +75,17 @@ example (P : Prop) : ∃ A B, A ≠ B ∧ VariesUnder.{u} P A B := by
   by_cases hP : P
   · by_cases hCH : ContinuumHypothesis
     · refine ⟨.continuumHypothesis, .notContinuumHypothesis, by decide, ?_⟩
-      exact ⟨fun _ ↦ hP, fun hNCH ↦
+      exact ⟨by decide, fun _ ↦ hP, fun hNCH ↦
         (NotContinuumHypothesis.iff_not_continuumHypothesis.mp hNCH hCH).elim⟩
     · refine ⟨.notContinuumHypothesis, .continuumHypothesis, by decide, ?_⟩
-      exact ⟨fun _ ↦ hP, fun hCH' ↦ (hCH hCH').elim⟩
+      exact ⟨by decide, fun _ ↦ hP, fun hCH' ↦ (hCH hCH').elim⟩
   · by_cases hCH : ContinuumHypothesis
     · refine ⟨.notContinuumHypothesis, .continuumHypothesis, by decide, ?_⟩
-      exact ⟨fun hNCH ↦
+      exact ⟨by decide, fun hNCH ↦
         (NotContinuumHypothesis.iff_not_continuumHypothesis.mp hNCH hCH).elim,
         fun _ ↦ hP⟩
     · refine ⟨.continuumHypothesis, .notContinuumHypothesis, by decide, ?_⟩
-      exact ⟨fun hCH' ↦ (hCH hCH').elim, fun _ ↦ hP⟩
+      exact ⟨by decide, fun hCH' ↦ (hCH hCH').elim, fun _ ↦ hP⟩
 
 /-- Contexts that yield opposite conclusions cannot hold simultaneously. -/
 protected theorem VariesUnder.contexts_incompatible {P : Prop} {A B : SetTheoryContext}
@@ -94,7 +95,7 @@ protected theorem VariesUnder.contexts_incompatible {P : Prop} {A B : SetTheoryC
 /-- Negating the conclusion swaps the positive and negative contexts. -/
 protected theorem VariesUnder.neg {P : Prop} {A B : SetTheoryContext}
     (h : VariesUnder.{u} P A B) : VariesUnder.{u} (¬ P) B A :=
-  ⟨h.not_of_negative, fun hA hnP ↦ hnP (h.of_positive hA)⟩
+  ⟨h.contexts_ne.symm, h.not_of_negative, fun hA hnP ↦ hnP (h.of_positive hA)⟩
 
 /-- An implication between bundled properties varies under two explicit set-theoretic contexts.
 The contexts are interpreted in the same universe as the properties. -/
