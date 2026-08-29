@@ -14,6 +14,10 @@ from run_space_audit import (
     load_audit_artifact,
     normalized_json,
 )
+from space_audit_contract import (
+    PublishedAuditContractError,
+    validate_published_audit,
+)
 
 ROOT = Path(__file__).resolve().parent.parent
 PUBLIC = ROOT / "dashboard" / "public"
@@ -289,6 +293,16 @@ def main() -> None:
     require(audit_path.is_file(), "raw space audit artifact is missing")
     audit_result = load_audit_artifact(audit_path).require_success()
     audit = audit_result.report
+    try:
+        validate_published_audit(
+            audit,
+            catalog,
+            load(ROOT / "data" / "independence.json"),
+            ROOT,
+            REQUIRED_SPACE_AUDIT_SCOPE,
+        )
+    except PublishedAuditContractError as error:
+        raise SystemExit(f"dashboard integrity error: {error}") from error
     require(
         audit_path.read_text(encoding="utf-8") == normalized_json(audit),
         "raw space audit artifact is not normalized",

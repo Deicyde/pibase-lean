@@ -26,6 +26,10 @@ from run_space_audit import (  # noqa: E402
     normalized_json,
     run_space_audit,
 )
+from space_audit_contract import (  # noqa: E402
+    PublishedAuditContractError,
+    validate_published_audit,
+)
 
 DATA_DIR = ROOT / "data"
 PUBLIC_DIR = ROOT / "dashboard" / "public"
@@ -55,9 +59,20 @@ def sha256(path: Path) -> str:
 
 def load_space_audit() -> dict:
     artifact = os.environ.get("PIBASE_SPACE_AUDIT_ARTIFACT")
-    result = load_audit_artifact(Path(artifact)) if artifact else run_space_audit(LEAN_ROOT)
-    result.require_success()
-    report = result.report
+    if artifact:
+        artifact_result = load_audit_artifact(Path(artifact))
+        artifact_result.require_success()
+        live_result = run_space_audit(LEAN_ROOT)
+        live_result.require_success()
+        if normalized_json(artifact_result.report) != normalized_json(live_result.report):
+            raise SystemExit(
+                "space audit artifact does not exactly match a fresh audit of this checkout"
+            )
+        report = artifact_result.report
+    else:
+        result = run_space_audit(LEAN_ROOT)
+        result.require_success()
+        report = result.report
     expected_hashes = {
         "pibase": sha256(DATA_DIR / "pibase.json"),
         "independence": sha256(DATA_DIR / "independence.json"),
@@ -1043,6 +1058,16 @@ def main() -> None:
     registry = load_json(DATA_DIR / "registry.json")
     foundations = load_json(DATA_DIR / "independence.json")
     space_audit_report = load_space_audit()
+    try:
+        validate_published_audit(
+            space_audit_report,
+            data,
+            foundations,
+            LEAN_ROOT,
+            REQUIRED_SPACE_AUDIT_SCOPE,
+        )
+    except PublishedAuditContractError as error:
+        raise SystemExit(f"space audit publication contract failed: {error}") from error
     implications = load_json(DATA_DIR / "implications.json")
     validate_implications(implications)
     base_theory = foundations.get("baseTheory", "ZFC")

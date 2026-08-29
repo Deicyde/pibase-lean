@@ -159,6 +159,82 @@ class DashboardSpaceAuditProjectionTest(unittest.TestCase):
         ):
             build_dashboard_data.load_space_audit()
 
+    def test_artifact_loader_requires_an_exact_fresh_audit_match(self) -> None:
+        report = published_scope_report()
+        artifact_result = AuditResult(
+            report=report,
+            returncode=None,
+            stdout=json.dumps(report),
+            stderr="",
+            source="artifact",
+        )
+        live_result = AuditResult(
+            report=copy.deepcopy(report),
+            returncode=0,
+            stdout=json.dumps(report),
+            stderr="",
+            source="live",
+        )
+        with (
+            mock.patch.dict(
+                "os.environ",
+                {"PIBASE_SPACE_AUDIT_ARTIFACT": "/tmp/space-audit.json"},
+                clear=True,
+            ),
+            mock.patch.object(
+                build_dashboard_data,
+                "load_audit_artifact",
+                return_value=artifact_result,
+            ),
+            mock.patch.object(
+                build_dashboard_data, "run_space_audit", return_value=live_result
+            ) as run,
+            mock.patch.object(build_dashboard_data, "sha256", side_effect=[HASH_A, HASH_B]),
+        ):
+            self.assertIs(build_dashboard_data.load_space_audit(), report)
+        run.assert_called_once_with(build_dashboard_data.LEAN_ROOT)
+
+    def test_artifact_loader_rejects_forged_dependency_metadata(self) -> None:
+        artifact = published_scope_report()
+        live = copy.deepcopy(artifact)
+        live["spaces"][0]["traits"][0]["axioms"] = {
+            "axioms": ["Classical.choice"],
+            "trusted": ["Classical.choice"],
+            "conditional": [],
+            "forbidden": [],
+        }
+        artifact_result = AuditResult(
+            report=artifact,
+            returncode=None,
+            stdout=json.dumps(artifact),
+            stderr="",
+            source="artifact",
+        )
+        live_result = AuditResult(
+            report=live,
+            returncode=0,
+            stdout=json.dumps(live),
+            stderr="",
+            source="live",
+        )
+        with (
+            mock.patch.dict(
+                "os.environ",
+                {"PIBASE_SPACE_AUDIT_ARTIFACT": "/tmp/space-audit.json"},
+                clear=True,
+            ),
+            mock.patch.object(
+                build_dashboard_data,
+                "load_audit_artifact",
+                return_value=artifact_result,
+            ),
+            mock.patch.object(
+                build_dashboard_data, "run_space_audit", return_value=live_result
+            ),
+            self.assertRaisesRegex(SystemExit, "does not exactly match"),
+        ):
+            build_dashboard_data.load_space_audit()
+
     def test_non_targeted_review_entry_has_no_fabricated_source_link(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

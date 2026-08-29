@@ -37,7 +37,10 @@ jobs:
         with:
           auto-config: false
           build: true
-          build-args: --wfail spaceAudit
+          build-args: >-
+            --wfail
+            spaceAudit
+            PiBaseLean.Audit.Spaces.Tests.ReportSmoke
           test: false
           lint: false
           use-mathlib-cache: true
