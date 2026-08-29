@@ -11,12 +11,15 @@ permissions:
   pages: write
   id-token: write
 
+env:
+  PIBASE_DATA_COMMIT: 5c343408ea723e78e31523f9899bfb22580235bd
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -30,11 +33,11 @@ jobs:
           lint: false
           use-mathlib-cache: true
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v7
         with:
           node-version: "24"
           cache: npm
@@ -73,7 +76,7 @@ jobs:
 
       - name: Upload space audit report
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: space-audit-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/space-audit
@@ -85,6 +88,22 @@ jobs:
       - name: Install dashboard dependencies
         run: npm ci
 
+      - name: Check out pinned pi-base data
+        run: |
+          git init "$RUNNER_TEMP/felix-pibase-data"
+          git -C "$RUNNER_TEMP/felix-pibase-data" remote add origin https://github.com/felixpernegger/pibase-data.git
+          git -C "$RUNNER_TEMP/felix-pibase-data" fetch --depth 1 origin "$PIBASE_DATA_COMMIT"
+          git -C "$RUNNER_TEMP/felix-pibase-data" checkout --detach FETCH_HEAD
+          test "$(git -C "$RUNNER_TEMP/felix-pibase-data" rev-parse HEAD)" = "$PIBASE_DATA_COMMIT"
+
+      - name: Refresh the implications payload used by Pages
+        run: |
+          pip install PyYAML==6.0.3
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/fetch_implications.py "$RUNNER_TEMP/felix-pibase-data"
+
+      - name: Test dashboard data contracts
+        run: npm run test:frontend
+
       - name: Check dashboard types
         run: npm run dashboard:check
 
@@ -95,6 +114,14 @@ jobs:
 
       - name: Verify dashboard artifacts
         run: npm run dashboard:verify
+
+      - name: Upload dashboard preview
+        uses: actions/upload-artifact@v7
+        with:
+          name: dashboard-preview-${{ github.run_id }}-${{ github.run_attempt }}
+          path: site
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Build documentation
         uses: leanprover-community/docgen-action@v1
