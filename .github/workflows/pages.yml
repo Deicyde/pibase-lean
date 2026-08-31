@@ -19,7 +19,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           # Dashboard review metadata derives authorship from repository history.
           fetch-depth: 0
@@ -33,7 +33,7 @@ jobs:
           test "$(git -C "$RUNNER_TEMP/felix-pibase-data" rev-parse HEAD)" = "$PIBASE_DATA_COMMIT"
 
       - name: Set up Lean, restore caches, and build the space audit
-        uses: leanprover/lean-action@v1
+        uses: leanprover/lean-action@50fcf42d2e460296f1a34b402e990d1b24f8b596 # v1
         with:
           auto-config: false
           build: true
@@ -45,7 +45,7 @@ jobs:
           lint: false
           use-mathlib-cache: true
 
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: "3.12"
 
@@ -57,7 +57,7 @@ jobs:
           pip install PyYAML==6.0.3
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/fetch_implications.py "$RUNNER_TEMP/felix-pibase-data"
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: "24"
           cache: npm
@@ -82,7 +82,7 @@ jobs:
 
       - name: Upload space audit report
         if: ${{ always() }}
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: pages-space-audit-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/space-audit
@@ -105,7 +105,7 @@ jobs:
       - name: Verify dashboard artifacts
         run: npm run dashboard:verify
 
-      - uses: actions/upload-pages-artifact@v5
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         with:
           path: site
 
@@ -119,9 +119,9 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/configure-pages@v6
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
         with:
           enablement: true
 
       - id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5
