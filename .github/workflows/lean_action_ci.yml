@@ -7,9 +7,6 @@ on:
 
 permissions:
   contents: read
-  # docgen-action uploads and deploys Pages on push.
-  pages: write
-  id-token: write
 
 env:
   PIBASE_DATA_COMMIT: 5c343408ea723e78e31523f9899bfb22580235bd
@@ -57,7 +54,6 @@ jobs:
           PiBaseLean.Audit.Spaces.Tests.RegistrySmoke
           PiBaseLean.Audit.Spaces.Tests.ReportSmoke
           PiBaseLean.Audit.Spaces.Tests.CrossModuleDuplicateSmoke
-          PiBaseLean.Audit.Spaces.Tests.ReportSmoke
 
       - name: Build the Lean-native space audit
         run: npm run audit:build
@@ -122,6 +118,3 @@ jobs:
           path: site
           if-no-files-found: error
           retention-days: 7
-
-      - name: Build documentation
-        uses: leanprover-community/docgen-action@v1
