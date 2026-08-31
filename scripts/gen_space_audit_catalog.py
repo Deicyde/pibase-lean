@@ -23,6 +23,7 @@ DEFAULT_GENERATED_OUTPUT = (
     ROOT / "PiBaseLean" / "Audit" / "Spaces" / "GeneratedCatalog.lean"
 )
 SCHEMA_VERSION = 1
+SUPPORTED_BASE_THEORY = "ZFC"
 
 ASSUMPTIONS = (
     ("CH", "continuumHypothesis"),
@@ -121,6 +122,15 @@ def load_catalog(pibase_path: Path, independence_path: Path) -> CatalogData:
     independence, independence_hash = _read_json(
         Path(independence_path), "independence"
     )
+
+    base_theory = _expect_string(
+        independence.get("baseTheory"), "independence.baseTheory"
+    )
+    if base_theory != SUPPORTED_BASE_THEORY:
+        raise CatalogGenerationError(
+            "unsupported independence base theory: "
+            f"{base_theory!r}; expected {SUPPORTED_BASE_THEORY!r}"
+        )
 
     property_rows = _expect_list(pibase.get("properties"), "pibase.properties")
     properties: dict[str, Property] = {}

@@ -577,6 +577,13 @@ def AuditReport.isSuccess (report : AuditReport) : Bool :=
     report.summary.notImplemented == 0 && report.summary.invalid == 0 &&
     report.summary.failures == 0
 
+/-- The overall report status, distinguishing incomplete coverage from invalid audit data. -/
+def AuditReport.status (report : AuditReport) : AuditStatus :=
+  if !report.failures.isEmpty || report.summary.invalid > 0 then .invalid
+  else if report.summary.notImplemented > 0 then .notImplemented
+  else if report.isSuccess then .implemented
+  else .invalid
+
 def optionJson (encode : α → Json) : Option α → Json
   | some value => encode value
   | none => Json.null
@@ -687,7 +694,7 @@ instance : ToJson AuditReport where
 
 def AuditReport.summaryString (report : AuditReport) : String :=
   let summary := report.summary
-  s!"Pi-Base space audit: {statusString <| if report.isSuccess then .implemented else .invalid}\n\
+  s!"Pi-Base space audit: {statusString report.status}\n\
     spaces: {summary.spaces}, implemented: {summary.implemented}, \
     not implemented: {summary.notImplemented}, invalid: {summary.invalid}\n\
     traits: {summary.traits}, failures: {summary.failures}"

@@ -7,6 +7,9 @@ on:
 
 permissions:
   contents: read
+  # docgen-action uploads and deploys Pages on push.
+  pages: write
+  id-token: write
 
 jobs:
   build:
@@ -25,5 +28,6 @@ jobs:
         run: >-
           lake build --wfail
           PiBaseLean.Audit.Spaces.Tests.RegistrySmoke
+          PiBaseLean.Audit.Spaces.Tests.ReportSmoke
           PiBaseLean.Audit.Spaces.Tests.CrossModuleDuplicateSmoke
       - uses: leanprover-community/docgen-action@v1

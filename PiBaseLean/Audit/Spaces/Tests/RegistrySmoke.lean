@@ -33,9 +33,22 @@ def registrySmokeCanonical :
     RegistrySmokeCarrier ≃ₜ RegistrySmokeCarrier :=
   Homeomorph.refl RegistrySmokeCarrier
 
+unsafe def registrySmokeUnsafeCanonical :
+    RegistrySmokeCarrier ≃ₜ RegistrySmokeCarrier :=
+  Homeomorph.refl RegistrySmokeCarrier
+
+partial def registrySmokePartial (value : Nat) : Nat :=
+  registrySmokePartial value
+
 theorem registrySmokeP52 :
     DiscreteTopology RegistrySmokeCarrier :=
   inferInstance
+
+set_option linter.defProp false in
+set_option warn.classDefReducibility false in
+unsafe def registrySmokeUnsafeP52 :
+    DiscreteTopology RegistrySmokeCarrier :=
+  registrySmokeP52
 
 inductive TopologyCarrier where
   | first
@@ -74,7 +87,7 @@ register_certificate S000001 P000052 true
 run_cmd do
   let rejected ← try
     Lean.Elab.Command.liftTermElabM <|
-      validateSpaceDecls
+      validateSpaceRegistrationDecls
         ``PiBase.Audit.Spaces.Tests.TopologyCarrier
         ``PiBase.Audit.Spaces.Tests.mismatchedCanonical
     pure false
@@ -82,6 +95,26 @@ run_cmd do
     pure true
   unless rejected do
     throwError "accepted a canonical homeomorphism with the wrong source topology"
+  let unsafeCanonicalRejected ← try
+    Lean.Elab.Command.liftTermElabM <|
+      validateSpaceDecls
+        ``PiBase.Audit.Spaces.Tests.RegistrySmokeCarrier
+        ``PiBase.Audit.Spaces.Tests.registrySmokeUnsafeCanonical
+    pure false
+  catch _ =>
+    pure true
+  unless unsafeCanonicalRejected do
+    throwError "accepted an unsafe canonical homeomorphism"
+  let partialRejected ← try
+    Lean.Elab.Command.liftTermElabM <|
+      PiBase.Audit.Meta.assertKernelChecked
+        "test declaration"
+        ``PiBase.Audit.Spaces.Tests.registrySmokePartial
+    pure false
+  catch _ =>
+    pure true
+  unless partialRejected do
+    throwError "accepted a partial declaration"
   let env ← getEnv
   let space ← match getSpaceById env "S000001" with
     | .ok entry => pure entry
@@ -99,3 +132,15 @@ run_cmd do
       certificate.provenance == .direct &&
       certificate.assumptionIds.isEmpty do
     throwError "unexpected S000001/P000052 certificate registration: {repr certificate}"
+  let unsafeCertificateRejected ← try
+    Lean.Elab.Command.liftTermElabM <|
+      validateCertificateDecls
+        space
+        ``PiBase.Formal.P52
+        ``PiBase.Audit.Spaces.Tests.registrySmokeUnsafeP52
+        true
+    pure false
+  catch _ =>
+    pure true
+  unless unsafeCertificateRejected do
+    throwError "accepted an unsafe certificate declaration"

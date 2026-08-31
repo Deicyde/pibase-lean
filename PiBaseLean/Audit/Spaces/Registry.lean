@@ -157,23 +157,42 @@ def canonicalHomeomorphArgs (canonicalName : Name) : Meta.MetaM (Array Expr) := 
         {canonicalType}"
   return args
 
-def validateSpaceDecls (carrierName canonicalName : Name) : Meta.MetaM Unit := do
+/-- Resolve and validate the declaration facts shared by registration-time and audit-time checks. -/
+def validateSpaceDeclsCore
+    (carrierName canonicalName : Name) : Meta.MetaM (Expr × Array Expr) := do
+  PiBase.Audit.Meta.assertKernelChecked "space carrier" carrierName
+  PiBase.Audit.Meta.assertKernelChecked "canonical homeomorphism" canonicalName
   let carrier ← Meta.mkConstWithFreshMVarLevels carrierName
   let carrierType ← Meta.whnf (← Meta.inferType carrier)
   let .sort level := carrierType
     | throwError "space carrier {carrierName} is not a type; it has type {carrierType}"
   if level == .zero then
     throwError "space carrier {carrierName} is a proposition, not a type"
-  let topologyType ← Meta.mkAppM ``TopologicalSpace #[carrier]
-  let topology ← try
-    Meta.synthInstance topologyType
-  catch _ =>
-    throwError "failed to synthesize TopologicalSpace {carrierName}"
   let args ← canonicalHomeomorphArgs canonicalName
   PiBase.Audit.Meta.assertDefEq
     s!"canonical homeomorphism {canonicalName} has the wrong source"
     args[0]!
     carrier
+  return (carrier, args)
+
+/-- Validate the stable declaration facts recorded in a space registration. -/
+def validateSpaceDecls (carrierName canonicalName : Name) : Meta.MetaM Unit := do
+  discard <| validateSpaceDeclsCore carrierName canonicalName
+
+/--
+Validate a new registration against the topology instance visible at the registration site.
+
+The final audit deliberately uses `validateSpaceDecls` instead: re-synthesizing this instance after
+later imports would make an existing registration depend on import order.
+-/
+def validateSpaceRegistrationDecls
+    (carrierName canonicalName : Name) : Meta.MetaM Unit := do
+  let (carrier, args) ← validateSpaceDeclsCore carrierName canonicalName
+  let topologyType ← Meta.mkAppM ``TopologicalSpace #[carrier]
+  let topology ← try
+    Meta.synthInstance topologyType
+  catch _ =>
+    throwError "failed to synthesize TopologicalSpace {carrierName}"
   PiBase.Audit.Meta.assertDefEq
     s!"canonical homeomorphism {canonicalName} uses the wrong source topology"
     args[2]!
@@ -215,6 +234,8 @@ def checkLocalCertificateRegistration
 def validateCertificateDecls
     (space : SpaceRegistration) (propertyName proofName : Name) (polarity : Bool) :
     Meta.MetaM Unit := do
+  PiBase.Audit.Meta.assertKernelChecked "property declaration" propertyName
+  PiBase.Audit.Meta.assertKernelChecked "certificate declaration" proofName
   let carrier ← Meta.mkConstWithFreshMVarLevels space.carrier
   let carrierType ← Meta.whnf (← Meta.inferType carrier)
   let .sort (.succ carrierLevel) := carrierType
@@ -305,7 +326,8 @@ elab_rules : command
     checkAssumptions s!"space {spaceId}" assumptionIds catalogEntry.conditionalAssumptions
     let carrierName ← resolveDecl carrierStx
     let canonicalName ← resolveDecl canonicalStx
-    Lean.Elab.Command.liftTermElabM <| validateSpaceDecls carrierName canonicalName
+    Lean.Elab.Command.liftTermElabM <|
+      validateSpaceRegistrationDecls carrierName canonicalName
     let entry : SpaceRegistration := {
       spaceId
       catalogName := catalogEntry.name

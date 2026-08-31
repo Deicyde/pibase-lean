@@ -24,4 +24,17 @@ def assertDefEq (description : String) (actual expected : Expr) : MetaM Unit := 
     let expected ← Lean.Meta.whnf expected
     throwError "{description}\nactual:   {actual}\nexpected: {expected}"
 
+/-- Require a declaration to be kernel-checked rather than `unsafe` or `partial`. -/
+def assertKernelChecked (description : String) (declName : Name) : MetaM Unit := do
+  let env ← getEnv
+  let info ← getConstInfo declName
+  if info.isUnsafe then
+    throwError "{description} {declName} is unsafe"
+  let partialWrapper := match info with
+    | .opaqueInfo _ =>
+        (env.find? (Name.mkStr declName "_unsafe_rec")).any (·.isPartial)
+    | _ => false
+  if info.isPartial || partialWrapper then
+    throwError "{description} {declName} is partial"
+
 end PiBase.Audit.Meta

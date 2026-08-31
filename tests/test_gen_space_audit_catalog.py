@@ -42,6 +42,7 @@ class SpaceAuditCatalogGeneratorTest(unittest.TestCase):
             ],
         }
         self.independence = {
+            "baseTheory": "ZFC",
             "conditionalSpaces": [
                 {
                     "space": "S000010",
@@ -160,6 +161,38 @@ class SpaceAuditCatalogGeneratorTest(unittest.TestCase):
             r"independence\.conditionalSpaces\[1\]",
         ):
             generator.load_catalog(self.pibase_path, self.independence_path)
+
+    def test_missing_base_theory_is_rejected(self) -> None:
+        del self.independence["baseTheory"]
+        self.write_inputs()
+        with self.assertRaisesRegex(
+            generator.CatalogGenerationError,
+            r"^independence\.baseTheory must be a string$",
+        ):
+            generator.load_catalog(self.pibase_path, self.independence_path)
+
+    def test_non_string_base_theory_is_rejected(self) -> None:
+        for value in (None, True, 42, [], {}):
+            with self.subTest(value=value):
+                self.independence["baseTheory"] = value
+                self.write_inputs()
+                with self.assertRaisesRegex(
+                    generator.CatalogGenerationError,
+                    r"^independence\.baseTheory must be a string$",
+                ):
+                    generator.load_catalog(self.pibase_path, self.independence_path)
+
+    def test_unsupported_base_theory_is_rejected(self) -> None:
+        for value in ("NBG", "zfc", ""):
+            with self.subTest(value=value):
+                self.independence["baseTheory"] = value
+                self.write_inputs()
+                with self.assertRaisesRegex(
+                    generator.CatalogGenerationError,
+                    rf"^unsupported independence base theory: {value!r}; "
+                    rf"expected {generator.SUPPORTED_BASE_THEORY!r}$",
+                ):
+                    generator.load_catalog(self.pibase_path, self.independence_path)
 
     def test_unknown_assumption_is_rejected(self) -> None:
         self.independence["conditionalSpaces"][0]["assumptions"] = ["PFA"]
